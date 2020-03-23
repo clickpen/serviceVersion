@@ -1,0 +1,177 @@
+body, ul, li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+a {
+    text-decoration: none;
+}
+body {
+    min-width: 1200px;
+    background: #f1f5f7;
+}
+.common-header {
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #fff;
+    border-bottom: 1px solid #e5dbdb;
+    height: 81px;
+    padding: 10px 0;
+    box-shadow: 0px 6px 20px 0px rgba(193, 207, 217, 0.2);
+}
+.common-header .title {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 20px;
+}
+.common-header .title .logo-icon {
+    display: inline-block;
+    vertical-align: top;
+    width: 53px;
+    height: 60px;
+    background: url('./imgs/logo.png') top center / contain no-repeat;
+}
+.common-header .title h1 {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 10px;
+    font-size: 40px;
+    line-height: 60px;
+    color: #646d82;
+    letter-spacing: 5px;
+    font-weight: normal;
+    text-shadow: 0px 4px 10px rgba(3, 26, 44, 0.2);
+}
+.common-header .header-nav-wrapper {
+    display: inline-block;
+    vertical-align: top;
+    height: 60px;
+    line-height: 60px;
+
+}
+.common-header .header-nav-wrapper .nav-card {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 40px;
+}
+.common-header .header-nav-wrapper .nav-card i {
+    display: inline-block;
+    vertical-align: text-top;
+    width: 21px;
+    height: 21px;
+    margin-right: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top center;
+}
+.common-header .header-nav-wrapper .nav-card .index-icon {
+    background-image: url('./imgs/indexIcon.png');
+}
+.common-header .header-nav-wrapper .nav-card .judg-icon {
+    background-image: url('./imgs/judgIcon.png');
+}
+.common-header .header-nav-wrapper .nav-card .preven-icon {
+    background-image: url('./imgs/prevenIcon.png');
+}
+.common-header .header-nav-wrapper .nav-card .case-icon {
+    background-image: url('./imgs/caseIcon.png');
+}
+.common-header .header-nav-wrapper .nav-card a {
+    display: inline-block;
+    color: #646d82;
+}
+.common-header .header-nav-wrapper .nav-card:hover,
+.common-header .header-nav-wrapper .nav-card.active {
+    border-bottom: 2px solid #006eff;
+}
+.common-header .header-nav-wrapper .nav-card:hover .index-icon,
+.common-header .header-nav-wrapper .nav-card.active .index-icon {
+    background-image: url('./imgs/indexIconH.png');
+}
+.common-header .header-nav-wrapper .nav-card:hover .judg-icon,
+.common-header .header-nav-wrapper .nav-card.active .judg-icon {
+    background-image: url('./imgs/judgIconH.png');
+}
+.common-header .header-nav-wrapper .nav-card:hover .preven-icon,
+.common-header .header-nav-wrapper .nav-card.active .preven-icon {
+    background-image: url('./imgs/prevenIconH.png');
+}
+.common-header .header-nav-wrapper .nav-card:hover .case-icon,
+.common-header .header-nav-wrapper .nav-card.active .case-icon {
+    background-image: url('./imgs/caseIconH.png');
+}
+.common-header .header-nav-wrapper .nav-card:hover a,
+.common-header .header-nav-wrapper .nav-card.active a {
+    color: #006eff;
+}
+.common-header .header-user-info {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+.common-header .header-user-info .header-user-tips {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 26px;
+    height: 26px;
+    margin-right: 20px;
+    background: url('./imgs/tipsIcon.png') center / contain no-repeat;
+    cursor: pointer;
+}
+.common-header .header-user-info .header-user-tips:hover {
+    background-image: url('./imgs/tipsIconH.png');
+}
+.common-header .header-user-info .header-user-tips:hover .numbers {
+    color: #d660e7;
+}
+.common-header .header-user-info .header-user-messages {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 26px;
+    height: 26px;
+    margin-right: 20px;
+    background: url('./imgs/messagesIcon.png') center / contain no-repeat;
+    cursor: pointer;
+}
+.common-header .header-user-info .header-user-messages:hover {
+    background-image: url('./imgs/messagesIconH.png');
+}
+.common-header .header-user-info .header-user-messages:hover .numbers {
+    color: #f46363;
+}
+.common-header .header-user-info .numbers {
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    font-size: 12px;
+    color: #646d82;
+}
+.common-header .header-user-info .header-user-hd {
+    vertical-align: middle;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+    border: 1px solid #eee;
+}
+.common-header .header-user-info .header-user-name {
+    vertical-align: middle;
+    color: #040e28;
+    margin-right: 10px;
+    text-decoration: underline;
+}
+.common-header .header-user-info .header-quit-btn {
+    display: inline-block;
+    vertical-align: middle;
+    width: 26px;
+    height: 26px;
+    background: url('./imgs/quitIcon.png') center / contain no-repeat;
+    cursor: pointer;
+}
+.common-header .header-user-info .header-quit-btn:hover {
+    background-image: url('./imgs/quitIconH.png');
+}
