@@ -36,3 +36,88 @@ let prevenModel = {
     }
 }
 prevenModel.init()
+new Vue({
+    el: '#prevenModel',
+    data: {
+        prevenTab: 'prevenWarn',
+        zdrTableData: [
+            {
+                headUrl: 'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1223780803,2412931209&fm=26&gp=0.jpg',
+                name: 'test',
+                phone: '138888888888',
+                level: '一级',
+                idCard: '100111111111111111111',
+                unit: '责任公司',
+                person: '责任人',
+                status: '检测中',
+            },
+            {
+                headUrl: 'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1223780803,2412931209&fm=26&gp=0.jpg',
+                name: 'test',
+                phone: '138888888888',
+                level: '二级',
+                idCard: '100111111111111111111',
+                unit: '责任公司',
+                person: '责任人',
+                status: '检测中',
+            },
+            {
+                headUrl: 'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1223780803,2412931209&fm=26&gp=0.jpg',
+                name: 'test',
+                phone: '138888888888',
+                level: '三级',
+                idCard: '100111111111111111111',
+                unit: '责任公司',
+                person: '责任人',
+                status: '检测中',
+            }
+        ],
+        zdrDialogForm: {},
+        warnTableData: [
+            {
+                name: '预警名称',
+                action: '预警动作',
+                audio: '启动',
+                area: 'link',
+                time: '2020-03-30 16:00',
+                person: '提交的大爷',
+            },
+            {
+                name: '预警名称',
+                action: '预警动作',
+                audio: '禁止',
+                area: 'link',
+                time: '2020-03-30 16:00',
+                person: '提交的大爷',
+            },
+            {
+                name: '预警名称',
+                action: '预警动作',
+                audio: '禁止',
+                area: 'link',
+                time: '2020-03-30 16:00',
+                person: '提交的大爷',
+            }
+        ],
+        zdrDialogShow: true,
+        warnDialogShow: false
+    },
+    methods: {
+        handleDeleteRowData(data, type) {
+            this.$confirm('删除这条数据？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warn',
+            })
+                .then(() => {
+                    console.log('delete success', data)
+                })
+                .catch(() => false)
+        }
+    },
+    watch: {
+        prevenTab() {
+            console.log(this.prevenTab)
+        }
+    }
+})

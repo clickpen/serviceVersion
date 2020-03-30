@@ -4,7 +4,7 @@
     width: 100%;
     padding: 0 20px;
     margin-top: 20px;
-    height: calc(100vh - 120px);
+    min-height: calc(100vh - 120px);
 }
 .content-wrapper .map-wrapper {
     width: 100%;
@@ -220,4 +220,55 @@
 .content-wrapper .show-message-wrapper.hide {
     opacity: 0;
     width: 0;
+}
+.content-wrapper .child-wrapper {
+	width: 100%;
+}
+.content-wrapper .child-wrapper .zdr-header {
+	width: 50px;
+	height: 60px;
+}
+.content-wrapper .child-wrapper .zdr-green {
+	color: #50ad4e;
+}
+.content-wrapper .child-wrapper .zdr-operate-btn {
+	font-size: 20px;
+	color: #409EFF;
+}
+.content-wrapper .child-wrapper .zdr-operate-btn i {
+	margin-right: 5px;
+	cursor: pointer;
+}
+.content-wrapper .child-table-search {
+	position: absolute;
+	top: 5px;
+	right: 0;
+	height: 24px;
+}
+.content-wrapper .child-table-search .search-input {
+	width: 300px;
+	margin-right: 10px;
+}
+.content-wrapper .child-wrapper .warn-area {
+	color: #409EFF;
+	text-decoration: underline;
+}
+.content-wrapper .zdr-dialog-wrapper {
+	width: 100%;
+	font-size: 0;
+}
+.content-wrapper .zdr-dialog-wrapper .zdr-hd {
+	display: inline-block;
+	vertical-align: top;
+	width: 80px;
+	height: 100px;
+	font-size: 12px;
+	background-color: rgba(0, 0, 0, .6);
+}
+.content-wrapper .zdr-dialog-wrapper .zdr-content {
+	display: inline-block;
+	vertical-align: top;
+	font-size: 12px;
+	width: calc(100% - 100px);
+	margin-left: 20px;
 }
