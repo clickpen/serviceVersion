@@ -11,49 +11,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>移动数据应用-首页</title>
-    <link rel="stylesheet" href="../commonHeader/commonHeader.css">
-    <link rel="stylesheet" href="./index.css">
+	    <link rel="stylesheet" href="<%=basePath%>css/element-ui-2.12.0.css">
+	    <link rel="stylesheet" href="<%=basePath%>views/commonHeader/commonHeader.css">
+	    <link rel="stylesheet" href="<%=basePath%>views/index/index.css">
 </head>
-<body>
-    <div class="common-header">
-        <div class="title">
-            <i class="logo-icon"></i>
-            <h1>移动数据应用</h1>
-        </div>
-        <ul class="header-nav-wrapper">
-            <li class="nav-card active">
-                <a href="/jetk/views/index/index.jsp">
-                    <i class="index-icon"></i>首页
-                </a>
-            </li>
-            <li class="nav-card">
-                <a href="#">
-                    <i class="judg-icon"></i>研判工具
-                </a>
-            </li>
-            <li class="nav-card">
-                <a href="/jetk/views/prevenModel/prevenModel.jsp">
-                    <i class="preven-icon"></i>防控模型
-                </a>
-            </li>
-            <li class="nav-card">
-                <a href="#">
-                    <i class="case-icon"></i>案件管理
-                </a>
-            </li>
-        </ul>
-        <div class="header-user-info">
-            <span class="header-user-tips">
-                <span class="numbers">24</span>
-            </span>
-            <span class="header-user-messages">
-                <span class="numbers">5</span>
-            </span>
-            <img src="http://tupian.qqjay.com/tou2/2017/1011/45baf16d6ec0d40735cbb74dfd7f894a.jpg" class="header-user-hd">
-            <span class="header-user-name">admin</span>
-            <span title="退出" class="header-quit-btn"></span>
-        </div>
-    </div>
+<body>  
+ 	<jsp:include page="../commonHeader/commonHeader.jsp" flush="false"></jsp:include>
     <div class="content-wrapper" id="indexApp">
 		<div class="left-content">
 			<div class="user-message">
@@ -128,6 +91,7 @@
 							:key="inx"
 							:prop="ele.prop"
 							:label="ele.label"
+							:show-overflow-tooltip="true"
 						/>
 					</el-table>
 					<el-pagination
@@ -184,8 +148,12 @@
 				</div>
 			</div>
 		</div>
-	</div>
-    <script src="../commonHeader/commonHeader.js"></script>
-    <script src="./index.js"></script>
+    </div>
+    <script src="<%=basePath%>js/jquery-3.0.0.js"></script>
+    <script src="<%=basePath%>js/vue-2.6.10.min.js"></script>
+    <script src="<%=basePath%>js/echarts-4.4.0.min.js"></script>
+    <script src="<%=basePath%>js/element-ui-2.12.0.js"></script>
+    <script src="<%=basePath%>views/commonHeader/commonHeader.js"></script>
+    <script src="<%=basePath%>views/index/index.js"></script>
 </body>
 </html>

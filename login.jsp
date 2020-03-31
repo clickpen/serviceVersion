@@ -16,9 +16,12 @@
     <div class="login-wrapper">
         <h1 class="title">移动数据应用</h1>
         <div class="input-wrapper">
-            <input type="text" placeholder="请输入账号">
-            <input type="password" placeholder="请输入密码">
-            <span class="login-btn">登录</span>
+        	<form action="login" method="post">
+	            <input type="text" name="userName"  placeholder="请输入账号">
+	            <input type="password" name="userPass" placeholder="请输入密码">
+	           <!--  <span class="login-btn">登录</span> -->
+	           <input type="submit" value="登录" ></button>
+            </form>
         </div>
     </div>
 </body>

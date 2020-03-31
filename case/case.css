@@ -1,0 +1,41 @@
+.content-wrapper {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 20px;
+    margin-top: 20px;
+    height: calc(100vh - 120px);
+}
+.search {
+	width: 303px;
+	height: 36px;
+	float:right;
+    margin-right: 15px;
+}
+
+.newCase {
+	width: 160px;
+	height: 36px;
+	float:right;
+
+}
+.case {
+    clear: both;
+    padding-top: 16px;
+}
+.case_dialog {
+    border-radius: 4px;
+}
+.head-dialog{
+    margin-top: -20px;
+    margin-left: -21px;
+    margin-right: -20px;
+    background: #006eff;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 10px;
+    color:#dde7ff;
+}
+.el-dialog__headerbtn  {
+	top: 10px;
+}

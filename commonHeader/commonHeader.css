@@ -10,6 +10,35 @@ body {
     min-width: 1200px;
     background: #f1f5f7;
 }
+.el-dialog__header {
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #006eff;
+}
+.el-dialog__header .el-dialog__title {
+    font-size: 16px;
+    color: #fff;
+}
+.el-dialog__headerbtn {
+    top: 6px;
+    right: 10px;
+}
+.el-dialog__headerbtn .el-dialog__close {
+    color: #fff;
+}
+.el-dialog__headerbtn .el-dialog__close::before {
+    content: '\e78d'
+}
+.el-dialog__body {
+    padding: 10px 20px;
+}
+.el-dialog__footer {
+    text-align: center;
+}
+.el-dialog__footer .el-button {
+    padding: 10px 20px;
+}
 .common-header {
     position: relative;
     box-sizing: border-box;

@@ -1,9 +1,9 @@
 let prevenModel = {
-    $messageBoxWrapper: $('.J-messageBoxWrapper'),
-    $hideMessageBoxBtn: $('.J-hideMessageBox'),
-    $showMessageBoxBtn: $('.J-showMessageBox'),
-    $map: new BMap.Map('mapWrapper', { enableMapClick: false }),
     init() {
+        this.$messageBoxWrapper = $('.J-messageBoxWrapper')
+        this.$hideMessageBoxBtn = $('.J-hideMessageBox')
+        this.$showMessageBoxBtn = $('.J-showMessageBox')
+        this.$map = new BMap.Map('mapWrapper', { enableMapClick: false })
         this.bind()
         this.initMap()
     },
@@ -35,11 +35,10 @@ let prevenModel = {
         }
     }
 }
-prevenModel.init()
 new Vue({
     el: '#prevenModel',
     data: {
-        prevenTab: 'prevenWarn',
+        prevenTab: 'prevenIndex',
         zdrTableData: [
             {
                 headUrl: 'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1223780803,2412931209&fm=26&gp=0.jpg',
@@ -99,8 +98,11 @@ new Vue({
                 person: '提交的大爷',
             }
         ],
-        zdrDialogShow: true,
+        zdrDialogShow: false,
         warnDialogShow: false
+    },
+    mounted() {
+        prevenModel.init()
     },
     methods: {
         handleDeleteRowData(data, type) {
@@ -110,13 +112,15 @@ new Vue({
                 type: 'warn',
             })
                 .then(() => {
-                    console.log('delete success', data)
+                    // @todo
+                    console.log('delete success', data, type)
                 })
                 .catch(() => false)
         }
     },
     watch: {
         prevenTab() {
+            // @todo
             console.log(this.prevenTab)
         }
     }
