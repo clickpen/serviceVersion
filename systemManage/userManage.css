@@ -57,7 +57,7 @@
 .system-manage-wrapper .child-table-search {
 	position: absolute;
 	top: 5px;
-	right: 0;
+	right: 20px;
 	height: 24px;
 }
 .system-manage-wrapper .child-table-search .search-input {

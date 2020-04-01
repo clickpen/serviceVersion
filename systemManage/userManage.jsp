@@ -87,7 +87,7 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
-        <div class="child-table-search" v-if="prevenTab === 'userManage'">
+        <div class="child-table-search" v-if="systemManageTab === 'userManage'">
 			<el-input size="mini" class="search-input" placeholder="输入您想要搜索的内容">
 				<el-button slot="append" icon="el-icon-search"></el-button>
 			</el-input>
