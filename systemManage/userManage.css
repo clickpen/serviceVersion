@@ -8,3 +8,59 @@
 .system-manage-wrapper .child-wrapper {
 	width: 100%;
 }
+.system-manage-wrapper .child-wrapper .usermanage-operate-btn {
+	font-size: 20px;
+	color: #409EFF;
+}
+.system-manage-wrapper .child-wrapper .usermanage-operate-btn i {
+	margin-right: 5px;
+	cursor: pointer;
+}
+.system-manage-wrapper .usermanage-dialog-wrapper {
+	width: 100%;
+	font-size: 0;
+}
+.system-manage-wrapper .usermanage-dialog-wrapper .usermanage-hd {
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	width: 80px;
+	font-size: 12px;
+}
+.system-manage-wrapper .usermanage-dialog-wrapper .usermanage-hd .usermanage-hd-holder {
+	display: inline-block;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	font-size: 20px;
+	text-align: center;
+	border: 1px solid #eee;
+	border-radius: 4px;
+}
+.system-manage-wrapper .usermanage-dialog-wrapper .usermanage-hd-des {
+	display: inline-block;
+	margin-top: 10px;
+}
+.system-manage-wrapper .usermanage-dialog-wrapper .usermanage-content {
+	display: inline-block;
+	vertical-align: top;
+	font-size: 12px;
+	width: calc(100% - 80px);
+}
+.system-manage-wrapper .usermanage-dialog-wrapper .usermanage-content .el-form-item {
+	margin-bottom: 0;
+}
+.system-manage-wrapper .usermanage-dialog-wrapper .usermanage-content .el-form-item .el-select,
+.system-manage-wrapper .usermanage-dialog-wrapper .usermanage-content .el-form-item .el-date-editor {
+	width: 100%;
+}
+.system-manage-wrapper .child-table-search {
+	position: absolute;
+	top: 5px;
+	right: 0;
+	height: 24px;
+}
+.system-manage-wrapper .child-table-search .search-input {
+	width: 300px;
+	margin-right: 10px;
+}
