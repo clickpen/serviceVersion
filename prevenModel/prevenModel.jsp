@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" import="java.io.*"%>
-<% 
+<%
 	String path = request.getContextPath();
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 	request.getSession().removeAttribute("page");
@@ -11,12 +11,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>移动数据应用-防控模型</title>
-    <link rel="stylesheet" href="<%=basePath%>css/element-ui-2.12.0.css">
-    <link rel="stylesheet" href="<%=basePath%>views/commonHeader/commonHeader.css">
     <link rel="stylesheet" href="<%=basePath%>views/prevenModel/prevenModel.css">
 </head>
 <body>
-    <jsp:include page="../commonHeader/commonHeader.jsp" flush="false"></jsp:include>
+    <jsp:include page="../commonHeader/commonHeader.jsp" flush="ture"></jsp:include>
     <div class="content-wrapper" id="prevenModel" v-cloak>
 		<el-tabs v-model="prevenTab">
 			<el-tab-pane label="防控首页" name="prevenIndex">
@@ -313,13 +311,6 @@
 			</span>
 		</el-dialog>
 	</div>
-    <script src="<%=basePath%>js/jquery-3.0.0.js"></script>
-    <script src="<%=basePath%>js/vue-2.6.10.min.js"></script>
-    <script src="<%=basePath%>js/echarts-4.4.0.min.js"></script>
-    <script src="<%=basePath%>js/element-ui-2.12.0.js"></script>
-    <script type="text/javascript"
-		src="http://api.map.baidu.com/api?v=2.0&ak=cfEylnTgGMTSQy6BiWxP0hrVsVRkS8vM"></script>
-    <script src="<%=basePath%>views/commonHeader/commonHeader.js"></script>
     <script src="<%=basePath%>views/prevenModel/prevenModel.js"></script>
 </body>
 </html>

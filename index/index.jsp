@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" import="java.io.*"%>
-<% 
+<%
 	String path = request.getContextPath();
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 	request.getSession().removeAttribute("page");
@@ -11,12 +11,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>移动数据应用-首页</title>
-	    <link rel="stylesheet" href="<%=basePath%>css/element-ui-2.12.0.css">
-	    <link rel="stylesheet" href="<%=basePath%>views/commonHeader/commonHeader.css">
 	    <link rel="stylesheet" href="<%=basePath%>views/index/index.css">
 </head>
-<body>  
- 	<jsp:include page="../commonHeader/commonHeader.jsp" flush="false"></jsp:include>
+<body>
+ 	<jsp:include page="../commonHeader/commonHeader.jsp" flush="true"></jsp:include>
     <div class="content-wrapper" id="indexApp">
 		<div class="left-content">
 			<div class="user-message">
@@ -94,12 +92,12 @@
 							:show-overflow-tooltip="true"
 						/>
 					</el-table>
-					<el-pagination
+					<!-- <el-pagination
 						small
 						page-size="10"
 						layout="prev, pager, next"
 						:total="100"
-					/>
+					/> -->
 				</div>
 			</div>
 			<div class="bottom-card">
@@ -149,11 +147,6 @@
 			</div>
 		</div>
     </div>
-    <script src="<%=basePath%>js/jquery-3.0.0.js"></script>
-    <script src="<%=basePath%>js/vue-2.6.10.min.js"></script>
-    <script src="<%=basePath%>js/echarts-4.4.0.min.js"></script>
-    <script src="<%=basePath%>js/element-ui-2.12.0.js"></script>
-    <script src="<%=basePath%>views/commonHeader/commonHeader.js"></script>
     <script src="<%=basePath%>views/index/index.js"></script>
 </body>
 </html>

@@ -1,15 +1,11 @@
-.el-table td, .el-table th {
+.content-wrapper .el-table td, .el-table th {
 	padding: 5px 0;
 }
-.el-table .el-table__header-wrapper th {
+.content-wrapper .el-table .el-table__header-wrapper th {
 	background-color: #eee;
 }
-.el-table .el-table__body-wrapper table {
+.content-wrapper .el-table .el-table__body-wrapper table {
 	font-size: 12px;
-}
-.el-pagination {
-	text-align: center;
-	margin-top: 10px;
 }
 .content-wrapper {
 	position: relative;
