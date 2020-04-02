@@ -266,7 +266,18 @@
 	width: 80px;
 	height: 100px;
 	font-size: 12px;
-	background-color: rgba(0, 0, 0, .6);
+}
+.content-wrapper .zdr-dialog-wrapper .zdr-hd .zdr-hd-holder {
+    box-sizing: border-box;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    line-height: 98px;
+}
+.content-wrapper .zdr-dialog-wrapper .zdr-hd img {
+    width: 100px;
+    height: 130px;
 }
 .content-wrapper .zdr-dialog-wrapper .zdr-content {
 	display: inline-block;
