@@ -71,7 +71,10 @@ new Vue({
                 status: '检测中',
             }
         ],
-        zdrDialogForm: {},
+        zdrDialogForm: {
+            hdUrl: ''
+        },
+        zdrDialogShow: false,
         warnTableData: [
             {
                 name: '预警名称',
@@ -98,7 +101,7 @@ new Vue({
                 person: '提交的大爷',
             }
         ],
-        zdrDialogShow: false,
+        warnDialogForm: {},
         warnDialogShow: false
     },
     mounted() {
@@ -116,7 +119,12 @@ new Vue({
                     console.log('delete success', data, type)
                 })
                 .catch(() => false)
-        }
+        },
+        // 上传头像
+        handleUploadFile(res, file) {
+            console.log('11111', res, file)
+            this.zdrDialogForm.hdUrl = URL.createObjectURL(file.raw)
+        },
     },
     watch: {
         prevenTab() {

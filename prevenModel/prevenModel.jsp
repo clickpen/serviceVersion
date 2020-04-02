@@ -284,12 +284,47 @@
 			:before-close="() => {zdrDialogShow = false}"
 		>
 			<div class="zdr-dialog-wrapper">
-				<div class="zdr-hd">
-					<img src="">
-				</div>
-				<el-form class="zdr-content" ref="zdrForm" :model="zdrDialogForm" label-width="80px">
+				<el-upload
+					class="zdr-hd"
+					action="https://jsonplaceholder.typicode.com/posts/"
+					:show-file-list="false"
+					:on-success="handleUploadFile"
+				>
+					<img v-if="zdrDialogForm.hdUrl" :src="zdrDialogForm.hdUrl">
+					<i v-else class="el-icon-plus zdr-hd-holder"></i>
+					<span class="zdr-hd-des">(添加头像)</span>
+				</el-upload>
+				<el-form class="zdr-content" ref="zdrForm" :model="zdrDialogForm" label-width="100px">
 					<el-form-item label="姓名：" prop="name">
-						<el-input placeholder="请输入姓名" v-model="zdrDialogForm.name"></el-input>
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.name"></el-input>
+					</el-form-item>
+					<el-form-item label="手机号码：" prop="phone">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.phone"></el-input>
+					</el-form-item>
+					<el-form-item label="管控级别：" prop="level">
+						<el-select v-model="zdrDialogForm.level" size="mini">
+							<el-option
+								label="一级管控"
+								value="1"
+							></el-option>
+							<el-option
+								label="二级管控"
+								value="2"
+							></el-option>
+							<el-option
+								label="三级管控"
+								value="3"
+							></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="身份证号：" prop="idCard">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.idCard"></el-input>
+					</el-form-item>
+					<el-form-item label="责任单位：" prop="unit">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.unit"></el-input>
+					</el-form-item>
+					<el-form-item label="责任人：" prop="person">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.person"></el-input>
 					</el-form-item>
 				</el-form>
 			</div>
@@ -304,7 +339,37 @@
 			title="新增预警策略"
 			:before-close="() => {warnDialogShow = false}"
 		>
-			<span>预警策略弹窗</span>
+			<el-form class="warn-content" ref="warnForm" :model="warnDialogForm" label-width="100px">
+				<el-form-item label="策略名称：" prop="name">
+					<el-input size="mini" v-model="warnDialogForm.name"></el-input>
+				</el-form-item>
+				<el-form-item label="预警动作：" prop="action">
+					<el-select v-model="warnDialogForm.action" size="mini" placeholder="请选择动作">
+						<el-option
+							label="动作1"
+							value="1"
+						></el-option>
+						<el-option
+							label="动作2"
+							value="2"
+						></el-option>
+						<el-option
+							label="动作3"
+							value="3"
+						></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="预警区域：" prop="area">
+					<el-input size="mini" v-model="warnDialogForm.area" placeholder="填写地图数据"></el-input>
+				</el-form-item>
+				<el-form-item label="预警音效：" prop="name">
+					<el-switch
+						v-model="warnDialogForm.switch"
+						active-text="开"
+						inactive-text="关"
+					></el-switch>
+				</el-form-item>
+			</el-form>
 			<span slot="footer">
 				<el-button type="primary" @click="() => {warnDialogShow = false}">确定</el-button>
 				<el-button @click="() => {warnDialogShow = false}">取消</el-button>
