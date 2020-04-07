@@ -1,0 +1,481 @@
+.trajectory-analysis {
+    width: 100%;
+}
+.trajectory-analysis .breadcrumb {
+    line-height: 50px;
+    font-size: 18px;
+    color: #646d82;
+}
+.trajectory-analysis .breadcrumb .current-bread {
+    position: relative;
+    margin-left: 34px;
+    font-weight: bold;
+    color: #006eff;
+}
+.trajectory-analysis .breadcrumb .current-bread::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: -30px;
+    width: 10px;
+    height: 8px;
+    border-right: 1px solid #646d82;
+    border-bottom: 1px solid #646d82;
+    transform: rotate(-24deg) skew(36deg);
+}
+.trajectory-analysis .map-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+}
+.trajectory-analysis .map-wrapper .map-title {
+    box-sizing: border-box;
+    padding-left: 10px;
+    width: 100%;
+    height: 38px;
+    background-color: #d6dce7;
+    line-height: 38px;
+}
+.trajectory-analysis .map-wrapper .map-title b {
+    font-size: 16px;
+    color: #333;
+}
+.trajectory-analysis .map-wrapper .map-title .msg {
+    margin-left: 10px;
+}
+.trajectory-analysis .map-wrapper .map-title .msg .phone {
+    color: #0971ff;
+}
+.trajectory-analysis .map-wrapper .map-title .msg .address {
+    margin-left: 10px;
+}
+.trajectory-analysis .map-wrapper .main-map-content {
+    width: 100%;
+    height: 746px;
+    background-color: rgba(0, 0, 0, .2);
+}
+.trajectory-analysis .map-wrapper .tips {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    height: 36px;
+    padding: 0 10px;
+    line-height: 36px;
+    background-color: #fff;
+    font-size: 12px;
+    color: #333;
+}
+.trajectory-analysis .map-wrapper .tips .tip-devide {
+    margin-left: 20px;
+}
+.trajectory-analysis .map-wrapper .tips .des {
+    margin-right: 5px;
+}
+.trajectory-analysis .map-wrapper .tips .des i {
+    display: inline-block;
+    vertical-align: baseline;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+.trajectory-analysis .map-wrapper .tips .des .day-1 {
+    background-color: #e60012;
+    box-shadow: 0 0 0 2px rgba(230, 0, 18, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .day-2 {
+    background-color: #e65600;
+    box-shadow: 0 0 0 2px rgba(230, 86, 0, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .day-3 {
+    background-color: #cd9d1d;
+    box-shadow: 0 0 0 2px rgba(205, 157, 29, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .day-4 {
+    background-color: #89cd1d;
+    box-shadow: 0 0 0 2px rgba(137, 205, 29, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .night-1 {
+    background-color: #69078d;
+    box-shadow: 0 0 0 2px rgba(105, 7, 141, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .night-2 {
+    background-color: #7f1fe2;
+    box-shadow: 0 0 0 2px rgba(127, 31, 226, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .night-3 {
+    background-color: #4c50ea;
+    box-shadow: 0 0 0 2px rgba(76, 80, 234, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .night-4 {
+    background-color: #50b8ee;
+    box-shadow: 0 0 0 2px rgba(80, 184, 238, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .cover-1 {
+    position: relative;
+    background: linear-gradient(to right, #e60012, #69078d);
+}
+.trajectory-analysis .map-wrapper .tips .des .cover-1::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(to right, #e60012, #69078d);
+    opacity: 0.3;
+}
+.trajectory-analysis .map-wrapper .tips .tips-prev,
+.trajectory-analysis .map-wrapper .tips .tips-next {
+    cursor: pointer;
+    margin-left: 10px;
+}
+.trajectory-analysis .map-wrapper .tips .tips-prev i {
+    display: inline-block;
+    width: 13px;
+    height: 8px;
+    background: url('./imgs/prev-icon.png') left center / contain no-repeat;
+}
+
+.trajectory-analysis .map-wrapper .tips .tips-next i {
+    display: inline-block;
+    width: 13px;
+    height: 8px;
+    background: url('./imgs/prev-icon.png') left center / contain no-repeat;
+    transform: rotate(180deg);
+}
+.trajectory-analysis .map-wrapper .tips .tips-play {
+    margin-left: 10px;
+    cursor: pointer;
+}
+.trajectory-analysis .map-wrapper .point-analysis {
+    position: absolute;
+    bottom: 300px;
+    right: 0;
+    width: 350px;
+    padding-bottom: 26px;
+    background-color: #fff;
+    color: #333;
+    font-size: 12px;
+}
+.trajectory-analysis .map-wrapper .tit {
+    background-color: #d6dce7;
+    padding-left: 10px;
+    font-size: 14px;
+    height: 28px;
+    line-height: 28px;
+    font-weight: bold;
+}
+.trajectory-analysis .map-wrapper .point-analysis .point-tit {
+    position: relative;
+    font-size: 14px;
+    padding: 5px 0;
+}
+.trajectory-analysis .map-wrapper .point-analysis .point-tit i {
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    margin-left: 10px;
+}
+.trajectory-analysis .map-wrapper .point-analysis .point-poi {
+    padding-left: 51px;
+    margin-bottom: 5px;
+}
+.trajectory-analysis .map-wrapper .point-analysis .point-des {
+    padding-left: 51px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.trajectory-analysis .map-wrapper .point-analysis .point-poi span {
+    margin-right: 5px;
+}
+.trajectory-analysis .map-wrapper .point-analysis .point-day .point-tit i {
+    background: url('./imgs/day-img.png') left center / contain no-repeat;
+}
+.trajectory-analysis .map-wrapper .point-analysis .point-night .point-tit i {
+    background: url('./imgs/night-img.png') left center / contain no-repeat;
+}
+.trajectory-analysis .map-wrapper .time-analysis {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 350px;
+    height: 300px;
+    background-color: #fff;
+    color: #333;
+    font-size: 12px;
+}
+.trajectory-analysis .map-wrapper .time-analysis .el-table {
+    height: 272px;
+    overflow-y: auto;
+}
+.trajectory-analysis .netimage-analysis {
+    margin-top: 10px;
+    color: #333;
+}
+.trajectory-analysis .netimage-analysis .content-tit {
+    position: relative;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 38px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+}
+.trajectory-analysis .netimage-analysis .content-tit .hide-area-btn {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 14px;
+    color: #006eff;
+}
+.trajectory-analysis .netimage-analysis .content-tit .hide-area-btn::after {
+    display: inline-block;
+    vertical-align: baseline;
+    content: '';
+    margin-left: 3px;
+    width: 10px;
+    height: 13px;
+    background: url('./imgs/arro-top-icon.png') center / contain no-repeat;
+    transform: rotate(180deg);
+    transition: all ease .4s;
+}
+.trajectory-analysis .netimage-analysis .content-tit .hide-area-btn.active::after {
+    transform: rotate(0);
+}
+.trajectory-analysis .netimage-analysis .netimage-content {
+    position: relative;
+    width: 100%;
+    height: 430px;
+    font-size: 0;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .card-tit {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .content .des {
+    display: inline-block;
+    vertical-align: top;
+    width: 45%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .content .type {
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    width: 15%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .content .number {
+    display: inline-block;
+    vertical-align: top;
+    text-align: right;
+    width: 35%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .id-analysis-card {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 10px 5px 10px 10px;
+    vertical-align: top;
+    width: 20%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+    font-size: 14px;
+    margin-right: 10px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .id-analysis-card .content {
+    color: #1178ec;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .id-analysis-card .content .label {
+    color: #333;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 10px 5px 10px 10px;
+    vertical-align: top;
+    width: 20%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+    font-size: 14px;
+    margin-right: 10px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 10px 5px 10px 10px;
+    vertical-align: top;
+    width: 20%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+    font-size: 14px;
+    margin-right: 10px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content, 
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content {
+    margin-bottom: 10px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content .des, 
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content .des {
+    color: #1178ec;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content:nth-child(2),
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content:nth-child(2) .des,
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content:nth-child(2),
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content:nth-child(2) .des {
+    color: #f11212;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content:nth-child(3),
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content:nth-child(3) .des,
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content:nth-child(3),
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content:nth-child(3) .des {
+    color: #da7113;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content:nth-child(4),
+.trajectory-analysis .netimage-analysis .netimage-content .web-analysis-card .content:nth-child(4) .des,
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content:nth-child(4),
+.trajectory-analysis .netimage-analysis .netimage-content .active-analysis-card .content:nth-child(4) .des {
+    color: #80b21f;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .key-analysis-card {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 10px 5px 10px 10px;
+    vertical-align: top;
+    width: calc(40% - 30px);
+    height: calc(50% - 5px);
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+    font-size: 14px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .key-analysis-card .card-tit span {
+    display: inline-block;
+    margin-left: 10px;
+    color: #d66868;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .key-analysis-card .key-cloud {
+    width: 100%;
+    height: calc(100% - 32px);
+}
+.trajectory-analysis .netimage-analysis .netimage-content .app-analysis-card {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    box-sizing: border-box;
+    padding: 10px 5px 10px 10px;
+    width: calc(40% - 30px);
+    height: calc(50% - 5px);
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+    font-size: 14px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .app-analysis-card .app-wrapper {
+    font-size: 0;
+    white-space: nowrap;
+    text-align: center;
+    padding-top: 10px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .app-analysis-card .app-wrapper .app-card {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 12px;
+    width: 80px;
+    margin: 0 calc((100% - 420px) / 10);
+    text-align: center;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .app-analysis-card .app-wrapper .app-card img {
+    width: 100%;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .app-analysis-card .app-wrapper .app-card .app-tit {
+    margin-top: 5px;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .app-analysis-card .app-wrapper .app-card .app-num {
+    margin-top: -2px;
+}
+.trajectory-analysis .journal-detail {
+    margin-top: 10px;
+}
+.trajectory-analysis .journal-detail .card-tit {
+    position: relative;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 38px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+}
+.trajectory-analysis .journal-detail .card-tit .journal-search-wrapper {
+    position: absolute;
+    top: 5px;
+    left: 200px;
+}
+.trajectory-analysis .journal-detail .card-tit .journal-search-wrapper .journal-search-card {
+    display: inline-block;
+    vertical-align: top;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 10px;
+    margin-right: 30px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: 1px solid #1178ec;
+    font-weight: normal;
+    color: #1178ec;
+    cursor: pointer;
+}
+.trajectory-analysis .journal-detail .card-tit .journal-search-wrapper .journal-search-card:hover {
+    background-color: #1178ec;
+    color: #fff;
+}
+.trajectory-analysis .journal-detail .card-tit .journal-search-btn {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+}
+.trajectory-analysis .journal-detail .card-con {
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
+}
