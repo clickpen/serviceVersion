@@ -17,7 +17,7 @@
 </head>
 <body>
     <jsp:include page="../commonHeader/commonHeader.jsp" flush="ture"></jsp:include>
-    <div class="content-wrapper" id="trajectoryAnalysis" v-cloak>
+    <div class="trajectory-analysis" id="trajectoryAnalysis" v-cloak>
 		<p class="breadcrumb">
             研判工具
             <span class="current-bread">轨迹关联</span>
@@ -112,14 +112,17 @@
                     <el-table-column
                         prop="timeRange"
                         label="时间段"
+                        show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
                         prop="position1"
                         label="基站1"
+                        show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
                         prop="position2"
                         label="基站2"
+                        show-overflow-tooltip
                     ></el-table-column>
                 </el-table>
             </div>
