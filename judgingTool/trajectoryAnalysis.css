@@ -127,40 +127,40 @@
     border-radius: 50%;
 }
 .trajectory-analysis .map-wrapper .tips .des .day-1 {
-    background-color: #e60012;
-    box-shadow: 0 0 0 2px rgba(230, 0, 18, .3);
+    background-color: #a24310;
+    box-shadow: 0 0 0 2px rgba(162, 67, 16, .3);
 }
 .trajectory-analysis .map-wrapper .tips .des .day-2 {
-    background-color: #e65600;
-    box-shadow: 0 0 0 2px rgba(230, 86, 0, .3);
+    background-color: #a26d10;
+    box-shadow: 0 0 0 2px rgba(162, 109, 16, .3);
 }
 .trajectory-analysis .map-wrapper .tips .des .day-3 {
     background-color: #cd9d1d;
     box-shadow: 0 0 0 2px rgba(205, 157, 29, .3);
 }
 .trajectory-analysis .map-wrapper .tips .des .day-4 {
-    background-color: #89cd1d;
-    box-shadow: 0 0 0 2px rgba(137, 205, 29, .3);
+    background-color: #e2aa12;
+    box-shadow: 0 0 0 2px rgba(226, 107, 18, .3);
 }
 .trajectory-analysis .map-wrapper .tips .des .night-1 {
-    background-color: #69078d;
-    box-shadow: 0 0 0 2px rgba(105, 7, 141, .3);
+    background-color: #38024c;
+    box-shadow: 0 0 0 2px rgba(56, 2, 72, .3);
 }
 .trajectory-analysis .map-wrapper .tips .des .night-2 {
+    background-color: #580277;
+    box-shadow: 0 0 0 2px rgba(88, 2, 119, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .night-3 {
+    background-color: #660594;
+    box-shadow: 0 0 0 2px rgba(102, 5, 148, .3);
+}
+.trajectory-analysis .map-wrapper .tips .des .night-4 {
     background-color: #7f1fe2;
     box-shadow: 0 0 0 2px rgba(127, 31, 226, .3);
 }
-.trajectory-analysis .map-wrapper .tips .des .night-3 {
-    background-color: #4c50ea;
-    box-shadow: 0 0 0 2px rgba(76, 80, 234, .3);
-}
-.trajectory-analysis .map-wrapper .tips .des .night-4 {
-    background-color: #50b8ee;
-    box-shadow: 0 0 0 2px rgba(80, 184, 238, .3);
-}
 .trajectory-analysis .map-wrapper .tips .des .cover-1 {
     position: relative;
-    background: linear-gradient(to right, #e60012, #69078d);
+    background: linear-gradient(to right, #d90020, #740783);
 }
 .trajectory-analysis .map-wrapper .tips .des .cover-1::before {
     content: '';
@@ -170,7 +170,7 @@
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: linear-gradient(to right, #e60012, #69078d);
+    background: linear-gradient(to right, #d90020, #740783);
     opacity: 0.3;
 }
 .trajectory-analysis .map-wrapper .tips .tips-prev,
