@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" import="java.io.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -17,15 +18,18 @@
 </head>
 <body>
     <jsp:include page="../commonHeader/commonHeader.jsp" flush="ture"></jsp:include>
+    <%-- ${param.param} --%>
     <div class="trajectory-analysis" id="trajectoryAnalysis" v-cloak>
-		<p class="breadcrumb">
+        <p class="breadcrumb">
             研判工具
             <span class="current-bread">轨迹关联</span>
         </p>
         <div class="map-wrapper">
             <div class="map-title">
                 <b>地图展示</b>
-                <b class="msg">（手机号：<span class="phone">13196998788</span><span class="address">山东 烟台</span>）</b>
+                <b class="msg">（手机号：<span class="phone">${param.account}</span><span class="address">山东 烟台</span>）</b>
+                <input type="hidden" id="taskId" value="${param.id}" />
+                <input type="hidden" id="taskAccount" value="${param.account}" />
             </div>
             <div class="main-map-content" id="mapContent"></div>
             <div class="tips">
@@ -109,28 +113,19 @@
             <div class="time-analysis">
                 <p class="tit">时空分布分析</p>
                 <el-table :data="mapAnalysisTable">
-                    <el-table-column
-                        prop="timeRange"
-                        label="时间段"
-                        show-overflow-tooltip
-                    ></el-table-column>
-                    <el-table-column
-                        prop="position1"
-                        label="基站1"
-                        show-overflow-tooltip
-                    ></el-table-column>
-                    <el-table-column
-                        prop="position2"
-                        label="基站2"
-                        show-overflow-tooltip
-                    ></el-table-column>
+                    <el-table-column prop="timeRange" label="时间段" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="position1" label="基站1" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="position2" label="基站2" show-overflow-tooltip></el-table-column>
                 </el-table>
             </div>
         </div>
         <div class="netimage-analysis">
             <p class="content-tit">
                 网络画像
-                <span :class="{'hide-area-btn': true, 'active': netimageShow}" @click="netimageShow = !netimageShow">{{netimageShow ? '收起' : '展开'}}</span>
+                <span
+                    :class="{'hide-area-btn': true, 'active': netimageShow}"
+                    @click="netimageShow = !netimageShow"
+                >{{netimageShow ? '收起' : '展开'}}</span>
             </p>
             <transition name="el-zoom-in-top">
                 <div v-show="netimageShow" class="netimage-content">
@@ -269,16 +264,19 @@
                 <el-button class="journal-search-btn" size="mini" type="primary">结果筛选</el-button>
             </div>
             <div class="card-con">
-                <el-table
-                    :data="trajectoryTableData"
-                >
+                <el-table :data="trajectoryTableData" stripe v-loading="loading">
                     <el-table-column
-                        prop="taskId"
+                        prop="setId"
                         label="任务ID"
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
-                        prop="phone"
+                        prop="accessTime"
+                        label="访问时间"
+                        show-overflow-tooltip
+                    ></el-table-column>
+                    <el-table-column
+                        prop="account"
                         label="号码"
                         show-overflow-tooltip
                     ></el-table-column>
@@ -293,27 +291,27 @@
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
-                        prop="prevIp"
+                        prop="priIp"
                         label="私网IP"
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
-                        prop="originIp"
+                        prop="srcIp"
                         label="源IP"
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
-                        prop="originPort"
+                        :formatter="srcPortFormatter"
                         label="源端口"
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
-                        prop="targetIp"
+                        prop="dstIp"
                         label="目标IP"
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
-                        prop="targetPort"
+                        prop="dstPort"
                         label="目标端口"
                         show-overflow-tooltip
                     ></el-table-column>
@@ -328,6 +326,11 @@
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
+                        prop="label"
+                        label="标签"
+                        show-overflow-tooltip
+                    ></el-table-column>
+                    <el-table-column
                         prop="lac"
                         label="LAC"
                         show-overflow-tooltip
@@ -338,15 +341,17 @@
                         show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
-                        prop="position"
+                        prop="address"
                         label="基站位置"
                         show-overflow-tooltip
                     ></el-table-column>
                 </el-table>
                 <el-pagination
-                    :total="100"
-                    :page-size="10"
+                    :total="total"
+                    :page-size="pageSize"
+                    :current-page.sync="page"
                     layout="total, prev, pager, next, jumper"
+                    @current-change="getTableDada"
                 ></el-pagination>
             </div>
         </div>

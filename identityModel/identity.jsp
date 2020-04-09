@@ -111,6 +111,14 @@
                         width="180">
                 </el-table-column>
             </el-table>
+            <el-pagination
+                    :total="total"
+                    :page-size="pageSize"
+                    :current-page.sync="page"
+                    layout="total, prev, pager, next, jumper"
+                    @current-change="getTableData"
+                    class="pagination_class"
+            ></el-pagination>
         </el-col>
     </el-row>
 </div>
@@ -127,34 +135,8 @@
 var Main = {
         data() {
             return {
-                optionOne: [{
-                    value: '1',
-                    label: 'IMEI'
-                }, {
-                    value: '2',
-                    label: 'IMSI'
-                }, {
-                    value: '3',
-                    label: 'MAC地址'
-                }, {
-                    value: '4',
-                    label: '微信ID'
-                }],
-                optionTwo: [
-                {
-                    value: '1',
-                    label: '大于1'
-                }, {
-                    value: '2',
-                    label: '大于2'
-                }, {
-                    value: '3',
-                    label: '大于3'
-                }, {
-                    value: '4',
-                    label: '大于4'
-                }
-                ],
+                optionOne: [{value: '1', label: 'IMEI'}, {value: '2', label: 'IMSI'}, {value: '3', label: 'MAC地址'}, {value: '4', label: '微信ID'}],
+                optionTwo: [{value: '1', label: '大于1'}, {value: '2', label: '大于2'}, {value: '3', label: '大于3'}, {value: '4', label: '大于4'}],
                 value1: [],
                 value2: [],
                 tableData: [{
@@ -167,68 +149,10 @@ var Main = {
                     type: 'IMEI',
                     value:'8600006666666666[MI 8]',
                     count: '7'
-
-                }, {
-                    startDate: '2020-02-01 00:00:00',
-                    endDate: '2020-02-17 00:00:00',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    taskId: '123456',
-                    telPhone: "13455667788[山东 烟台]",
-                    type: 'IMEI',
-                    value:'8600006666666666[MI 8]',
-                    count: '7'
-                }, {
-                    startDate: '2020-02-01 00:00:00',
-                    endDate: '2020-02-17 00:00:00',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    taskId: '123456',
-                    telPhone: "13455667788[山东 烟台]",
-                    type: 'IMEI',
-                    value:'8600006666666666[MI 8]',
-                    count: '7'
-                }, {
-                    startDate: '2020-02-01 00:00:00',
-                    endDate: '2020-02-17 00:00:00',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    taskId: '123456',
-                    telPhone: "13455667788[山东 烟台]",
-                    type: 'IMEI',
-                    value:'8600006666666666[MI 8]',
-                    count: '7'
-                },{
-                    startDate: '2020-02-01 00:00:00',
-                    endDate: '2020-02-17 00:00:00',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    taskId: '123456',
-                    telPhone: "13455667788[山东 烟台]",
-                    type: 'IMEI',
-                    value:'8600006666666666[MI 8]',
-                    count: '7'
-                },{
-                    startDate: '2020-02-01 00:00:00',
-                    endDate: '2020-02-17 00:00:00',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    taskId: '123456',
-                    telPhone: "13455667788[山东 烟台]",
-                    type: 'IMEI',
-                    value:'8600006666666666[MI 8]',
-                    count: '7'
-                },{
-                    startDate: '2020-02-01 00:00:00',
-                    endDate: '2020-02-17 00:00:00',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    taskId: '1234567',
-                    telPhone: "13455667788[山东 烟台]",
-                    type: 'IMEI',
-                    value:'8600006666666666[MI 8]',
-                    count: '7'
-                }]
+                }],
+                total: 0,
+                pageSize: 10,
+                page: 1
             }
         },
         methods: {
@@ -503,136 +427,161 @@ var Main = {
 	        },
             //关联图
             relation(obj) {
-            var startType;
-            var accOrvir;
-            var xuniNode = "";//如果根节点是虚拟身份需要在每次查询时带上此虚拟身份作为查询条件
+                var startType;
+                var accOrvir;
+                var xuniNode = "";//如果根节点是虚拟身份需要在每次查询时带上此虚拟身份作为查询条件
 
-            relationType = "star";
-            $("#l-wrapper2").show();
-            map.clear();
-            nodeTypeArray.splice(0, nodeTypeArray.length);
+                relationType = "star";
+                $("#l-wrapper2").show();
+                map.clear();
+                nodeTypeArray.splice(0, nodeTypeArray.length);
 
-            nodes = "{";
-            edges = "[";
-            //通过任务ID查询关联图
-            set_Id = obj.set_Id;//任务ID
-            startType = obj.startType;
-            accOrvir = obj.startType;
-            var account = obj.account;//手机号
-            account_ = obj.account;
-            $("#relation").show();
-            $("#hidebg").show();
-            AjaxUtil.ajaxRequest("Virtual_correlationAnalysis.do?content=" + account + "&type=" + startType + "&set_Id=" + set_Id + "&maxlevel=" + allData.tabs, "json", function (data) {
-                golabData = data;
-                var arraynode = golabData.nodes;
-                var arrayedge = golabData.edges;
-                var tab = allData.tabs;
-                var strlevel = "";//最大的层级选项
-                for (var i = 1; i <= tab; i++) {
-                    strlevel += "<option value=" + i + ">" + i + "层</option>"
-                }
-                $("#checklevel").html(strlevel);
-                $("#checklevel").selectpicker('refresh');
-                /*初始化选中最大层  */
-                $("#checklevel").selectpicker('val', tab);
-                var mapTypes = data.mapTypes;
-                startType = mapTypes[startType.toUpperCase()];
-                var stroption = "";//关联图下拉列表内容
-                for (var item in mapTypes) {
-                    if(item==accOrvir.toUpperCase()||item==accOrvir.toLowerCase()){
-                        //根节点不出现在下拉选项
-                        xuniNode = mapTypes[item];
-                    } else {
-                        stroption += "<option value=" + mapTypes[item] + ">" + getVirtualMessage(item) + "</option>";
-                        nodeTypeArray.push(mapTypes[item]);
+                nodes = "{";
+                edges = "[";
+                //通过任务ID查询关联图
+                set_Id = obj.set_Id;//任务ID
+                startType = obj.startType;
+                accOrvir = obj.startType;
+                var account = obj.account;//手机号
+                account_ = obj.account;
+                $("#relation").show();
+                $("#hidebg").show();
+                AjaxUtil.ajaxRequest("Virtual_correlationAnalysis.do?content=" + account + "&type=" + startType + "&set_Id=" + set_Id + "&maxlevel=" + allData.tabs, "json", function (data) {
+                    golabData = data;
+                    var arraynode = golabData.nodes;
+                    var arrayedge = golabData.edges;
+                    var tab = allData.tabs;
+                    var strlevel = "";//最大的层级选项
+                    for (var i = 1; i <= tab; i++) {
+                        strlevel += "<option value=" + i + ">" + i + "层</option>"
                     }
-                }
-                $("#checkshow").html(stroption);
-                $("#checkshow").selectpicker('refresh');
-                /*初始化全部选中  */
-                $("#checkshow").selectpicker('val',nodeTypeArray);
-                //判断是否进行默认筛选-start
-                if(flagAi == 0){
-                    if(allData.tabs>2&&allData.results>20){
-                        BUI.Message.Confirm('展示结果过多，请设置关联次数大于1后筛选，试一下？',function(){
-                            $("#checkcount").val("1");
+                    $("#checklevel").html(strlevel);
+                    $("#checklevel").selectpicker('refresh');
+                    /*初始化选中最大层  */
+                    $("#checklevel").selectpicker('val', tab);
+                    var mapTypes = data.mapTypes;
+                    startType = mapTypes[startType.toUpperCase()];
+                    var stroption = "";//关联图下拉列表内容
+                    for (var item in mapTypes) {
+                        if(item==accOrvir.toUpperCase()||item==accOrvir.toLowerCase()){
+                            //根节点不出现在下拉选项
+                            xuniNode = mapTypes[item];
+                        } else {
+                            stroption += "<option value=" + mapTypes[item] + ">" + getVirtualMessage(item) + "</option>";
+                            nodeTypeArray.push(mapTypes[item]);
+                        }
+                    }
+                    $("#checkshow").html(stroption);
+                    $("#checkshow").selectpicker('refresh');
+                    /*初始化全部选中  */
+                    $("#checkshow").selectpicker('val',nodeTypeArray);
+                    //判断是否进行默认筛选-start
+                    if(flagAi == 0){
+                        if(allData.tabs>2&&allData.results>20){
+                            BUI.Message.Confirm('展示结果过多，请设置关联次数大于1后筛选，试一下？',function(){
+                                $("#checkcount").val("1");
+                                shaixuan();
+                                return;
+                            },'warning');
+                        }else{
+                            $("#checkcount").val("");
                             shaixuan();
                             return;
-                        },'warning');
-                    }else{
-                        $("#checkcount").val("");
-                        shaixuan();
-                        return;
-                    }
-                }
-                //判断是否进行默认筛选-end
-                for(var i = 0; i<arraynode.length; i++){
-                    if(arraynode[i].virtualtype==""||arraynode[i].virtualtype==null){
-                        var str="";
-                        if(arraynode[i].mobileArea==null||arraynode[i].mobileArea==""){
-
-                        }else{
-                            str="("+arraynode[i].mobileArea+")";
                         }
-                        $("#pic").attr("src","picture/sim.png");
-                        nodes+="\""+arraynode[i].account+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].account+str+"\",rectStyle:{fill:\"url(\'picture/sim.png\')\",stroke:\"#00D3FF\",width:42,height:42,path:\"picture/sim.png\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
-                    }else{
-                        if(arraynode[i].name=="IMEI"){
-                            var strimei="";
-                            if(arraynode[i].facturer==null||arraynode[i].facturer==""){
+                    }
+                    //判断是否进行默认筛选-end
+                    for(var i = 0; i<arraynode.length; i++){
+                        if(arraynode[i].virtualtype==""||arraynode[i].virtualtype==null){
+                            var str="";
+                            if(arraynode[i].mobileArea==null||arraynode[i].mobileArea==""){
+
                             }else{
-                                strimei="("+arraynode[i].facturer+")";
+                                str="("+arraynode[i].mobileArea+")";
                             }
-                            nodes += "\"" + arraynode[i].virtualidentity + arraynode[i].virtualtype + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualidentity + strimei + "\",rectStyle:{fill:\"url(picture/" + arraynode[i].picturepath + ")\",stroke:\"#00D3FF\",width:42,height:42,path:\"picture/" + arraynode[i].picturepath + "\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
-                        } else {
-                            nodes += "\"" + arraynode[i].virtualidentity + arraynode[i].virtualtype + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualidentity + "\",rectStyle:{fill:\"url(picture/" + arraynode[i].picturepath + ")\",stroke:\"#00D3FF\",width:42,height:42,path:\"picture/" + arraynode[i].picturepath + "\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                            $("#pic").attr("src","picture/sim.png");
+                            nodes+="\""+arraynode[i].account+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].account+str+"\",rectStyle:{fill:\"url(\'picture/sim.png\')\",stroke:\"#00D3FF\",width:42,height:42,path:\"picture/sim.png\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                        }else{
+                            if(arraynode[i].name=="IMEI"){
+                                var strimei="";
+                                if(arraynode[i].facturer==null||arraynode[i].facturer==""){
+                                }else{
+                                    strimei="("+arraynode[i].facturer+")";
+                                }
+                                nodes += "\"" + arraynode[i].virtualidentity + arraynode[i].virtualtype + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualidentity + strimei + "\",rectStyle:{fill:\"url(picture/" + arraynode[i].picturepath + ")\",stroke:\"#00D3FF\",width:42,height:42,path:\"picture/" + arraynode[i].picturepath + "\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                            } else {
+                                nodes += "\"" + arraynode[i].virtualidentity + arraynode[i].virtualtype + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualidentity + "\",rectStyle:{fill:\"url(picture/" + arraynode[i].picturepath + ")\",stroke:\"#00D3FF\",width:42,height:42,path:\"picture/" + arraynode[i].picturepath + "\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                            }
                         }
                     }
-                }
-                for (var j = 0; j < arrayedge.length; j++) {
-                    var strcount = "";
-                    var strtime = "";
-                    if (arrayedge[j].total == null || arrayedge[j].total < 1) {
-                        strcount = "";
-                    } else {
-                        strcount = arrayedge[j].total + "次";
-                    }
-                    if (arrayedge[j].updateTime == null || arrayedge[j].updateTime == "") {
+                    for (var j = 0; j < arrayedge.length; j++) {
+                        var strcount = "";
+                        var strtime = "";
+                        if (arrayedge[j].total == null || arrayedge[j].total < 1) {
+                            strcount = "";
+                        } else {
+                            strcount = arrayedge[j].total + "次";
+                        }
+                        if (arrayedge[j].updateTime == null || arrayedge[j].updateTime == "") {
 
-                    } else {
-                        strtime = arrayedge[j].updateTime;
-                        strtime = timeFormat(strtime);
+                        } else {
+                            strtime = arrayedge[j].updateTime;
+                            strtime = timeFormat(strtime);
+                        }
+                        edges += "{source:\"" + arrayedge[j].form + "\",target:\"" + arrayedge[j].to + "\",arrowStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\",\"stroke-width\":1},label:\"" + strcount + "\",labeldown:\"" + strtime + "\"},"
                     }
-                    edges += "{source:\"" + arrayedge[j].form + "\",target:\"" + arrayedge[j].to + "\",arrowStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\",\"stroke-width\":1},label:\"" + strcount + "\",labeldown:\"" + strtime + "\"},"
-                }
-                nodes = nodes.substring(0, nodes.length - 1);
-                edges = edges.substring(0, edges.length - 1);
-                nodes += "}";
-                edges += "]";
-                // 			console.log("nodes:"+nodes);
-                // 			console.log("edges:"+edges);
-                var hh = "{nodes:" + nodes + ",edges:" + edges + "}";
-                hhjson = hh;
-                var sss = eval("(" + hh + ")");
-                graph = new RGraph("relation_body", {
-                });
-                graph.loadData(sss);
-                try {
-                    if (accOrvir == "手机号" || accOrvir == "手机号") {
-                        graph.center(account_);
-                        graph.highlight(graph.getNode(account_));
-                    } else {
-                        graph.center(account_ + startType);
-                        graph.highlight(graph.getNode(account_ + startType));
+                    nodes = nodes.substring(0, nodes.length - 1);
+                    edges = edges.substring(0, edges.length - 1);
+                    nodes += "}";
+                    edges += "]";
+                    // 			console.log("nodes:"+nodes);
+                    // 			console.log("edges:"+edges);
+                    var hh = "{nodes:" + nodes + ",edges:" + edges + "}";
+                    hhjson = hh;
+                    var sss = eval("(" + hh + ")");
+                    graph = new RGraph("relation_body", {
+                    });
+                    graph.loadData(sss);
+                    try {
+                        if (accOrvir == "手机号" || accOrvir == "手机号") {
+                            graph.center(account_);
+                            graph.highlight(graph.getNode(account_));
+                        } else {
+                            graph.center(account_ + startType);
+                            graph.highlight(graph.getNode(account_ + startType));
+                        }
+
+                    } catch (e) {
+                        $("#l-wrapper2").hide();
                     }
 
-                } catch (e) {
                     $("#l-wrapper2").hide();
-                }
-
-                $("#l-wrapper2").hide();
-            });
+                });
+            },
+            getTableData(page){
+                let me = this
+                me.loading = true
+                page = page || 1
+                $.ajax({
+                    url: '/jetk/identity/table',
+                    type: 'post',
+                    data: {
+                        page,
+                        limit: 10
+                    },
+                    success: function(res) {
+                        me.tableData = res.list
+                        me.total = res.count
+                        me.loading = false
+                    },
+                    error: function(err) {
+                        console.log('出错了', err)
+                        me.loading = false
+                    }
+                })
             }
+        },
+        created: function (){
+
         }
     }
 var Ctor = Vue.extend(Main)

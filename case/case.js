@@ -20,9 +20,12 @@ new Vue({
 	el: '#case',
 	data: {
 		dialogFormVisible: false,
+		auditCaseDialog: false,
 		loading: false,
 		tableData: [],
+//		checkCase:'1',
 		search: '',
+		auditIds:[],
 		total: 0,
 		pageSize: 12,
 		page: 1,
@@ -32,6 +35,10 @@ new Vue({
 			caseType: '',
 			invalidTime: '',
 			caseDesc: ''
+		},
+		auditForm:{
+			check:'1',
+			suggest:''
 		},
 		inputWidth: '468px',
 		formLabelWidth: '120px',
@@ -60,7 +67,14 @@ new Vue({
 				{ required: true, message: '请输入案件编号', trigger: 'blur' },
 				{ min: 5, max: 30, message: '长度在 5 到 150 个字符', trigger: 'blur' }
 			]
-		}
+		},
+		auditRules: {
+			suggest: [
+				{ required: true, message: '请输入建议', trigger: 'blur' },
+				{ min: 2, max: 200, message: '长度在2到 200 个字符', trigger: 'blur' }
+			]
+		},
+	    multipleSelection:[]
 	},
 	created: function() {
 		this.getTableDada();
@@ -128,8 +142,49 @@ new Vue({
 				}
 			});
 		},
+		
+		submitAuditForm: function(formName) {//提交
+			let me = this
+			this.$refs[formName].validate((valid) => {
+				if (valid) {
+					$.ajax({
+						url: '/jetk/case/auditCase',
+						type: "post",
+						dataType: "json",
+						contentType: "application/x-www-form-urlencoded; charset=utf-8",
+						data: {
+							ids:this.auditIds,
+							suggest:me.auditForm.suggest,
+							check:me.auditForm.check
+						},
+						success: function(res) {
+							var result = res.result;
+							if (result) {
+								alert("审批完成");
+								me.resetForm(formName);
+								me.auditCaseDialog = false;
+								me.getTableDada();
+							} else {
+								alert("审批失败");
+							}
+						},
+						error: function(err) {
+							me.loading = false;
+						}
+					});
+				} else {
+					console.log('error submit!!');
+					auditCaseDialog = false;
+					return false;
+				}
+			});
+		},
 		resetForm: function(formName) {
 			this.$refs[formName].resetFields();
+		},
+		closeAuditForm: function(formName) {
+			this.$refs[formName].resetFields();
+			this.auditCaseDialog = false;
 		},
 		handleClose: function(done) {
 			this.$confirm('确认关闭？')
@@ -137,6 +192,28 @@ new Vue({
 					done();
 				})
 				.catch(() => {});
+		},
+		handleAudit :function(index, row) {
+			if (row) {
+				this.auditIds = [];
+				this.auditIds.push(row.id);
+				this.auditCaseDialog = true;
+			}
+		},
+		handleAllAudit :function(index, row) {
+			if (this.multipleSelection.length >0 ) {
+				this.auditIds = [];
+				for(j = 0; j<this.multipleSelection.length; j++) {
+					this.auditIds.push(this.multipleSelection[j].id);
+				}
+				console.log(this.auditIds);
+				this.auditCaseDialog = true;
+			} else {
+				alert("请选择案件");
+			}
+		},
+		handleSelectionChange :function(val) {
+			this.multipleSelection  = val;
 		}
 	}
 });

@@ -107,7 +107,7 @@
                             label="操作"
                             width="100">
                         <template slot-scope="scope">
-                            <el-button  @click="" icon="el-icon-s-claim"></el-button>
+                            <el-button  @click="handleDetail(scope.$index, scope.row)" icon="el-icon-s-claim"></el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -134,8 +134,8 @@
                 </el-row>
                 <div v-if="virShow">
                 <el-form :inline="true" :model="virForm" ref="virForm" >
-                    <el-form-item label="选择案件" prop="caseNum1" :label-width="formLabelWidth">
-                        <el-select style="width:150px" v-model="virForm.caseNum1" placeholder="请选择案件">
+                    <el-form-item label="选择案件" prop="caseNum" :label-width="formLabelWidth">
+                        <el-select style="width:150px" v-model="virForm.caseNum" placeholder="请选择案件">
                             <el-option
                                     v-for="item in caseOptions"
                                     :key="item.value"
@@ -144,11 +144,11 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="检索条件"  prop="searchCondition1" :label-width="formLabelWidth">
-                        <el-input style="width:150px" v-model.trim="virForm.searchCondition1" autocomplete="off"></el-input>
+                    <el-form-item label="检索条件"  prop="searchCondition" :label-width="formLabelWidth">
+                        <el-input style="width:150px" v-model.trim="virForm.searchCondition" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="检索类型"  prop="searchType1"  :label-width="formLabelWidth">
-                        <el-select v-model="virForm.searchType1" placeholder="请选择检索类型"  style="width:150px" >
+                    <el-form-item label="检索类型"  prop="searchType"  :label-width="formLabelWidth">
+                        <el-select v-model="virForm.searchType" placeholder="请选择检索类型"  style="width:150px" >
                             <el-option
                                     v-for="item in searchTypes"
                                     :key="item.value"
@@ -204,8 +204,8 @@
                     </el-form-item>
                     <div class="div-separator">其他配置</div>
                     <el-form-item label="是否定时查询"  prop="timing" :label-width="formLabelWidth">
-                        <el-radio v-model="radioTime" label="1" @change="timeChoice('1')">是</el-radio>
-                        <el-radio v-model="radioTime" label="2" @change="timeChoice('2')">否</el-radio>
+                        <el-radio v-model="radioTime" label="0" @change="timeChoice('0')">是</el-radio>
+                        <el-radio v-model="radioTime" label="3" @change="timeChoice('3')">否</el-radio>
                     </el-form-item>
                     <el-form-item label="间隔时间" prop="bwTime"  :label-width="formLabelWidth">
                         <el-select v-model="form.bwTime" :disabled="disabled" placeholder="请选择"  style="width:150px" >
@@ -288,7 +288,7 @@
                 disabled: false,
                 show: true,
                 radio: '1',
-                radioTime:'1',
+                radioTime:'0',
                 inputOne: "",
                 loading: false,
                 dialogFormVisible: false,
@@ -321,6 +321,16 @@
             }
         },
         methods: {
+            handleDetail:function (index,row) {
+            	/* console.log(row); */
+            	if(row.operationType==2) {
+            		console.log(row);
+            		//window.location.href = 'index?path=judgingTool/trajectoryAnalysis&param='+row.account;
+            		window.open('index?path=judgingTool/trajectoryAnalysis&account='+row.account+"&id="+row.id);  
+            	}  else if (row.operationType==10) {
+            		window.location.href = 'index?path=identityModel/identity';	
+            	}
+            },
             /*任务查询*/
             queryTask(){
                 alert(this.caseValue+"---"+this.inputOne);
@@ -402,30 +412,10 @@
                 }else{
                     alert("案件不能为空");
                 }
-
-              /*  $.ajax({
-                    url: "/jetk/judged/downloadModel",
-                    type: "POST",
-                    dataType: "json",
-                    contentType: false,
-                    async: true,
-                    cache: false,
-                    processData: false,
-                    data: {"taskType":taskType},
-                    success: function (data) {
-                        var result = data.result;
-                        var msg = data.msg;
-                        if (!result) {
-
-                        } else {
-
-                        }
-                    }
-                });*/
             },
             //选择是否定时
             timeChoice(num){
-                if(1!=num){
+                if(0!=num){
                     this.disabled = true;
                 }else {
                     this.disabled = false;
@@ -461,35 +451,33 @@
               return (Date.parse(row.resultTime)-Date.parse(row.sendTime))/1000;
             },
             submitForm: function() {
-                var formName ;
-                formName = 'virForm';
-                if(this.radio==1){
-                    formName = 'ruleForm'
-                }
                 let me = this
-                /*if(this.validate()){
-                    alert("true");
+                var data = {};
+                if(this.radio==1){
+                    data.caseNum = me.form.caseNum
+                    data.searchCondition= me.form.searchCondition
+                    data.searchType= me.form.searchType
+                    data.startTime= me.form.startTime.format("yyyy-MM-dd HH:mm:ss")
+                    data.endTime= me.form.startTime.format("yyyy-MM-dd HH:mm:ss")
+                    data.caseDesc= me.form.caseDesc
+                    data.timingSend= me.radioTime
+                    data.bwTime= me.form.bwTime
+                    data.taskType= me.radio
                 }else{
-                    alert("false");
-                }*/
+                    data.caseNum = me.virForm.caseNum
+                    data.searchCondition= me.virForm.searchCondition
+                    data.searchType= me.virForm.searchType
+                    data.taskType= me.radio
+                }
                 var valid = true;
+
                 if (valid) {
                     $.ajax({
                         url: '/jetk/judged/addTask',
                         type: "post",
                         dataType: "json",
                         contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                        data: {
-                            caseNum: me.form.caseNum,
-                            searchCondition: me.form.searchCondition,
-                            searchType: me.form.searchType,
-                            startTime: me.form.startTime.format("yyyy-MM-dd HH:mm:ss"),
-                            endTime: me.form.startTime.format("yyyy-MM-dd HH:mm:ss"),
-                            caseDesc: me.form.caseDesc,
-                            timingSend: me.radioTime,
-                            bwTime: me.form.bwTime,
-                            taskType: me.radio
-                        },
+                        data: data,
                         success: function(res) {
                             var result = res.result;
                             if (result) {
@@ -546,10 +534,31 @@
                         me.loading = false
                     }
                 })
+            },
+            getCaseOptions(){
+                $.ajax({
+                    url:'/jetk/judged/getCase',
+                    type:'post',
+                    success: function (res) {
+                        var arr = new Array();
+                        for(i=0;i<res.result.length;i++){
+                            var obj = {};
+                            obj.value = res.result[i].id
+                            obj.label = res.result[i].caseName
+                            arr.push(obj)
+                        }
+                        this.caseOptions = arr;
+                    },
+                    error: function (err) {
+                        console.log('error',err);
+                    }
+
+                })
             }
         },
         created: function () {
             this.tableData = this.getTableData(this.page)
+            this.getCaseOptions()
         }
     };
     var Ctor = Vue.extend(App)
