@@ -360,7 +360,20 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item label="预警区域：" prop="area">
-					<el-input size="mini" v-model="warnDialogForm.area" placeholder="填写地图数据"></el-input>
+					<el-input size="mini" class="area-input" v-model="warnDialogForm.area" placeholder="地图数据" disabled></el-input>
+					<el-button @click="() => { areaSelectShow = true }">选取范围</el-button>
+					<el-dialog
+						:visible="areaSelectShow"
+						width="900px"
+						title="区域选择"
+						:before-close="() => {areaSelectShow = false}"
+						append-to-body
+					>
+						<span slot="footer">
+							<el-button type="primary" @click="() => {areaSelectShow = false}">确定</el-button>
+							<el-button @click="() => {areaSelectShow = false}">取消</el-button>
+						</span>
+					</el-dialog>
 				</el-form-item>
 				<el-form-item label="预警音效：" prop="name">
 					<el-switch

@@ -102,7 +102,8 @@ new Vue({
             }
         ],
         warnDialogForm: {},
-        warnDialogShow: false
+        warnDialogShow: false,
+        areaSelectShow: false
     },
     mounted() {
         prevenModel.init()

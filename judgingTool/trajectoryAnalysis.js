@@ -7,13 +7,26 @@ MyMapInfo.prototype = new BMap.Overlay()
 MyMapInfo.prototype.initialize = function(map) {
     this._map = map
     let oDiv = this._div = document.createElement('div')
-    oDiv.setAttribute('class', this._className || 'my-map-info-wrapper')
+    oDiv.setAttribute('class', 'my-map-info-wrapper')
+    if(this._className && this._className !== 'my-map-info-wrapper') {
+        oDiv.classList.add(this._className)
+    }
     map.getPanes().labelPane.appendChild(oDiv)
     return oDiv
 }
 MyMapInfo.prototype.draw = function() {
     let map = this._map
+    // 平移至中心
     let pixel = map.pointToOverlayPixel(this._point)
+    if(!this._notfirst) {
+        this._notfirst = true
+        map.panTo(this._point)
+        setTimeout(() => {
+            map.addEventListener('click', () => {
+                map.removeOverlay(this)
+            })
+        }, 0)
+    }
     this._div.style.left = pixel.x + 'px'
     this._div.style.top = pixel.y + 'px'
     this._cb && this._cb(this._div, pixel)
@@ -123,7 +136,6 @@ const trajectoryObj = {
         this.initMap()
     },
     initCloud() {
-        console.table(this.array)
         $('#keyCloud').jQCloud(this.array)
     },
     initMap() {
@@ -142,34 +154,6 @@ const trajectoryObj = {
         me.addMapPoint(116.404, 38.915, 'night3')
         me.addMapPoint(117.404, 38.915, 'night4')
         me.addMapPoint(118.404, 39.415, 'cover1')
-        // 添加自定义地图信息窗示例
-        let myMarkerInfo = new MyMapInfo(new BMap.Point(116.404, 40.915), 'my-map-info-wrapper', ($dom, pixel) => {
-            let htmlStr = `<div class="map-info-image">
-                    <img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg">
-                </div>
-                <ul class="map-info-list">
-                    <li class="map-info-card">
-                        姓名：张三
-                    </li>
-                    <li class="map-info-card">
-                        手机号：1234567890123
-                    </li>
-                    <li class="map-info-card">
-                        责任派出所：北京市故宫博物院
-                    </li>
-                    <li class="map-info-card">
-                        预警时间：2020-4-8 12:30:59
-                    </li>
-                    <li class="map-info-card">
-                        预警动作：进入故宫搞破坏
-                    </li>
-                </ul>`
-            $dom.innerHTML = htmlStr
-            // 对地图信息窗进行重新
-            $dom.style.left = pixel.x - 86 + 'px'
-            $dom.style.top = pixel.y - 8 - 100 + 'px'
-        })
-        me.$map.addOverlay(myMarkerInfo)
     },
     // 添加地图点
     addMapPoint(x, y, type) {
@@ -177,46 +161,90 @@ const trajectoryObj = {
         if(!type) {
             return
         }
+        let point = new BMap.Point(x, y)
         let icon = null
         let iconSize = new BMap.Size(30, 39)
         let offset = new BMap.Size(0, -18)
         // 对type进行类型判断
         switch(type) {
             case 'day1':
-            icon = new BMap.Icon('./imgs/day-1.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-1.png', iconSize)
                 break
             case 'day2':
-            icon = new BMap.Icon('./imgs/day-2.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-2.png', iconSize)
                 break
             case 'day3':
-            icon = new BMap.Icon('./imgs/day-3.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-3.png', iconSize)
                 break
             case 'day4':
-            icon = new BMap.Icon('./imgs/day-4.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-4.png', iconSize)
                 break
             case 'night1':
-            icon = new BMap.Icon('./imgs/night-1.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-1.png', iconSize)
                 break
             case 'night2':
-            icon = new BMap.Icon('./imgs/night-2.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-2.png', iconSize)
                 break
             case 'night3':
-            icon = new BMap.Icon('./imgs/night-3.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-3.png', iconSize)
                 break
             case 'night4':
-            icon = new BMap.Icon('./imgs/night-4.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-4.png', iconSize)
                 break
             case 'cover1':
-            icon = new BMap.Icon('./imgs/cover-1.png', iconSize)
+            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/cover-1.png', iconSize)
                 break
             default:
                 return
         }
-        let marker = new BMap.Marker(new BMap.Point(x, y), {
+        let marker = new BMap.Marker(point, {
             icon,
             offset
         })
         me.$map.addOverlay(marker)
+        let className = Math.random() > 0.5 ? 'red-info' : 'green-info'
+        // 为添加的点加上信息窗
+        marker.addEventListener('click', function() {
+            me.showMapInfo(point, className, {
+                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
+                name: '张三',
+                phone: '13546468855',
+                address: '北京市紫禁城A01',
+                time: '2020-4-4 12:12:50',
+                action: '进入紫禁城被打了 o~o~'
+            })
+        })
+    },
+    // 展示地图info框
+    showMapInfo(point, className, data) {
+        const me = this
+        let myInfoMarker = new MyMapInfo(point, className, ($dom, pixel) => {
+            let _html = `<div class="map-info-image">
+                    <img src="${data.url}">
+                </div>
+                <ul class="map-info-list">
+                    <li class="map-info-card">
+                        姓名：${data.name}
+                    </li>
+                    <li class="map-info-card">
+                        手机号：${data.phone}
+                    </li>
+                    <li class="map-info-card">
+                        责任派出所：${data.address}
+                    </li>
+                    <li class="map-info-card">
+                        预警时间：${data.time}
+                    </li>
+                    <li class="map-info-card">
+                        预警动作：${data.action}
+                    </li>
+                </ul>`
+            $dom.innerHTML = _html
+            // 对地图信息窗进行重新计算位置
+            $dom.style.left = pixel.x - 86 + 'px'
+            $dom.style.top = pixel.y - 8 - 100 + 'px'
+        })
+        me.$map.addOverlay(myInfoMarker)
     }
 }
 new Vue({

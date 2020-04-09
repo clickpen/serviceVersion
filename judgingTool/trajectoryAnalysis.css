@@ -1,5 +1,14 @@
-.trajectory-analysis {
-    width: 100%;
+@media screen and (min-width: 1300px) {
+    .trajectory-analysis {
+        width: calc(100% - 40px);
+        margin: 0 20px;
+    }
+}
+@media screen and (max-width: 1299px) {
+    .trajectory-analysis {
+        width: 100%;
+        margin: 0;
+    }
 }
 .trajectory-analysis .breadcrumb {
     line-height: 50px;
@@ -36,7 +45,7 @@
     padding: 10px;
     width: 300px;
     height: 100px;
-    background-color: red;
+    background-color: #fff;
 }
 .trajectory-analysis .map-wrapper .my-map-info-wrapper:after {
     content: '';
@@ -47,7 +56,7 @@
     height: 0;
     border-width: 8px 6px 0 6px;
     border-style: solid;
-    border-color: red transparent;
+    border-color: #fff transparent;
 }
 .trajectory-analysis .map-wrapper .my-map-info-wrapper .map-info-image {
     display: inline-block;
@@ -65,7 +74,7 @@
     width: 200px;
     height: 100%;
     overflow-y: auto;
-    color: #fff;
+    color: #333;
     font-size: 12px;
 }
 .trajectory-analysis .map-wrapper .my-map-info-wrapper .map-info-list .map-info-card {
@@ -74,6 +83,24 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+.trajectory-analysis .map-wrapper .red-info {
+    background-color: #f00;
+}
+.trajectory-analysis .map-wrapper .red-info:after {
+    border-top-color: #f00;
+}
+.trajectory-analysis .map-wrapper .red-info .map-info-list {
+    color: #fff;
+}
+.trajectory-analysis .map-wrapper .green-info {
+    background-color: #20dbdb;
+}
+.trajectory-analysis .map-wrapper .green-info:after {
+    border-top-color: #20dbdb;
+}
+.trajectory-analysis .map-wrapper .green-info .map-info-list {
+    color: #fff;
 }
 .trajectory-analysis .map-wrapper .map-title {
     box-sizing: border-box;
