@@ -18,6 +18,9 @@
 	<div class="content-wrapper" id="case">
 		<div class="title">
 			<div class="newCase">
+				<el-row><el-button icon="el-icon-check" @click="handleAllAudit()" style="width: 100%;">批量审批</el-button></el-row>
+			</div>
+			<div class="newCase">
 				<el-row>
 					<el-button icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true"
 						style="width: 100%;">新建案件</el-button>
@@ -30,28 +33,18 @@
 			</div>
 		</div>
 		<div class="case">
-			<el-table :data="tableData" stripe v-loading="loading">
-				<!--   <el-table-column
-					label="案件id"
-	                prop="id"
-	                width="200"
-	                show-overflow-tooltip
-				></el-table-column> -->
+				<el-table :data="tableData"  @selection-change="handleSelectionChange" stripe v-loading="loading">
+				<el-table-column type="selection" width="55"></el-table-column>
+				<el-table-column label="案件ID"  prop="id" width="200"></el-table-column>
 				<el-table-column label="案件编号" prop="caseNum" width="200" show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件名称" prop="caseName" show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件类型" width="200" prop="caseTypeDesc" show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件描述" prop="caseDesc" show-overflow-tooltip></el-table-column>
-				<el-table-column label="新建案件时间" prop="operationTime" show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件失效时间" prop="invalidTime" show-overflow-tooltip></el-table-column>
-				<!-- 	<el-table-column
-			      fixed="right"
-			      label="操作"
-			      width="100">
-			      <template slot-scope="scope">
-			        <el-button type="text" @click="getTableDada" size="small">详情</el-button>
-			      </template>
+				<el-table-column label="案件名称" prop="caseName" width="200" show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件类型" prop="caseTypeDesc" width="200"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件描述" prop="caseDesc"   width="400"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="新建案件时间" prop="operationTime" width="200"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件失效时间" prop="invalidTime"  width="200"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="操作">
+			    <template slot-scope="scope"><el-button  @click="handleAudit(scope.$index, scope.row)">审批</el-button></template>
 			    </el-table-column>
-							 -->
 			</el-table>
 			<el-pagination :total="total" :page-size="pageSize" :current-page.sync="page"
 				layout="total, prev, pager, next, jumper" @current-change="getTableDada"></el-pagination>
@@ -84,6 +77,24 @@
 					<el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
 					<el-button @click="resetForm('ruleForm')">重置</el-button>
 				</div>
+			</el-dialog>
+			<el-dialog title="审核案件"   modal="false" :before-close="handleClose"  :visible.sync="auditCaseDialog">
+			  	<el-form :model="auditForm"  :rules="auditRules" ref="ruleAuditForm">
+			  	 <el-form-item label="特殊资源"  :label-width="formLabelWidth">
+				   <el-radio-group v-model="auditForm.check">
+				    <el-radio label="1">通过</el-radio>
+  					<el-radio label="2">不通过</el-radio>
+				   </el-radio-group>
+				 </el-form-item>
+			    <el-form-item label="审批意见" prop="suggest" :label-width="formLabelWidth">
+			      <el-input type="textarea" v-model="auditForm.suggest"></el-input>
+			    </el-form-item>
+			   
+			  </el-form>
+			  <div slot="footer" class="dialog-footer">
+			    <el-button @click="closeAuditForm('ruleAuditForm')">取 消</el-button>
+			    <el-button type="primary"  @click="submitAuditForm('ruleAuditForm')">确 定</el-button>
+			  </div>
 			</el-dialog>
 		</div>
 	</div>

@@ -37,7 +37,7 @@
             </a>
         </li>
         <li class="nav-card J-nav-card">
-            <a href="index?path=systemManage/userManage">
+            <a href="index?path=systemModel/systemModel">
                 <i class="el-icon-setting"></i>系统管理
             </a>
         </li>

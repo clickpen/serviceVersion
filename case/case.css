@@ -10,9 +10,10 @@
 	width: 303px;
 	height: 36px;
 	float:right;
-    margin-right: 15px;
+
 }
 .newCase {
+	margin-left: 15px;
 	width: 160px;
 	height: 36px;
 	float:right;
