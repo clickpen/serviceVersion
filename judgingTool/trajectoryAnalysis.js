@@ -1,33 +1,22 @@
-/**
- * @name 地图自定义信息框div
- * @author fuhuang
- * @params point Object BMap.Point对象
- * @params className String 创建的div的class名，默认为“my-map-info-wrapper”
- * @params callback Function 每次地图draw时执行的回调，携带参数为(当前div的dom, 当前div对应父级的绝对定位数据)
- * @return Object BMap.Marker对象
-*/
-class MyMapInfoClass extends BMap.Overlay {
-    constructor(point, className, callback) {
-        super()
-        this._point = point
-        this._className = typeof className === 'string' ? className : ''
-        this._cb = callback
-    }
-    initialize(map) {
-        this._map = map
-        const oDiv = this._oDiv = document.createElement('div')
-        oDiv.setAttribute('class', this._className || 'my-map-info-wrapper')
-        map.getPanes().labelPane.appendChild(oDiv)
-        return oDiv
-    }
-    draw() {
-        const map = this._map
-        const pixel = map.pointToOverlayPixel(this._point)
-        // 默认展示左上角与point点对齐
-        this._div.style.left = pixel.x + 'px'
-        this._div.style.top = pixel.y + 'px'
-        this._cb && this._cb(this._div, pixel)
-    }
+function MyMapInfo(point, className, callback) {
+    this._point = point
+    this._className = typeof className === 'string' ? className : ''
+    this._cb = callback
+}
+MyMapInfo.prototype = new BMap.Overlay()
+MyMapInfo.prototype.initialize = function(map) {
+    this._map = map
+    let oDiv = this._div = document.createElement('div')
+    oDiv.setAttribute('class', this._className || 'my-map-info-wrapper')
+    map.getPanes().labelPane.appendChild(oDiv)
+    return oDiv
+}
+MyMapInfo.prototype.draw = function() {
+    let map = this._map
+    let pixel = map.pointToOverlayPixel(this._point)
+    this._div.style.left = pixel.x + 'px'
+    this._div.style.top = pixel.y + 'px'
+    this._cb && this._cb(this._div, pixel)
 }
 const trajectoryObj = {
     init() {
