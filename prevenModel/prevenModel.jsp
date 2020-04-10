@@ -130,51 +130,51 @@
 					>
 						<el-table-column
 							label="头像"
-							prop="headUrl"
+							prop="zdrHeadPic"
 						>
 							<template v-slot="scope">
-								<img class="zdr-header" :src="scope.row.headUrl">
+								<img class="zdr-header" :src="scope.row.zdrHeadPic">
 							</template>
 						</el-table-column>
 						<el-table-column
 							label="姓名"
-							prop="name"
+							prop="zdrUserName"
 							show-overflow-tooltip
 						></el-table-column>
 						<el-table-column
 							label="手机号"
-							prop="phone"
+							prop="account"
 							show-overflow-tooltip
 						></el-table-column>
 						<el-table-column
 							label="管控级别"
-							prop="level"
+							prop="zdrControlLevel"
 						>
 							<template v-slot="scope">
-								<b :style="'color:' + (scope.row.level == '一级' ? '#eb3323' : scope.row.level == '二级' ? '#f19a38' : '#2c20f5')">{{scope.row.level}}</b>
+								<b :style="'color:' + (scope.row.zdrControlLevel == '1' ? '#eb3323' : scope.row.zdrControlLevel == '2' ? '#f19a38' : '#2c20f5')">{{scope.row.zdrControlLevel == '1' ? '一级' : scope.row.zdrControlLevel == '2' ? '二级' : '三级'}}</b>
 							</template>
 						</el-table-column>
 						<el-table-column
 							label="身份证号码"
-							prop="idCard"
+							prop="zdrIdentification"
 							show-overflow-tooltip
 						></el-table-column>
 						<el-table-column
 							label="责任单位"
-							prop="unit"
+							prop="zdrEmployer"
 							show-overflow-tooltip
 						></el-table-column>
 						<el-table-column
 							label="责任人"
-							prop="person"
+							prop="zdrResponsible"
 							show-overflow-tooltip
 						></el-table-column>
 						<el-table-column
 							label="监控状态"
-							prop="status"
+							prop="zdrMonitorStatus"
 						>
 							<template v-slot="scope">
-								<b class="zdr-green">{{scope.row.status}}</b>
+								<b class="zdr-green">{{scope.row.zdrMonitorStatus}}</b>
 							</template>
 						</el-table-column>
 						<el-table-column
@@ -184,7 +184,12 @@
 						>
 							<template v-slot="scope">
 								<div class="zdr-operate-btn">
-									<i class="el-icon-edit-outline" @click="() => {zdrDialogShow = true}"></i>
+									<i
+										class="el-icon-edit-outline"
+										@click="() => {
+											showZdrDialog(scope.row)
+										}"
+									></i>
 									<i class="el-icon-delete" @click="handleDeleteRowData(scope.row, 'zdr')"></i>
 								</div>
 							</template>
@@ -194,7 +199,8 @@
 						background
 						:total="50"
 						page-size="10"
-						current-page="1"
+						:current-page="zdeTablePage"
+						@current-change="getZdrTable"
 						layout="prev, pager, next, jumper"
 					></el-pagination>
 				</div>
@@ -258,51 +264,56 @@
 						background
 						:total="50"
 						page-size="10"
-						current-page="1"
+						:current-page="warnTablePage"
+						@current-change="getWarnTable"
 						layout="prev, pager, next, jumper"
 					></el-pagination>
 				</div>
 			</el-tab-pane>
 		</el-tabs>
 		<div class="child-table-search" v-if="prevenTab == 'prevenZdr'">
-			<el-input size="mini" class="search-input" placeholder="输入您想要搜索的内容">
-				<el-button slot="append" icon="el-icon-search"></el-button>
+			<el-input size="mini" class="search-input" v-model="zdrSearchInput" placeholder="输入您想要搜索的内容">
+				<el-button slot="append" @click="searchZdrTable" icon="el-icon-search"></el-button>
 			</el-input>
-			<el-button size="mini" class="el-icon-circle-plus-outline">新增重点人</el-button>
+			<el-button
+				size="mini"
+				class="el-icon-circle-plus-outline"
+				@click="() => { showZdrDialog() }"
+			>新增重点人</el-button>
 			<el-button size="mini" class="el-icon-receiving">批量导入</el-button>
 		</div>
 		<div class="child-table-search" v-if="prevenTab == 'prevenWarn'">
-			<el-input size="mini" class="search-input" placeholder="输入您想要搜索的内容">
-				<el-button slot="append" icon="el-icon-search"></el-button>
+			<el-input size="mini" class="search-input" v-model="warnSearchInput" placeholder="输入您想要搜索的内容">
+				<el-button slot="append" @click="searchWarnTable" icon="el-icon-search"></el-button>
 			</el-input>
 			<el-button size="mini" class="el-icon-circle-plus-outline">新增预警策略</el-button>
 		</div>
 		<el-dialog
 			:visible="zdrDialogShow"
 			width="650px"
-			title="新增预警策略"
+			:title="zdrDialogTitle"
 			:before-close="() => {zdrDialogShow = false}"
 		>
 			<div class="zdr-dialog-wrapper">
 				<el-upload
 					class="zdr-hd"
-					action="https://jsonplaceholder.typicode.com/posts/"
+					action="/jetk/zdr/uploadImage"
 					:show-file-list="false"
 					:on-success="handleUploadFile"
 				>
-					<img v-if="zdrDialogForm.hdUrl" :src="zdrDialogForm.hdUrl">
+					<img v-if="zdrDialogForm.zdrHeadPic" :src="zdrDialogForm.zdrHeadPic">
 					<i v-else class="el-icon-plus zdr-hd-holder"></i>
 					<span class="zdr-hd-des">(添加头像)</span>
 				</el-upload>
-				<el-form class="zdr-content" ref="zdrForm" :model="zdrDialogForm" label-width="100px">
-					<el-form-item label="姓名：" prop="name">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.name"></el-input>
+				<el-form class="zdr-content" :model="zdrDialogForm" label-width="100px">
+					<el-form-item label="姓名：" :rules="{required: true}">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrUserName"></el-input>
 					</el-form-item>
-					<el-form-item label="手机号码：" prop="phone">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.phone"></el-input>
+					<el-form-item label="手机号码：" :rules="{required: true}">
+						<el-input size="mini" placeholder="请输入手机号" maxlength="11" v-model="zdrDialogForm.account"></el-input>
 					</el-form-item>
-					<el-form-item label="管控级别：" prop="level">
-						<el-select v-model="zdrDialogForm.level" size="mini">
+					<el-form-item label="管控级别：" :rules="{required: true}">
+						<el-select v-model="zdrDialogForm.zdrControlLevel" size="mini">
 							<el-option
 								label="一级管控"
 								value="1"
@@ -317,19 +328,19 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="身份证号：" prop="idCard">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.idCard"></el-input>
+					<el-form-item label="身份证号：" :rules="{required: true}">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrIdentification"></el-input>
 					</el-form-item>
-					<el-form-item label="责任单位：" prop="unit">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.unit"></el-input>
+					<el-form-item label="责任单位：" :rules="{required: true}">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrEmployer"></el-input>
 					</el-form-item>
-					<el-form-item label="责任人：" prop="person">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.person"></el-input>
+					<el-form-item label="责任人：" :rules="{required: true}">
+						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrResponsible"></el-input>
 					</el-form-item>
 				</el-form>
 			</div>
 			<span slot="footer">
-				<el-button type="primary" @click="() => {zdrDialogShow = false}">确定</el-button>
+				<el-button type="primary" @click="addZdrTableData">确定</el-button>
 				<el-button @click="() => {zdrDialogShow = false}">取消</el-button>
 			</span>
 		</el-dialog>

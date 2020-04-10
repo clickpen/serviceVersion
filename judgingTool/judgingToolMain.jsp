@@ -48,7 +48,7 @@
                         </el-option>
                     </el-select>
                     <el-input placeholder="请输入内容" v-model="inputOne" class="input_class">
-                        <el-button slot="append" icon="el-icon-search" @click="queryTask();"></el-button>
+                        <el-button slot="append" icon="el-icon-search" @click="getTableData();"></el-button>
                     </el-input>
                     <el-button type="info" icon="el-icon-circle-plus" @click="dialogFormVisible = true">新建任务</el-button>
                     <el-button type="info" icon="el-icon-s-unfold" @click="dialogBatchUploadVisible = true">批量导入</el-button>
@@ -79,7 +79,7 @@
                     ></el-table-column>
                     <el-table-column
                             label="查询线索"
-                            prop="account"
+                            :formatter="formatterSearch"
                             show-overflow-tooltip
                     ></el-table-column>
                     <el-table-column
@@ -284,7 +284,7 @@
                 virShow:false,
                 caseValue:'',
                 caseOptions:[{'value':1,'label':'caseone'},{'value':2,'label':'casetwo'}],
-                searchTypes:[{'value':1,'label':'手机号'},{'value':2,'label':'微信'}],
+                searchTypes:[{'value':'account','label':'手机号'}],
                 disabled: false,
                 show: true,
                 radio: '1',
@@ -328,7 +328,8 @@
             		//window.location.href = 'index?path=judgingTool/trajectoryAnalysis&param='+row.account;
             		window.open('index?path=judgingTool/trajectoryAnalysis&account='+row.account+"&id="+row.id);  
             	}  else if (row.operationType==10) {
-            		window.location.href = 'index?path=identityModel/identity';	
+            	    var obj = JSON.parse(row.virtual);
+            		window.location.href = 'index?path=identityModel/identity&virtual='+obj.keyword+"&id="+row.id+"&type="+obj.keyword_type;
             	}
             },
             /*任务查询*/
@@ -444,6 +445,17 @@
             formatter(row, column) {
                 return row.operationType==2 ? "轨迹分析":"身份扩线";
             },
+            formatterSearch(row,column){
+              if(row.operationType==2){
+                  return row.account;
+              }  else{
+                  if(row.virtual==null){
+                      return '';
+                  }
+                  var obj = JSON.parse(row.virtual);
+                  return obj.keyword;
+              }
+            },
             formatterTime(row,column){
               return row.startTime+"-"+row.endTime;
             },
@@ -522,7 +534,9 @@
                     type: 'post',
                     data: {
                         page,
-                        limit: 10
+                        limit: 10,
+                        caseId:me.caseValue,
+                        search:me.inputOne
                     },
                     success: function(res) {
                         me.tableData = res.list
@@ -535,25 +549,25 @@
                     }
                 })
             },
-            getCaseOptions(){
+            getCaseOptions: function(){
+                var arr = new Array();
                 $.ajax({
-                    url:'/jetk/judged/getCase',
+                    url:'/jetk/judged/getCases',
                     type:'post',
                     success: function (res) {
-                        var arr = new Array();
                         for(i=0;i<res.result.length;i++){
                             var obj = {};
                             obj.value = res.result[i].id
                             obj.label = res.result[i].caseName
                             arr.push(obj)
                         }
-                        this.caseOptions = arr;
                     },
                     error: function (err) {
                         console.log('error',err);
                     }
 
-                })
+                });
+                this.caseOptions = arr;
             }
         },
         created: function () {
