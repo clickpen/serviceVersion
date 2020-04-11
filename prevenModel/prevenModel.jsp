@@ -11,7 +11,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>移动数据应用-防控模型</title>
-    <link rel="stylesheet" href="<%=basePath%>views/prevenModel/prevenModel.css">
+	<link rel="stylesheet" href="<%=basePath%>views/prevenModel/prevenModel.css">
+	<!-- baidu地图鼠标绘制 -->
+	<link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css">
 </head>
 <body>
     <jsp:include page="../commonHeader/commonHeader.jsp" flush="ture"></jsp:include>
@@ -389,6 +391,8 @@
 			</span>
 		</el-dialog>
 	</div>
+	<!-- 百度地图鼠标绘制 -->
+	<script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
     <script src="<%=basePath%>views/prevenModel/prevenModel.js"></script>
 </body>
 </html>

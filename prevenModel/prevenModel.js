@@ -35,6 +35,47 @@ let prevenModel = {
         }
     }
 }
+let prevenModelWarnAreaMap = {
+    init() {
+        let $map = this.$map = new BMap.Map('selectMapArea', { enableMapClick: false })
+        $map.centerAndZoom(new BMap.Point(116.404, 39.915), 12)
+        $map.enableScrollWheelZoom(true)
+        let styleOptions = {
+            strokeColor:"red",
+            fillColor:"red",
+            strokeWeight: 3,
+            strokeOpacity: 0.8,
+            fillOpacity: 0.6,
+            strokeStyle: 'solid',
+        }
+        this.$drawManager = new BMapLib.DrawingManager($map, {
+            isOpen: false, //是否开启绘制模式
+            enableDrawingTool: true, //是否显示工具栏
+            drawingToolOptions: {
+                anchor: 1, //位置
+                offset: new BMap.Size(5, 5), //偏离值
+                drawingModes: [
+                    'circle',
+                    'rectangle',
+                ]
+            },
+            circleOptions: styleOptions, //圆的样式
+            rectangleOptions: styleOptions //矩形的样式
+        })
+        this.$drawManager.addEventListener('circlecomplete', this.drawComplete)
+        this.$drawManager.addEventListener('rectanglecomplete', this.drawComplete)
+        this.$drawManager.addEventListener('overlaycomplete', this.drawComplete)
+    },
+    circleComplete(e) {
+        console.log('circlesuccess', e)
+    },
+    rectangleComplete(e) {
+        console.log('rectanglesuccess', e)
+    },
+    drawComplete(e) {
+        console.log('success', e)
+    }
+}
 new Vue({
     el: '#prevenModel',
     data: {
@@ -126,6 +167,13 @@ new Vue({
             console.log('11111', res, file)
             this.zdrDialogForm.hdUrl = URL.createObjectURL(file.raw)
         },
+        // 展示预警管理区域选择弹窗
+        handleShowWarnDialogAreaSelect() {
+            this.areaSelectShow = true
+            setTimeout(() => {
+                prevenModelWarnAreaMap.init()
+            }, 0)
+        }
     },
     watch: {
         prevenTab() {
