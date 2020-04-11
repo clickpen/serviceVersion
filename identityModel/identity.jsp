@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.net.URLDecoder" %><%--
   Created by IntelliJ IDEA.
   User: xupanpan
   Date: 2020/3/16
@@ -6,30 +6,37 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>identity</title>
     <link href="../css/element-ui-2.12.0.css" rel="stylesheet"/>
     <style>
-        .select-width{
+        .app_div .select-width{
             padding: 15px;
         }
-        .container{
+        .app_div .container{
             width: auto;
         }
-        .left-model{
+        .app_div .left-model{
+            text-align: center;
+        }
+        .app_div .row_center{
             text-align: center;
         }
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" class="app_div">
     <el-row align="middle" type="flex">
+        <input type= "hidden" id = "taskId" value ="${param.id}"/>
+        <input type= "hidden" id = "taskVirtual"  value ="${param.virtual}"/>
+        <input type= "hidden" id = "taskType"  value ="${param.type}"/>
         <p style="height: 5%;">>>关联关系</p>
     </el-row>
     <el-row :gutter="10">
         <el-col :md="4">
-            <el-row>
+            <el-row class="row_center">
                 <el-select class="select-width" @change="selectedValueOne(value1)" v-model="value1" multiple placeholder="请选择类型">
                     <el-option
                             v-for="item in optionOne"
@@ -39,8 +46,7 @@
                     </el-option>
                 </el-select>
             </el-row>
-
-            <el-row>
+            <el-row class="row_center">
                 <el-select class="select-width" @change="selectedValueTwo(value2)" v-model="value2" placeholder="请选择关联次数">
                     <el-option
                             v-for="item in optionTwo"
@@ -50,9 +56,11 @@
                     </el-option>
                 </el-select>
             </el-row>
-            <el-button type="primary" id="star" @click="circleTree()">星形图</el-button>
-            <el-button type="primary" id="tree" @click="quenceTree()">树状图</el-button>
-            <el-button type="primary" id="saveImg" @click="saveImg(event)">保存</el-button>
+            <el-row class="row_center">
+                <el-button type="primary" id="star" @click="circleTree()">星形图</el-button>
+                <el-button type="primary" id="saveImg" @click="saveImg(event)">保存</el-button>
+            </el-row>
+
         </el-col>
 
         <el-col :md="20">
@@ -559,6 +567,7 @@ var Main = {
             },
             getTableData(page){
                 let me = this
+                var id = $("#taskId").val();
                 me.loading = true
                 page = page || 1
                 $.ajax({
@@ -566,7 +575,8 @@ var Main = {
                     type: 'post',
                     data: {
                         page,
-                        limit: 10
+                        limit: 10,
+                        id:id
                     },
                     success: function(res) {
                         me.tableData = res.list
@@ -581,7 +591,7 @@ var Main = {
             }
         },
         created: function (){
-
+            this.getTableData(this.page)
         }
     }
 var Ctor = Vue.extend(Main)
