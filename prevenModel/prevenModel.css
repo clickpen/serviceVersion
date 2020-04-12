@@ -15,6 +15,70 @@
     border-radius: 4px;
     box-shadow: 0px 2px 7px 0px rgba(96, 97, 97, 0.4);
 }
+.content-wrapper .map-wrapper .my-map-info-wrapper {
+	position: absolute;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 300px;
+    height: 100px;
+	background-color: rgba(0, 0, 0, .5);
+	backdrop-filter: blur(10px) saturate(180%);
+}
+.content-wrapper .map-wrapper .my-map-info-wrapper:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 80px;
+    width: 0;
+    height: 0;
+    border-width: 8px 6px 0 6px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .5) transparent;
+}
+.content-wrapper .map-wrapper .my-map-info-wrapper .map-info-image {
+    display: inline-block;
+    vertical-align: top;
+    width: 70px;
+    height: 80px;
+}
+.content-wrapper .map-wrapper .my-map-info-wrapper .map-info-image img {
+    width: 100%;
+    height: 100%;
+}
+.content-wrapper .map-wrapper .my-map-info-wrapper .map-info-list {
+    display: inline-block;
+    vertical-align: top;
+    width: 200px;
+    height: 100%;
+    overflow-y: auto;
+    color: #fff;
+    font-size: 12px;
+}
+.content-wrapper .map-wrapper .my-map-info-wrapper .map-info-list .map-info-card {
+    width: 100%;
+    line-height: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.content-wrapper .map-wrapper .red-info {
+    background-color: #e60012;
+}
+.content-wrapper .map-wrapper .red-info:after {
+    border-top-color: #e60012;
+}
+.content-wrapper .map-wrapper .purple-info {
+	background-color: #d660e7;
+}
+.content-wrapper .map-wrapper .purple-info::after {
+	border-top-color: #d660e7;
+}
+.content-wrapper .map-wrapper .green-info {
+    background-color: #20dbdb;
+}
+.content-wrapper .map-wrapper .green-info:after {
+    border-top-color: #20dbdb;
+}
 .content-wrapper .map-item-wrapper {
     position: absolute;
     top: 0;
@@ -122,46 +186,16 @@
     border-bottom: 1px solid #dcdcdc;
     white-space: nowrap;
 }
-.content-wrapper .message-wrapper .message-box .message-search input {
-    height: 34px;
-    width: 298px;
-    background-color: transparent;
-    padding-left: 5px;
-    color: #646d82;
-    border: 1px solid #a6b1c2;
-    border-radius: 4px;
+.content-wrapper .message-wrapper .message-box .message-search .el-input {
+	width: 320px;
 }
 .content-wrapper .message-wrapper .message-box .message-search .search-btn {
-    position: absolute;
-    top: 12px;
-    left: 286px;
+	display: inline-block;
+	vertical-align: middle;
     width: 22px;
     height: 22px;
-    background: url('./imgs/searchIcon.png') center / contain no-repeat;
+    background: url('./imgs/searchIcon.png') center no-repeat;
     cursor: pointer;
-}
-.content-wrapper .message-wrapper .message-box .message-search .export-btn {
-    display: inline-block;
-    vertical-align: top;
-    width: 88px;
-    height: 36px;
-    line-height: 36px;
-    text-align: center;
-    color: #646d82;
-    background-color: #f2f8ff;
-    border: 1px solid #a6b1c2;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.content-wrapper .message-wrapper .message-box .message-search .export-btn::before {
-    content: '';
-    display: inline-block;
-    vertical-align: text-top;
-    margin-top: 1px;
-    margin-right: 10px;
-    width: 16px;
-    height: 18px;
-    background: url('./imgs/exportBtnIcon.png') center/ contain no-repeat;
 }
 .content-wrapper .message-wrapper .message-box .message-list {
     overflow-x: hidden;
@@ -255,6 +289,7 @@
 .content-wrapper .child-wrapper .warn-area {
 	color: #409EFF;
 	text-decoration: underline;
+	cursor: pointer;
 }
 .content-wrapper .zdr-dialog-wrapper {
 	width: 100%;
@@ -292,11 +327,23 @@
 .content-wrapper .zdr-dialog-wrapper .zdr-content .el-form-item .el-select {
 	width: 100%;
 }
+.content-wrapper .zdr-largeimp-updown {
+	text-align: center;
+}
+.content-wrapper .zdr-largeimp-updown .zdr-largeimp-upload {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 30px;
+	width: 200px;
+}
 .content-wrapper .warn-content .el-form-item {
 	margin-bottom: 0;
 }
 .content-wrapper .warn-content .el-select {
 	width: 100%;
+}
+.content-wrapper .warn-content .vtc-bl {
+	vertical-align: baseline;
 }
 .warn-area-select-dialog .select-map-area {
 	height: 500px;
