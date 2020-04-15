@@ -59,9 +59,9 @@
 <script src="<%=request.getContextPath()%>/js/vue-2.6.10.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/echarts-4.4.0.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/element-ui-2.12.0.js"></script>
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=cfEylnTgGMTSQy6BiWxP0hrVsVRkS8vM"></script>
-<!-- <script type="text/javascript" src="<%=request.getContextPath()%>/js/map/bootstrapformap.js"></script> -->
-<!-- <script type="text/javascript" src="<%=request.getContextPath()%>/js/map/pointcollection/offlinemap/map_load.js"></script> -->
+<!--<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=cfEylnTgGMTSQy6BiWxP0hrVsVRkS8vM"></script> -->
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/map/bootstrapformap.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/map/pointcollection/offlinemap/map_load.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/map/mapv.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/map/Heatmap_min.js"></script>
 

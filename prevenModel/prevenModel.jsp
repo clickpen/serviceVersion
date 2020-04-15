@@ -122,9 +122,9 @@
 								<b :style="'color:' + (scope.row.voiceTrigger == '2' ? '#eb3323' : '#2c20f5')">{{scope.row.voiceTrigger == '1' ? '开启' : '关闭'}}</b>
 							</template>
 						</el-table-column>
-						<el-table-column label="预警区域" prop="area">
+						<el-table-column label="预警区域" prop="areaValue">
 							<template v-slot="scope">
-								<a class="warn-area" @click="() => (handleShowWarnDialogAreaSelect(scope.row.area || '', false))">查看区域</a>
+								<a class="warn-area" @click="() => (handleShowWarnDialogAreaSelect(scope.row.areaValue || '', false))">查看区域</a>
 							</template>
 						</el-table-column>
 						<!-- <el-table-column label="提交时间" prop="time" show-overflow-tooltip></el-table-column> -->
@@ -171,11 +171,9 @@
 					<span class="zdr-hd-des">(添加头像)</span>
 				</el-upload>
 				<el-form class="zdr-content" :model="zdrDialogForm" label-width="100px">
-					<el-form-item label="案件：" :rules="{required: true}">
+					<el-form-item label="选择案件：" :rules="{required: true}">
 						<el-select size="mini" placeholder="请选择案件" v-model="zdrDialogForm.caseId">
-							<el-option label="案件1" :value="1"></el-option>
-							<el-option label="案件2" :value="2"></el-option>
-							<el-option label="案件3" :value="3"></el-option>
+							<el-option v-for="(ele, inx) in caseOptions" :key="inx" :label="ele.name" :value="ele.id"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="姓名：" :rules="{required: true}">
@@ -212,10 +210,9 @@
 		<el-dialog :visible="zdrLargeImportShow" width="400px" title="批量导入"
 			:before-close="() => {zdrLargeImportShow = false}">
 			<el-form>
-				<el-form-item label="选择案件：">
+				<el-form-item label="选择案件：" :rules="{required: true}">
 					<el-select v-model="zdrLargeImpDialogForm.caseId" placeholder="请选择案件">
-						<el-option label="case1" value="1"></el-option>
-						<el-option label="case2" value="2"></el-option>
+						<el-option v-for="(ele, inx) in caseOptions" :key="inx" :label="ele.name" :value="ele.id"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
@@ -238,21 +235,21 @@
 		<el-dialog :visible="warnDialogShow" width="650px" :title="warnDialogTitle"
 			:before-close="() => {warnDialogShow = false}">
 			<el-form class="warn-content" ref="warnForm" :model="warnDialogForm" label-width="100px">
-				<el-form-item label="策略名称：" :rule="{required: true}">
+				<el-form-item label="策略名称：" :rules="{required: true}">
 					<el-input size="mini" placeholder="请输入策略名称" v-model="warnDialogForm.ruleName"></el-input>
 				</el-form-item>
-				<el-form-item label="预警动作：" :rule="{required: true}">
+				<el-form-item label="预警动作：" :rules="{required: true}">
 					<el-select v-model="warnDialogForm.action" size="mini" placeholder="请选择动作">
 						<el-option label="进入" :value="1"></el-option>
 						<el-option label="离开" :value="2"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="预警区域：" :rule="{required: true}">
+				<el-form-item label="预警区域：" :rules="{required: true}">
 					<el-input size="mini" class="vtc-bl" v-model="warnDialogForm.areaValue" placeholder="地图数据" disabled>
 						<el-button slot="append" @click="() => { handleShowWarnDialogAreaSelect(warnDialogForm.areaValue || '', true) }">选取范围</el-button>
 					</el-input>
 				</el-form-item>
-				<el-form-item label="预警音效：" :rule="{required: true}">
+				<el-form-item label="预警音效：" :rules="{required: true}">
 					<el-switch v-model="warnDialogForm.voiceTrigger" active-text="开" inactive-text="关"></el-switch>
 				</el-form-item>
 			</el-form>

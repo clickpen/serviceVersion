@@ -408,13 +408,16 @@ let prevenModelWarnAreaMap = {
                 drawingModes: [
                     'circle',
                     'rectangle',
+                    'polygon',
                 ]
             },
             circleOptions: me.styleOptions, //圆的样式
-            rectangleOptions: me.styleOptions //矩形的样式
+            rectangleOptions: me.styleOptions, //矩形的样式
+            polygonOptions: me.styleOptions, // 多边形的样式
         })
         me.$drawManager.addEventListener('circlecomplete', (...agr) => { me.circleComplete(...agr) })
         me.$drawManager.addEventListener('rectanglecomplete', (...agr) => { me.rectangleComplete(...agr) })
+        me.$drawManager.addEventListener('polygoncomplete', (...agr) => { me.rectangleComplete(...agr) })
         // 传了初始参数则加载初始地图遮罩层
         if(mapAreaParamsStr) {
             me.mapAreaParamsStr = mapAreaParamsStr
@@ -501,6 +504,7 @@ new Vue({
         indexTableTotal: 0,
         indexSearchInput: '',
         indexSearch: '',
+        caseOptions: [],
         zdrTableData: [],
         zdrTablePage: 1,
         zdrTableTotal: 0,
@@ -530,12 +534,37 @@ new Vue({
         window.Message = this.$message
     },
     mounted() {
+        this.getCaseOptions()
         prevenModel.init()
         // 获取地图所有点
         prevenModel.getMapAllPoint()
         this.getIndexTable(1)
     },
     methods: {
+        // 获取案件列表信息
+        getCaseOptions() {
+            const me = this
+            $.ajax({
+                url: '/jetk/judged/getCases',
+                type: 'post',
+                success(res) {
+                    console.log('caseListmessage', res)
+                    // me.caseOptions
+                    if(res.result && res.result.length) {
+                        me.caseOptions = res.result.map(ele => {
+                            return {
+                                id: ele.id,
+                                name: ele.caseName
+                            }
+                        })
+                    }
+                },
+                error(err) {
+                    me.$message.error('获取案件列表信息失败！')
+                    console.log(err)
+                }
+            })
+        },
         // 删除行事件
         handleDeleteRowData(data, type) {
             const me = this

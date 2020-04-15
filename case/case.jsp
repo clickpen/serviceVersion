@@ -34,16 +34,16 @@
 		</div>
 		<div class="case">
 				<el-table :data="tableData"  @selection-change="handleSelectionChange" stripe v-loading="loading">
-				<el-table-column type="selection" width="55"></el-table-column>
-				<el-table-column label="案件ID"  prop="id" width="200"></el-table-column>
-				<el-table-column label="案件编号" prop="caseNum" width="200" show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件名称" prop="caseName" width="200" show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件类型" prop="caseTypeDesc" width="200"  show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件描述" prop="caseDesc"   width="400"  show-overflow-tooltip></el-table-column>
-				<el-table-column label="新建案件时间" prop="operationTime" width="200"  show-overflow-tooltip></el-table-column>
-				<el-table-column label="案件失效时间" prop="invalidTime"  width="200"  show-overflow-tooltip></el-table-column>
+				<el-table-column type="selection"  :selectable = "selectAble"></el-table-column>
+				<el-table-column label="案件ID"  prop="id"></el-table-column>
+				<el-table-column label="案件编号" prop="caseNum" show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件名称" prop="caseName" show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件类型" prop="caseTypeDesc"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件描述" prop="caseDesc"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="新建案件时间" prop="operationTime" show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件失效时间" prop="invalidTime"   show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作">
-			    <template slot-scope="scope"><el-button  @click="handleAudit(scope.$index, scope.row)">审批</el-button></template>
+			    <template slot-scope="scope"><el-button v-if="scope.row.status == 1"  @click="handleAudit(scope.$index, scope.row)">审批</el-button></template>
 			    </el-table-column>
 			</el-table>
 			<el-pagination :total="total" :page-size="pageSize" :current-page.sync="page"

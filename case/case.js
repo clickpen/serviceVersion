@@ -80,6 +80,16 @@ new Vue({
 		this.getTableDada();
 	},
 	methods: {
+		formatter:function(row) {
+			
+		},
+		selectAble:function(row) {
+			if (row.status == 2  || row.status == 3 || row.status == 4) {
+    			return false;
+    		} else {
+    			return true;
+    		}
+		},
 		getTableDada: function(page) {
 			let me = this;
 			me.loading = true;
@@ -128,9 +138,16 @@ new Vue({
 								me.resetForm(formName);
 								me.dialogFormVisible = false;
 								me.getTableDada();
+								me.$message({
+							          message: '案件新建成功',
+							          type: 'success'
+							    });
+							} else {
+								me.$message.error('案件新建发生错误');
 							}
 						},
 						error: function(err) {
+							me.$message.error('案件新建发生错误');
 							me.loading = false;
 						}
 					});
@@ -160,15 +177,19 @@ new Vue({
 						success: function(res) {
 							var result = res.result;
 							if (result) {
-								alert("审批完成");
+								me.$message({
+							          message: '审批完成成功',
+							          type: 'success'
+							    });
 								me.resetForm(formName);
 								me.auditCaseDialog = false;
 								me.getTableDada();
 							} else {
-								alert("审批失败");
+								me.$message.error('案件审批失败');
 							}
 						},
 						error: function(err) {
+							me.$message.error('案件审批失败');
 							me.loading = false;
 						}
 					});
@@ -209,7 +230,11 @@ new Vue({
 				console.log(this.auditIds);
 				this.auditCaseDialog = true;
 			} else {
-				alert("请选择案件");
+				/*alert("请选择案件");*/
+				this.$message({
+		          message: '请选择案件',
+		          type: 'warning'
+		        });
 			}
 		},
 		handleSelectionChange :function(val) {

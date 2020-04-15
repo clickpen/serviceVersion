@@ -64,6 +64,7 @@
                 >
                     <el-table-column
                             type="selection"
+                            :selectable = "selectAble"
                             width="55">
                     </el-table-column>
                     <el-table-column
@@ -321,6 +322,13 @@
             }
         },
         methods: {
+        	selectAble:function(row) {
+        		if (row.operationType == 2) {
+        			return true;
+        		} else {
+        			return false;
+        		}		
+        	},
             handleDetail:function (index,row) {
             	/* console.log(row); */
             	if(row.operationType==2) {

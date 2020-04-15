@@ -4,6 +4,7 @@ new Vue({
         prevenTab: 'userManage',
         //用户相关数据
         addUserDialogTitle: '新增用户',
+        addUserPicMsg: '上传头像',
         userManageTotal: 0,
         usermanageTableData: [],
         usermanageDialogShow: false,
@@ -43,10 +44,9 @@ new Vue({
         sonFormTitle:'',
         sonFormType:'',
         parentId:'',
-        tableData: [],
+        rulemanageTableData: [],
+        rulemanageTotal: 0,
         search:'',
-        total: 0,
-        pageSize: 12,
         page: 1,
         gridTotal: 0,
         gridPageSize: 12,
@@ -106,44 +106,68 @@ new Vue({
         	     {required: true, message: "角色不能为空"}
         	],
         	name: [
-                   { required: true, message: '请输入虚拟身份名称', trigger: 'blur' },
-                   { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-               ],
-               role: [
-                   { required: true, message: '请输入匹配规则', trigger: 'blur' },
-                   { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-               ],
-               virgetrule: [
-                   { required: true, message: '请输入提取规则', trigger: 'blur' },
-                   { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-               ],
-               minLength: [
-                   { required: true, message: '请输入最短匹配长度', trigger: 'blur' },
-                   { min: 1, max: 100, message: '数字在 1 到 100之间', trigger: 'blur' }
-               ],
-               maxLength: [
-                   { required: true, message: '请输入最长匹配长度', trigger: 'blur' },
-                   { min: 1, max: 100, message: '数字在 1 到 100之间', trigger: 'blur' }
-               ],
-               exceptionvalue: [
-                   { required: false, message: '请输入异常值', trigger: 'blur' },
-                   { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-               ],
-               exceptionsign: [
-                   { required: false, message: '请输入异常符号', trigger: 'blur' },
-                   { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-               ],
-               includesign: [
-                   { required: false, message: '请输入必含符号', trigger: 'blur' },
-                   { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-               ],
-               type: [
-                   { required: true, message: '请选类别', trigger: 'change' }
-               ],
-               words: [
-                   { required: false, message: '请输入关键词', trigger: 'blur' },
-                   { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-               ],
+            	{ required: true, message: '请输入虚拟身份名称', trigger: 'blur' },
+            	{ min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+            ],
+            
+            //角色管理
+            roleName : [
+            	{ required: true, message: '请输入角色名称', trigger: 'blur' },
+            	{ min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+            ],
+            roleDesc : [
+            	{ required: true, message: '请输入角色描述', trigger: 'blur' },
+            	{ min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+            ],
+            
+            //系统配置
+            sysName : [
+            	{ required: true, message: '请输入系统名称', trigger: 'blur' },
+            	{ min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+            ],
+            sysTips : [
+            	{ required: true, message: '请输入系统提示', trigger: 'blur' },
+            	{ min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
+            ],
+            sysMaxQueryDays : [
+            	{ required: true, message: '请输入最大查询天数', trigger: 'blur' },
+            ],
+            
+           role: [
+               { required: true, message: '请输入匹配规则', trigger: 'blur' },
+               { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+           ],
+           virgetrule: [
+               { required: true, message: '请输入提取规则', trigger: 'blur' },
+               { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+           ],
+           minLength: [
+               { required: true, message: '请输入最短匹配长度', trigger: 'blur' },
+               { min: 1, max: 100, message: '数字在 1 到 100之间', trigger: 'blur' }
+           ],
+           maxLength: [
+               { required: true, message: '请输入最长匹配长度', trigger: 'blur' },
+               { min: 1, max: 100, message: '数字在 1 到 100之间', trigger: 'blur' }
+           ],
+           exceptionvalue: [
+               { required: false, message: '请输入异常值', trigger: 'blur' },
+               { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+           ],
+           exceptionsign: [
+               { required: false, message: '请输入异常符号', trigger: 'blur' },
+               { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+           ],
+           includesign: [
+               { required: false, message: '请输入必含符号', trigger: 'blur' },
+               { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+           ],
+           type: [
+               { required: true, message: '请选类别', trigger: 'change' }
+           ],
+           words: [
+               { required: false, message: '请输入关键词', trigger: 'blur' },
+               { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+           ],
         	
         },
     },
@@ -170,7 +194,7 @@ new Vue({
 				},
 				success: function(res) {
 					me.usermanageTableData = res.data;
-					me.total = res.count;
+					me.userManageTotal = res.count;
 					me.loading = false;
 				},
 				error: function(err) {
@@ -196,6 +220,7 @@ new Vue({
         handleAddRowData(type) {
         	let me = this
             if(type === "userManage"){
+            	me.addUserPicMsg = "上传头像";
             	me.usermanageDialogShow = true;
             	me.addUserDialogTitle = "新增用户";
             	me.usermanageDialogForm = {};
@@ -279,7 +304,10 @@ new Vue({
                             console.log('出错了', err);
                         }
                     });
+                }else if(type === "sysConfig"){
+                	this.deleteTableRow("/jetk/identityConfig/delete",{id:data.id,parentId:data.parentId})
                 }
+                this.getTableData(type, this.page);
             })
             .catch(() => false)
         },
@@ -287,6 +315,7 @@ new Vue({
         handleEditRowData(data, type) {
         	let me =this
         	if(type === "userManage"){
+        		me.addUserPicMsg = "编辑头像"
         		me.usermanageDialogShow = true;
         		me.addUserDialogTitle = "编辑用户";
         		me.usermanageDialogForm = data;
@@ -313,12 +342,20 @@ new Vue({
         },
         // 上传头像
         handleUploadFile(res, file) {
-            console.log('11111', res, file)
-            this.zdrDialogForm.hdUrl = URL.createObjectURL(file.raw)
+        	if (res.status = "success") {
+        		this.usermanageDialogForm.picturePath = res.data
+            }
         },
-        changeTab(tab){
+        //切换分页
+        changeTableData(){
+        	let me = this
+        	this.getTableData(me.prevenTab, me.page);
+        },
+        //加载数据
+        getTableData(tab, page){
         	let me = this;
 			me.loading = true;
+			page = page || 1;
         	if(tab === "userManage"){
         		let search = $("#userSearch").val();
                 $.ajax({
@@ -327,12 +364,12 @@ new Vue({
                     dataType: "json",
                     contentType: "application/x-www-form-urlencoded; charset=utf-8",
                     data: {
-                        page: 1,
+                        page: page,
                         limit: me.pageSize,
                         search: search,
                     },
                     success: function(res) {
-                        me.rolemanageTableData = res.data;
+                        me.usermanageTableData = res.data;
                         me.userManageTotal = res.total;
                         me.loading = false;
                     },
@@ -349,7 +386,7 @@ new Vue({
                     dataType: "json",
                     contentType: "application/x-www-form-urlencoded; charset=utf-8",
                     data: {
-                        page: 1,
+                        page: page,
                         limit: me.pageSize,
                         search: search,
                     },
@@ -364,7 +401,6 @@ new Vue({
                     }
                 });
             }else if(tab === "sysConfig"){
-                console.log("sysConfig")
                 $.ajax({
                     url: '/jetk/sysconfig/getSysParam',
                     type: "get",
@@ -378,10 +414,41 @@ new Vue({
                     }
                 });
             }else if(tab === "sysConfigManage"){
-            	me.getTableData();
-                me.getAllPicture();
+            	let search = $("#ruleSearch").val();
+                $.ajax({
+                    url: '/jetk/identityConfig/get',
+                    type: "get",
+                    dataType: "json",
+                    data: {
+                        page:page,
+                        limit: me.pageSize,
+                        search:search,
+                    },
+                    success: function(res) {
+                        me.rulemanageTableData = res.data;
+                        me.rulemanageTotal = res.total;
+                        me.loading = false;
+                    },
+                    error: function(err) {
+                        console.log('出错了', err);
+                        me.loading = false;
+                    }
+                });
+                //查询图片资源
+                $.ajax({
+                    url: '/jetk/identityConfig/listImage',
+                    type: "get",
+                    dataType: "json",
+                    success: function(res) {
+                        me.pictureArr = res.data;
+                        me.loading = false;
+                    },
+                    error: function(err) {
+                        console.log('出错了', err);
+                        me.loading = false;
+                    }
+                });
             }
-        	
         },
         
         //提交信息
@@ -391,11 +458,17 @@ new Vue({
             if(formName === "userManageForm"){
             	//用户管理提交
                 let userId = me.usermanageDialogForm.userId;
+                let endTime;
+                let effectiveTime;
                 let url = "";
                 if(userId){
                 	url = "/jetk/user/updateUser";
+                	endTime = me.usermanageDialogForm.endTime,//结束时间
+                	effectiveTime = me.usermanageDialogForm.effectiveTime;//生效时间
                 }else{
                 	url = "/jetk/user/addUser";
+                	endTime = me.timeFormat(me.usermanageDialogForm.endTime),//结束时间
+                	effectiveTime = me.timeFormat(me.usermanageDialogForm.effectiveTime);//生效时间
                 }
                 let userPass = me.usermanageDialogForm.userPass;
                 let askPass = me.usermanageDialogForm.askUserPass;
@@ -414,12 +487,15 @@ new Vue({
                                 userName: me.usermanageDialogForm.userName,//用户
                                 userPass: userPass,//密码
                                 trueName: me.usermanageDialogForm.trueName,//真实姓名
+                                mobile: me.usermanageDialogForm.mobile,//联系方式
                                 identifier: me.usermanageDialogForm.identifier,//身份证
                                 ip: me.usermanageDialogForm.ip,//ip
                                 mac: me.usermanageDialogForm.mac,//mac
                                 ukey: me.usermanageDialogForm.ukey,//ukey
-                                endTime: me.usermanageDialogForm.endTime,//结束时间
+                                endTime: endTime,//结束时间
+                                effectiveTime: effectiveTime,//生效时间
                                 roleId: me.usermanageDialogForm.roleId,//角色id
+                                picturePath: me.usermanageDialogForm.picturePath,//图片名
                             },
                             success: function(res) {
                                 me.loading = false;
@@ -566,27 +642,14 @@ new Vue({
             }
             });
             }
+            this.getTableData(formName, this.page);
         },
-
-
 
         handleSelect:function(e) {
             let me = this;
             me.fileList.src = e
             console.log(e)
             me.configEditForm.picturepath = e
-        },
-        handleDeleteRowData(data, type) {
-            console.log(data)
-            this.$confirm('确认删除？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warn',
-            })
-                .then(() => {
-                this.deleteTableRow("/jetk/identityConfig/delete",{id:data.id,parentId:data.parentId})
-        })
-        .catch(() => false)
         },
         handleDeleteSonData(data, type) {
             this.$confirm('确认删除？', '提示', {
@@ -630,31 +693,6 @@ new Vue({
                 }
             });
         },
-        getTableData:function(page) {
-            let me = this;
-            me.loading = true;
-            page = page || 1;
-            var search = $("#search_content").val();
-            $.ajax({
-                url: '/jetk/identityConfig/get',
-                type: "get",
-                dataType: "json",
-                data: {
-                    page:page,
-                    limit: 12,
-                    search:search,
-                },
-                success: function(res) {
-                    me.tableData = res.data;
-                    me.total = res.total;
-                    me.loading = false;
-                },
-                error: function(err) {
-                    console.log('出错了', err);
-                    me.loading = false;
-                }
-            });
-        },
         getIdentityConfigData: function(page,parentId) {
             let me = this;
             me.loading = true;
@@ -682,23 +720,7 @@ new Vue({
                 }
             });
         },
-        getAllPicture:function() {
-            let me = this;
-            me.loading = true;
-            $.ajax({
-                url: '/jetk/identityConfig/listImage',
-                type: "get",
-                dataType: "json",
-                success: function(res) {
-                    me.pictureArr = res.data;
-                    me.loading = false;
-                },
-                error: function(err) {
-                    console.log('出错了', err);
-                    me.loading = false;
-                }
-            });
-        },
+       
         handleAvatarSuccess(res, file) {
             if (res.status = "success") {
                 this.configEditForm.picturepath = res.data
@@ -840,11 +862,30 @@ new Vue({
         resetForm: function(formName) {
             this.$refs[formName].resetFields();
         },
-    
+        timeFormat: function(date){
+        	let fmt = "YYYY-mm-dd HH:MM:SS";
+        	let ret;
+            const opt = {
+                "Y+": date.getFullYear().toString(),        // 年
+                "m+": (date.getMonth() + 1).toString(),     // 月
+                "d+": date.getDate().toString(),            // 日
+                "H+": date.getHours().toString(),           // 时
+                "M+": date.getMinutes().toString(),         // 分
+                "S+": date.getSeconds().toString()          // 秒
+                // 有其他格式化字符需求可以继续添加，必须转化成字符串
+            };
+            for (let k in opt) {
+                ret = new RegExp("(" + k + ")").exec(fmt);
+                if (ret) {
+                    fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+                };
+            };
+            return fmt;
+        }
     },
     watch: {
         prevenTab() {
-        	this.changeTab(this.prevenTab);
+        	this.getTableData(this.prevenTab,this.page);
         }
     }
 })

@@ -63,14 +63,14 @@
                 <span class="des">
                     <i class="cover-1"></i>横跨昼夜
                 </span>
-                <span class="tips-prev">
+                <span class="tips-prev"  @click="handleRewind()">
                     <i></i>
                     减速
                 </span>
                 <span class="tips-play"  @click="handleplayback()">
                     <i class="el-icon-video-play"></i>播放
                 </span>
-                <span class="tips-next">
+                <span class="tips-next" @click="handleForward()">
                     加速
                     <i></i>
                 </span>
