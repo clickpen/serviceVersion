@@ -91,7 +91,6 @@ let prevenModel = {
             } else {
                 me.mapPointSelectObj.purple = true
                 $(this).removeClass('not-select')
-                console.log(me.mapMarkerObj.purpleCollection)
                 // 有则重新展示
                 me.mapPointData['2'] && me.addMapCollection( me.mapPointData['2'], 2)
             }
@@ -263,7 +262,6 @@ let prevenModel = {
     // 展示地图info框
     showMapInfo(point, className, data) {
         const me = this
-        console.log(data)
         let myInfoMarker = new MyMapInfo(point, className, ($dom, pixel) => {
             let _html = `<div class="map-info-image">
                     <img src="${data.url}">
@@ -295,8 +293,6 @@ let prevenModel = {
         me.$map.addOverlay(myInfoMarker)
     },
     currentTrajectory(account, className) {
-        const me = this
-        console.log('aaaaaaa', account, className)
         this.getCurrentPointTrajectory({
             account,
             type: className == 'red-info' ? 1 : className == 'purple-info' ? 2 : 3
@@ -363,7 +359,6 @@ let prevenModel = {
                 account: data.account
             },
             success(res) {
-                console.log(res)
                 if(res.status === 'success') {
                     if(data.type == 1) {
                         me.addMapCollection(res.data, 1)
@@ -384,27 +379,29 @@ let prevenModel = {
     }
 }
 let prevenModelWarnAreaMap = {
+    styleOptions: {
+        strokeColor: "red",
+        fillColor: "red",
+        strokeWeight: 3,
+        strokeOpacity: 0.8,
+        fillOpacity: 0.6,
+        strokeStyle: 'solid',
+    },
     mapMarker: null,
     $map: null,
     $drawManager: null,
-    init() {
-		const me = this
+    mapAreaParamsStr: '',
+    init(mapAreaParamsStr, edit) {
+        const me = this
+        me.mapAreaParamsStr = ''
         let $map = me.$map = new BMap.Map('selectMapArea', {
             enableMapClick: false
         })
         $map.centerAndZoom(new BMap.Point(116.404, 39.915), 12)
         $map.enableScrollWheelZoom(true)
-        let styleOptions = {
-            strokeColor: "red",
-            fillColor: "red",
-            strokeWeight: 3,
-            strokeOpacity: 0.8,
-            fillOpacity: 0.6,
-            strokeStyle: 'solid',
-        }
         me.$drawManager = new BMapLib.DrawingManager($map, {
             isOpen: false, //是否开启绘制模式
-            enableDrawingTool: true, //是否显示工具栏
+            enableDrawingTool: !!edit, //是否显示工具栏
             drawingToolOptions: {
                 anchor: 1, //位置
                 offset: new BMap.Size(5, 5), //偏离值
@@ -413,11 +410,16 @@ let prevenModelWarnAreaMap = {
                     'rectangle',
                 ]
             },
-            circleOptions: styleOptions, //圆的样式
-            rectangleOptions: styleOptions //矩形的样式
+            circleOptions: me.styleOptions, //圆的样式
+            rectangleOptions: me.styleOptions //矩形的样式
         })
         me.$drawManager.addEventListener('circlecomplete', (...agr) => { me.circleComplete(...agr) })
         me.$drawManager.addEventListener('rectanglecomplete', (...agr) => { me.rectangleComplete(...agr) })
+        // 传了初始参数则加载初始地图遮罩层
+        if(mapAreaParamsStr) {
+            me.mapAreaParamsStr = mapAreaParamsStr
+            me.initMapAreaMarker(mapAreaParamsStr)
+        }
     },
     circleComplete(e, overlay) {
 		const me = this
@@ -429,19 +431,66 @@ let prevenModelWarnAreaMap = {
 		// 清除上次绘制覆盖物
 		me.$map.removeOverlay(me.mapMarker)
 		// 重新赋值本次覆盖物以便于下次清除
-		me.mapMarker = overlay
-		console.log('overlay', overlay, overlay.getCenter(), overlay.getRadius(), overlay.getBounds(), overlay.getBounds().getSouthWest(), overlay.getBounds().getNorthEast())
+        me.mapMarker = overlay
+        if(radius) {
+            me.mapAreaParamsStr = '0,' + center.lat + '_' + center.lng + ',' + radius + ',' + pointsw.lng + ',' + pointsw.lat + ',' + pointne.lng + ',' + pointne.lat
+        }
     },
     rectangleComplete(e, overlay) {
 		const me = this
 		let pointArr = overlay.getPath()
-		console.log('点数组', pointArr)
+        console.log('点数组', pointArr)
 		// 清除上次绘制覆盖物
 		me.$map.removeOverlay(me.mapMarker)
 		// 重新赋值本次覆盖物以便于下次清除
 		me.mapMarker = overlay
-        console.log('rectanglesuccess', e)
-    }
+        if(pointArr.length) {
+            // 组装点参数
+            me.mapAreaParamsStr = '1,' + pointArr.map(ele => ele.lat.toFixed(6) + '_' + ele.lng.toFixed(6)).join(',')
+        }
+    },
+    // 加载地图区域
+    initMapAreaMarker(mapStr) {
+        const me = this
+        if(!mapStr || typeof mapStr !== 'string') {
+            return
+        }
+        // 圆形
+        if(mapStr[0] === '0') {
+            // 解析参数为数组
+            let paramsArr = mapStr.slice('2').split(',')
+            let centerPoint = paramsArr[0].split('_').map(ele => Number(ele))
+            let center = new BMap.Point(centerPoint[1], centerPoint[0])
+            let radius = Number(paramsArr[1])
+            // 半径经度差值
+            let _viewPortDistent = Number(Math.abs(centerPoint[1] - paramsArr[2]).toFixed(6))
+            me.mapMarker = new BMap.Circle(center, radius, me.styleOptions)
+            // 设置x向为当前选中区域的二倍区域可见
+            me.$map.setViewport([
+                {x: centerPoint[1] - _viewPortDistent * 2, y: centerPoint[0]},
+                {x: centerPoint[1] + _viewPortDistent * 2, y: centerPoint[0]}
+            ].map(ele => new BMap.Point(ele.x, ele.y)))
+            me.$map.addOverlay(me.mapMarker)
+            // 多边形
+        } else {
+            // 解析多边形点坐标为二维数组
+            let pointArr = mapStr.slice(2).split(',').map(ele => ele.split('_').map(e => Number(e)))
+            let xArr = pointArr.map(ele => ele[1]).sort()
+            let yArr = pointArr.map(ele => ele[0]).sort()
+            // 获取最大、小xy
+            let X = xArr.pop()
+            let Y = yArr.pop()
+            let x = xArr.shift()
+            let y = yArr.shift()
+            me.mapMarker = new BMap.Polygon(pointArr.map(ele => new BMap.Point(ele[1], ele[0])), me.styleOptions)
+            // 设置xy可见区域均为当前多边形区域的二倍
+            me.$map.setViewport([
+                {x: X + Number(((X - x) / 2).toFixed(6)), y: Y + Number(((Y - y) / 2).toFixed(6))},
+                {x: x - Number(((X - x) / 2).toFixed(6)), y: y - Number(((Y - y) / 2).toFixed(6))},
+            ].map(ele => new BMap.Point(ele.x, ele.y)))
+            me.$map.addOverlay(me.mapMarker)
+        }
+    },
 }
 new Vue({
     el: '#prevenModel',
@@ -452,17 +501,7 @@ new Vue({
         indexTableTotal: 0,
         indexSearchInput: '',
         indexSearch: '',
-        zdrTableData: [{
-            id: 1,
-            zdrHeadPic: 'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1223780803,2412931209&fm=26&gp=0.jpg',
-            zdrUserName: 'test',
-            account: '138888888888',
-            zdrControlLevel: '1',
-            zdrIdentification: '100111111111111111111',
-            zdrEmployer: '责任公司',
-            zdrResponsible: '责任人',
-            zdrMonitorStatus: '检测中',
-        }],
+        zdrTableData: [],
         zdrTablePage: 1,
         zdrTableTotal: 0,
         zdrSearchInput: '',
@@ -477,24 +516,7 @@ new Vue({
             caseId: '',
             file: ''
         },
-        warnTableData: [
-            {
-                name: '预警名称',
-                action: '预警动作',
-                audio: '启动',
-                area: 'link',
-                time: '2020-03-30 16:00:12',
-                person: '提交的大爷',
-            },
-            {
-                name: '预警名称',
-                action: '预警动作',
-                audio: '禁止',
-                area: 'link',
-                time: '2020-03-30 16:00:12',
-                person: '提交的大爷',
-            },
-        ],
+        warnTableData: [],
         warnTablePage: 1,
         warnTableTotal: 0,
         warnSearchInput: '',
@@ -859,12 +881,17 @@ new Vue({
             })
         },
         // 展示预警管理区域选择弹窗
-        handleShowWarnDialogAreaSelect() {
+        handleShowWarnDialogAreaSelect(areaValue, edit) {
             this.areaSelectShow = true
             setTimeout(() => {
-                prevenModelWarnAreaMap.init()
+                prevenModelWarnAreaMap.init(areaValue, !!edit)
             }, 0)
-        }
+        },
+        // 提交选中区域
+        areaSelectSubmit() {
+            this.warnDialogForm.areaValue = prevenModelWarnAreaMap.mapAreaParamsStr
+            this.areaSelectShow = false
+        },
     },
     watch: {
         // 切换tab时更新对应列表数据

@@ -124,7 +124,7 @@
 						</el-table-column>
 						<el-table-column label="预警区域" prop="area">
 							<template v-slot="scope">
-								<a class="warn-area" @click="handleShowWarnDialogAreaSelect">查看区域</a>
+								<a class="warn-area" @click="() => (handleShowWarnDialogAreaSelect(scope.row.area || '', false))">查看区域</a>
 							</template>
 						</el-table-column>
 						<!-- <el-table-column label="提交时间" prop="time" show-overflow-tooltip></el-table-column> -->
@@ -249,7 +249,7 @@
 				</el-form-item>
 				<el-form-item label="预警区域：" :rule="{required: true}">
 					<el-input size="mini" class="vtc-bl" v-model="warnDialogForm.areaValue" placeholder="地图数据" disabled>
-						<el-button slot="append" @click="handleShowWarnDialogAreaSelect">选取范围</el-button>
+						<el-button slot="append" @click="() => { handleShowWarnDialogAreaSelect(warnDialogForm.areaValue || '', true) }">选取范围</el-button>
 					</el-input>
 				</el-form-item>
 				<el-form-item label="预警音效：" :rule="{required: true}">
@@ -265,7 +265,7 @@
 			class="warn-area-select-dialog" append-to-body>
 			<div id="selectMapArea" class="select-map-area"></div>
 			<span slot="footer">
-				<el-button type="primary" @click="() => {areaSelectShow = false}">确定</el-button>
+				<el-button type="primary" @click="areaSelectSubmit">确定</el-button>
 				<el-button @click="() => {areaSelectShow = false}">取消</el-button>
 			</span>
 		</el-dialog>
