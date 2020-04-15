@@ -5,6 +5,9 @@
     padding: 0 20px;
     min-height: calc(100vh - 120px);
 }
+.content-wrapper .el-tabs__content {
+    overflow: visible;
+}
 .content-wrapper .child-map {
     position: relative;
     height: calc(100vh - 55px - 81px - 10px);
@@ -61,6 +64,17 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.content-wrapper .map-wrapper .my-map-info-wrapper .map-info-trajectory-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+}
 .content-wrapper .map-wrapper .red-info {
     background-color: #e60012;
 }
@@ -79,6 +93,20 @@
 .content-wrapper .map-wrapper .green-info:after {
     border-top-color: #20dbdb;
 }
+.content-wrapper .back-map-item {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+.content-wrapper .back-map-item.hide {
+    display: none;
+}
 .content-wrapper .map-item-wrapper {
     position: absolute;
     top: 0;
@@ -89,10 +117,14 @@
     padding: 5px 10px;
     white-space: nowrap;
 }
+.content-wrapper .map-item-wrapper.hide {
+    display: none;
+}
 .content-wrapper .map-item-wrapper .map-item {
     display: inline-block;
     vertical-align: top;
     margin: 0 10px;
+    cursor: pointer;
 }
 .content-wrapper .map-item-wrapper .map-item .icon {
     position: relative;
@@ -119,17 +151,25 @@
 .content-wrapper .map-item-wrapper .red .icon {
     background-color: #e60012;
 }
-.content-wrapper .map-item-wrapper .pink {
+.content-wrapper .map-item-wrapper .purple {
     color: #d660e7;
 }
-.content-wrapper .map-item-wrapper .pink .icon {
+.content-wrapper .map-item-wrapper .purple .icon {
     background-color: #d660e7;
 }
-.content-wrapper .map-item-wrapper .skyBlue {
+.content-wrapper .map-item-wrapper .green {
     color: #00f6ff;
 }
-.content-wrapper .map-item-wrapper .skyBlue .icon {
+.content-wrapper .map-item-wrapper .green .icon {
     background-color: #00f6ff;
+}
+.content-wrapper .map-item-wrapper .map-item.not-select .icon {
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    background-color: #fff;
+}
+.content-wrapper .map-item-wrapper .map-item.not-select .icon::after {
+    display: none;
 }
 .content-wrapper .message-wrapper {
     position: absolute;
@@ -229,6 +269,12 @@
 }
 .content-wrapper .message-wrapper .message-box .message-list .message-card .right-des p span {
     margin-left: 5px;
+}
+.content-wrapper .message-wrapper .message-box .message-list .message-list-no-data {
+    text-align: center;
+    line-height: 40px;
+    font-size: 12px;
+    color: #ccc;
 }
 .content-wrapper .show-message-wrapper {
     position: absolute;
@@ -331,10 +377,51 @@
 	text-align: center;
 }
 .content-wrapper .zdr-largeimp-updown .zdr-largeimp-upload {
+    position: relative;
 	display: inline-block;
 	vertical-align: top;
-	margin-left: 30px;
-	width: 200px;
+    margin-left: 30px;
+    width: 80px;
+    height: 28px;
+}
+.content-wrapper .zdr-largeimp-updown .zdr-largeimp-upload input {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+.content-wrapper .zdr-largeimp-updown .zdr-largeimp-upload .zdr-file-name {
+    display: inline-block;
+    vertical-align: top;
+    width: 160px;
+    font-size: 12px;
+    text-align: left;
+    color: #606266;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.content-wrapper .zdr-largeimp-updown .zdr-largeimp-upload button {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 3px;
+    font-size: 12px;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+    transition: all linear .1s;
+}
+.content-wrapper .zdr-largeimp-updown .zdr-largeimp-upload:hover button {
+    background-color: #ecf5ff;
+    color: #3a8ee6;
+    border-color: #c6e2ff;
+}
+.content-wrapper .zdr-largeimp-updown .zdr-largeimp-upload:active button {
+    border-color: #3a8ee6;
 }
 .content-wrapper .warn-content .el-form-item {
 	margin-bottom: 0;

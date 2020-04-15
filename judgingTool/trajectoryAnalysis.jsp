@@ -27,7 +27,7 @@
         <div class="map-wrapper">
             <div class="map-title">
                 <b>地图展示</b>
-                <b class="msg">（手机号：<span class="phone">${param.account}</span><span class="address">山东 烟台</span>）</b>
+                <b class="msg">（手机号：<span class="phone">${param.account}</span><span class="address" id= "accountAddress"></span>）</b>
                 <input type="hidden" id="taskId" value="${param.id}" />
                 <input type="hidden" id="taskAccount" value="${param.account}" />
             </div>
@@ -67,7 +67,7 @@
                     <i></i>
                     减速
                 </span>
-                <span class="tips-play">
+                <span class="tips-play"  @click="handleplayback()">
                     <i class="el-icon-video-play"></i>播放
                 </span>
                 <span class="tips-next">
@@ -82,15 +82,16 @@
                         <i></i>
                         白天落脚点
                     </p>
-                    <p class="point-poi">
+                    <p class="point-poi" id = "dayStopover" >
+
                         lac：
-                        <span>4454</span>
+                        <span id="dayLac"></span>
                         ci：
-                        <span>56467877</span>
+                        <span id="dayCi"></span>
                     </p>
                     <p class="point-des">
                         基站位置：
-                        <span>山东省烟台市XX路XX街道XX号</span>
+                        <span id="dayAddress"></span>
                     </p>
                 </div>
                 <div class="point-night">
@@ -98,24 +99,25 @@
                         <i></i>
                         夜晚落脚点
                     </p>
-                    <p class="point-poi">
+                    <p class="point-poi" id = "nightStopover">
                         lac：
-                        <span>4454</span>
+                        <span id="nightLac"></span>
                         ci：
-                        <span>56467877</span>
+                        <span id="nightCi"></span>
                     </p>
                     <p class="point-des">
                         基站位置：
-                        <span>山东省烟台市XX路XX街道XX号</span>
+                        <span id="nightAddress"></span>
                     </p>
                 </div>
             </div>
             <div class="time-analysis">
                 <p class="tit">时空分布分析</p>
                 <el-table :data="mapAnalysisTable">
-                    <el-table-column prop="timeRange" label="时间段" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="timeScan" label="时间段" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="position1" label="基站1" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="position2" label="基站2" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="position3" label="基站3" show-overflow-tooltip></el-table-column>
                 </el-table>
             </div>
         </div>
@@ -129,92 +131,14 @@
             </p>
             <transition name="el-zoom-in-top">
                 <div v-show="netimageShow" class="netimage-content">
-                    <div class="id-analysis-card">
+                    <div class="id-analysis-card" id ="virtualList">
                         <p class="card-tit">身份特征分析</p>
-                        <p class="content">
-                            <span class="label">IEMI串号：</span>
-                            1234567890123,1234567890123
-                        </p>
-                        <p class="content">
-                            <span class="label">IESI串号：</span>
-                            1234567890123,1234567890123
-                        </p>
-                        <p class="content">
-                            <span class="label">MAC：</span>
-                            QW-12 12-12-12
-                        </p>
-                        <p class="content">
-                            <span class="label">微信ID：</span>
-                            Q131313
-                        </p>
-                        <p class="content">
-                            <span class="label">QQ号码：</span>
-                            123456789
-                        </p>
-                        <p class="content">
-                            <span class="label">微博ID：</span>
-                            12345678
-                        </p>
-                        <p class="content">
-                            <span class="label">淘宝账号：</span>
-                            12345678
-                        </p>
                     </div>
-                    <div class="web-analysis-card">
+                    <div class="web-analysis-card" id ="trackWebNameList">
                         <p class="card-tit">网站访问分析</p>
-                        <p class="content">
-                            <span class="des">www.weixin.com</span>
-                            <span class="type">腾讯</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">www.weixin.com</span>
-                            <span class="type">腾讯</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">www.weixin.com</span>
-                            <span class="type">腾讯</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">www.weixin.com</span>
-                            <span class="type">腾讯</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">www.weixin.com</span>
-                            <span class="type">腾讯</span>
-                            <span class="number">80条</span>
-                        </p>
                     </div>
-                    <div class="active-analysis-card">
+                    <div class="active-analysis-card" id = "trackProtocolList">
                         <p class="card-tit">访问协议分析</p>
-                        <p class="content">
-                            <span class="des">80</span>
-                            <span class="type">https</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">80</span>
-                            <span class="type">https</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">80</span>
-                            <span class="type">https</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">80</span>
-                            <span class="type">https</span>
-                            <span class="number">80条</span>
-                        </p>
-                        <p class="content">
-                            <span class="des">80</span>
-                            <span class="type">https</span>
-                            <span class="number">80条</span>
-                        </p>
                     </div>
                     <div class="key-analysis-card">
                         <p class="card-tit">关键词分析<span>(注：文字云)</span></p>
@@ -222,32 +146,7 @@
                     </div>
                     <div class="app-analysis-card">
                         <p class="card-tit">使用APP分析</p>
-                        <ul class="app-wrapper">
-                            <li class="app-card">
-                                <img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg">
-                                <p class="app-tit">头条头条</p>
-                                <p class="app-num">800条</p>
-                            </li>
-                            <li class="app-card">
-                                <img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg">
-                                <p class="app-tit">头条头条</p>
-                                <p class="app-num">800条</p>
-                            </li>
-                            <li class="app-card">
-                                <img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg">
-                                <p class="app-tit">头条头条</p>
-                                <p class="app-num">800条</p>
-                            </li>
-                            <li class="app-card">
-                                <img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg">
-                                <p class="app-tit">头条头条</p>
-                                <p class="app-num">800条</p>
-                            </li>
-                            <li class="app-card">
-                                <img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg">
-                                <p class="app-tit">头条头条</p>
-                                <p class="app-num">800条</p>
-                            </li>
+                        <ul class="app-wrapper" id = "trackApp">
                         </ul>
                     </div>
                 </div>

@@ -34,7 +34,7 @@
 </head>
 <body>
     <jsp:include page="../commonHeader/commonHeader.jsp" flush="true"></jsp:include>
-    <div class="judge-wrapper" id="app">
+    <div class="judge-wrapper" id="app" v-cloak>
         <el-container>
             <el-header class="head_class">
                 <el-button type="primary" :disabled="telButtonDisabled" @click="moreTelCompare();">多号码轨迹对比</el-button>
@@ -329,7 +329,7 @@
             		window.open('index?path=judgingTool/trajectoryAnalysis&account='+row.account+"&id="+row.id);  
             	}  else if (row.operationType==10) {
             	    var obj = JSON.parse(row.virtual);
-            		window.location.href = 'index?path=identityModel/identity&virtual='+obj.keyword+"&id="+row.id+"&type="+obj.keyword_type;
+            		window.location.href = 'index?path=identityModel/identity&virtual='+encodeURI(row.virtual)+"&id="+row.id;
             	}
             },
             /*任务查询*/

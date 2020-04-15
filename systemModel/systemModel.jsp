@@ -11,7 +11,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>移动数据应用-系统管理</title>
-    <link rel="stylesheet" href="<%=basePath%>views/systemModel/systemModel.css">
+	<link rel="stylesheet" href="<%=basePath%>views/systemModel/systemModel.css">
+	<link rel="stylesheet" href="<%=basePath%>css/zTreeStyle/zTreeStyle.css">
+	
 </head>
 <body>
     <jsp:include page="../commonHeader/commonHeader.jsp" flush="ture"></jsp:include>
@@ -29,6 +31,7 @@
 						<el-table-column label="UKEY信息" prop="ukey" width="220" show-overflow-tooltip ></el-table-column>
 						<el-table-column label="到期时间" prop="endTime" width="180" show-overflow-tooltip ></el-table-column>
 						<el-table-column label="所属角色" prop="roleName" show-overflow-tooltip ></el-table-column>
+						<el-table-column label="所属角色" prop="roleId" ></el-table-column>
 						<el-table-column label="操作" width="100" prop="operate" >
 							<template v-slot="scope">
 								<div class="manage-operate-btn">
@@ -50,31 +53,313 @@
 						<el-table-column label="操作" prop="operate" >
 							<template v-slot="scope">
 								<div class="manage-operate-btn">
-									<i class="el-icon-edit-outline" @click="() => {usermanageDialogShow = true}"></i>
+									<i class="el-icon-edit-outline" @click="handleEditRowData(scope.row, 'roleManage')"></i>
 									<i class="el-icon-delete" @click="handleDeleteRowData(scope.row, 'roleManage')"></i>
 								</div>
 							</template>
 						</el-table-column>
                     </el-table>
-                    <el-pagination background total="roleManageTotal" page-size="10" layout="prev, pager, next, jumper"></el-pagination>
+                    <el-pagination background :total="roleManageTotal" page-size="10" layout="prev, pager, next, jumper"></el-pagination>
                 </div>
 			</el-tab-pane>
             <el-tab-pane label="系统配置" name="sysConfig">
+				<div>
+				<el-form class="usermanage-content" ref="sysManageForm" :rules="rules" :model="sysmanageDialogForm" label-width="150px">
+					<el-form-item label="系统名称：" prop="sysName">
+						<el-input size="mini" placeholder="系统名称" v-model="sysmanageDialogForm.sysName"></el-input>
+					</el-form-item>
+					<el-form-item label="系统提示：" prop="sysTips">
+						<el-input size="mini"  placeholder="系统提示" v-model="sysmanageDialogForm.sysTips"></el-input>
+					</el-form-item>
+					<el-form-item label="最大查询天数：" prop="sysMaxQueryDays">
+						<el-input size="mini" placeholder="请输入密码" v-model="sysmanageDialogForm.sysMaxQueryDays"></el-input>
+					</el-form-item>
+                    <el-form-item label="白天开始时间：" prop="sysDayTimeMin">
+						<el-input size="mini" placeholder="白天开始时间" v-model="sysmanageDialogForm.sysDayTimeMin"></el-input>
+					</el-form-item>
+					<el-form-item label="白天结束时间：" prop="sysDayTimeMax">
+						<el-input size="mini" placeholder="白天结束时间" v-model="sysmanageDialogForm.sysDayTimeMax"></el-input>
+					</el-form-item>
+					<el-form-item label="夜晚开始时间：" prop="sysNightTimeMin">
+						<el-input size="mini" placeholder="夜晚开始时间" v-model="sysmanageDialogForm.sysNightTimeMin"></el-input>
+					</el-form-item>
+					<el-form-item label="夜晚结束时间：" prop="sysNightTimeMax">
+						<el-input size="mini" placeholder="夜晚结束时间" v-model="sysmanageDialogForm.sysNightTimeMax"></el-input>
+					</el-form-item>
+					<el-form-item label="地图最小层级：" prop="sysMapMin">
+						<el-input size="mini" placeholder="地图最小层级" v-model="sysmanageDialogForm.sysMapMin"></el-input>
+					</el-form-item>
+					<el-form-item label="地图最大层级：" prop="sysMapMax">
+						<el-input size="mini" placeholder="地图最大层级" v-model="sysmanageDialogForm.sysDayTimeMax"></el-input>
+					</el-form-item>
+				</el-form>
+			<span slot="footer">
+				<el-button type="primary" @click="submitForm('sysManageForm')">修改</el-button>
+			</span>
+			</div>
             </el-tab-pane>
             <el-tab-pane label="配置管理" name="sysConfigManage">
+            	<div class="content-wrapper" id = "identityConfig">
+    	<div class="title" >
+    	<div class= "new_config">
+			  <el-row>
+				  <el-button icon="el-icon-circle-plus-outline"  @click="dialogFormVisible = true" style="width: 100%;">新增虚拟身份</el-button>
+			  </el-row>
+		  </div>
+    	  <div class="search" >
+			  <el-input placeholder="请输入您搜索的内容" id = "search_content" v-model="search" class="input-with-select">		 
+			  	<el-button slot="append" @click="() => {getTableData()}"  icon="el-icon-search"></el-button>
+			  </el-input>
+		  </div>
+		  
+		</div>
+		<div  class="config">
+	        <el-table :data="tableData" stripe v-loading="loading">
+				<el-table-column label="虚拟身份名称" prop="name" width="200" show-overflow-tooltip></el-table-column>
+				<el-table-column label="虚拟身份图片" prop="picturepath" show-overflow-tooltip>
+					<template scope="scope">
+						<img :src="'/jetk/picture/'+scope.row.picturepath" width="40" height="40" />
+					</template>
+				</el-table-column>
+				<el-table-column label="类型" :formatter="formatterType" show-overflow-tooltip></el-table-column>
+				<el-table-column fixed="right" label="操作" width="200">
+			      <template slot-scope="scope">
+				 	<el-button type="text" @click="() => {selectSonConfig(scope.row)}" size="small">配置</el-button>
+			        <el-button type="text" @click="() => {editIdentityConfig(scope.row)}" size="small">编辑</el-button>
+					<el-button type="text" @click="() => {handleDeleteRowData(scope.row)}" size="small">删除</el-button>
+			      </template>
+			    </el-table-column>
+	        </el-table>
+	        <el-pagination :total="total"
+	            :page-size="pageSize"
+	            :current-page.sync="page"
+	            layout="total, prev, pager, next, jumper"
+	            @current-change="getTableData"
+	        ></el-pagination>
+		    <el-dialog 
+		    	width="700px"
+		    	modal= "false"
+		    	class="identityConfig_dialog"
+		    	:visible.sync="dialogFormVisible"
+		    	:before-close="() => { dialogFormVisible = false }"
+		    >		
+		    <div slot="title"  	class = "head-dialog">
+		    	新增虚拟身份规则
+		    </div>
+			<el-form :model="configEditForm" :inline="true" :rules="rules" ref="ruleForm" >
+			    <el-form-item label="虚拟身份名称" prop="name" :label-width="formLabelWidth">
+			      <el-input style="width:150px" v-model.trim="configEditForm.name" autocomplete="off"></el-input>
+			    </el-form-item>
+			    <el-form-item label="虚拟身份匹配规则"  prop="role" :label-width="formLabelWidth">
+			      <el-input style="width:150px" v-model.trim="configEditForm.role" autocomplete="off"></el-input>
+			    </el-form-item>
+				<el-form-item label="虚拟身份提取规则"  prop="virgetrule" :label-width="formLabelWidth">
+					<el-input style="width:150px" v-model.trim="configEditForm.virgetrule" autocomplete="off"></el-input>
+				</el-form-item>
+                <el-form-item label="最大长度"  prop="maxLength" :label-width="formLabelWidth">
+                    <el-input style="width:150px" v-model.trim="configEditForm.maxLength" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="最短长度"  prop="minLength" :label-width="formLabelWidth">
+                    <el-input style="width:150px" v-model.trim="configEditForm.minLength" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="所属类型"  prop="type"  :label-width="formLabelWidth">
+                    <el-select v-model="configEditForm.type" placeholder="选择所属类型"  style="width:150px" >
+                        <el-option label="信令" value="0"></el-option>
+                        <el-option label="互联网ID" value="1"></el-option>
+                        <el-option label="虚拟身份" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+				<el-form-item label="异常值"  prop="exceptionvalue" :label-width="formLabelWidth">
+					<el-input style="width:150px" v-model.trim="configEditForm.exceptionvalue" autocomplete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="异常符号"  prop="exceptionsign" :label-width="formLabelWidth">
+					<el-input style="width:150px" v-model.trim="configEditForm.exceptionsign" autocomplete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="必含符号"  prop="includesign" :label-width="formLabelWidth">
+					<el-input style="width:150px" v-model.trim="configEditForm.includesign" autocomplete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="关键词"  prop="words" :label-width="formLabelWidth">
+					<el-input style="width:150px" v-model.trim="configEditForm.words" autocomplete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="选择图片"  prop="picturepath" :label-width="formPictureWidth">
+					<el-row style="width: 300px">
+						<el-col :span="12">
+							<el-dropdown  trigger="click" @command="handleSelect">
+								<span class="el-dropdown-link">
+									下拉菜单
+									<i class="el-icon-arrow-down"></i>
+								</span>
+								<el-dropdown-menu slot="dropdown" class="img-select">
+									<el-dropdown-item v-for="(ele,inx) in pictureArr" :key="inx" class="img-list" :command="ele">
+										<img :src="ele">
+									</el-dropdown-item>
+								</el-dropdown-menu>
+							</el-dropdown>
+						</el-col>
+						<el-col :span="12">
+							<el-upload
+									class="avatar-uploader"
+									action="/jetk/identityConfig/uploadImage"
+									:show-file-list="false"
+									:on-success="handleAvatarSuccess"
+									:before-upload="beforeAvatarUpload">
+								<img v-if="fileList.src" :src="fileList.src" class="avatar">
+								<i v-else class="el-icon-plus picture-hd-holder"></i>
+								<span class="picture-hd-des">(添加图标)</span>
+							</el-upload>
+						</el-col>
+					</el-row>
+				</el-form-item>
+			  </el-form>
+			  <div slot="footer" class="dialog-footer">
+			   	<el-button type="primary" @click="submitForm('ruleForm')">确认添加</el-button>
+    			<el-button @click="resetForm('ruleForm')">重置</el-button>
+			  </div>
+			</el-dialog>
+            <el-dialog
+                    :visible="modifyDialogShow"
+                    width="650px"
+                    title="修改虚拟身份"
+                    :before-close="() => {modifyDialogShow = false}"
+            >
+                <div class="identity-dialog-wrapper">
+                    <el-form class="identity-content" ref="identityEditForm" :model="configUpdateForm" label-width="80px">
+                        <el-form-item label="虚拟身份名称" prop="name">
+                            <el-input placeholder="虚拟身份名称" v-model="configUpdateForm.name"></el-input>
+                        </el-form-item>
+						<el-form-item label="所属类型"  prop="type"  :label-width="formLabelWidth">
+							<el-select v-model="configUpdateForm.type" placeholder="选择所属类型"  style="width:150px" >
+								<el-option label="信令" value="0"></el-option>
+								<el-option label="互联网ID" value="1"></el-option>
+								<el-option label="虚拟身份" value="2"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="关键词"  prop="words" :label-width="formLabelWidth">
+							<el-input style="width:150px" v-model.trim="configUpdateForm.words" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item label="选择图片"  prop="picturepath" :label-width="formPictureWidth">
+							<el-row style="width: 300px">
+								<el-col :span="12">
+									<el-dropdown  trigger="click" @command="handleSelect">
+								<span class="el-dropdown-link">
+									下拉菜单
+									<i class="el-icon-arrow-down"></i>
+								</span>
+										<el-dropdown-menu slot="dropdown" class="img-select">
+											<el-dropdown-item v-for="(ele,inx) in pictureArr" :key="inx" class="img-list" :command="ele">
+												<img :src="ele">
+											</el-dropdown-item>
+										</el-dropdown-menu>
+									</el-dropdown>
+								</el-col>
+								<el-col :span="12">
+									<el-upload
+											class="avatar-uploader"
+											action="/jetk/identityConfig/uploadImage"
+											:show-file-list="false"
+											:on-success="handleAvatarSuccess"
+											:before-upload="beforeAvatarUpload">
+										<img v-if="configUpdateForm.picturepath" :src="'/jetk/picture/'+configUpdateForm.picturepath" class="avatar">
+										<i v-else class="el-icon-plus picture-hd-holder"></i>
+										<span class="picture-hd-des">(添加图标)</span>
+									</el-upload>
+								</el-col>
+							</el-row>
+						</el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer">
+				<el-button type="primary" @click="() => {submitEditForm('identityEditForm')}">确定</el-button>
+				<el-button @click="() => {modifyDialogShow = false}">取消</el-button>
+			</span>
+            </el-dialog>
+			<el-dialog
+					width="1200px"
+					modal= "false"
+					class="identityConfig_dialog"
+					:visible.sync="dialogTableVisible"
+					:before-close="() => {dialogTableVisible = false}" >
+				<div slot="title"  	class = "head-dialog">
+					虚拟身份规则配置
+				</div>
+				<div class= "new_config">
+					<el-row>
+						<el-button icon="el-icon-circle-plus-outline"  size="mini" @click="() => {addIdentityConfigSon()}" style="width: 100px;">新增规则</el-button>
+					</el-row>
+				</div>
+				<el-table :data="gridData">
+					<el-table-column show-overflow-tooltip property="role" label="匹配规则" width="150"></el-table-column>
+                    <el-table-column show-overflow-tooltip property="virgetrule" label="提取规则" width="150"></el-table-column>
+                    <el-table-column show-overflow-tooltip property="exceptionvalue" label="异常值" width="150"></el-table-column>
+                    <el-table-column show-overflow-tooltip property="exceptionsign" label="异常符号" width="150"></el-table-column>
+                    <el-table-column show-overflow-tooltip property="includesign" label="必含符号" width="150"></el-table-column>
+					<el-table-column show-overflow-tooltip property="minLength" label="最短匹配长度" width="150"></el-table-column>
+					<el-table-column show-overflow-tooltip property="maxLength" label="最长匹配长度" width="150"></el-table-column>
+					<el-table-column label="操作" width="100">
+						<template slot-scope="scope">
+						  <el-button type="text" @click="() => {updateIdentityConfigSon(scope.row)}" size="small">编辑</el-button>
+						  <el-button type="text" @click="() => {handleDeleteSonData(scope.row.id)}" size="small">删除</el-button>
+						</template>
+					  </el-table-column>
+				</el-table>
+				<el-pagination :total="gridTotal"
+							   :page-size="gridPageSize"
+							   :current-page.sync="gridPage"
+							   layout="total, prev, pager, next, jumper"
+							   @current-change="getIdentityConfigData"
+				></el-pagination>
+			</el-dialog>
+			<el-dialog
+					:visible="modifyDialogSonShow"
+					width="650px"
+					:title="sonFormTitle"
+					:before-close="() => {modifyDialogSonShow = false}"
+			>
+				<div class="identity-dialog-wrapper">
+					<el-form class="identity-content" ref="identitySonEditForm" :model="configSonForm" label-width="130px">
+						<el-form-item label="匹配规则" prop="role">
+							<el-input placeholder="匹配规则" v-model="configSonForm.role"></el-input>
+						</el-form-item>
+						<el-form-item label="提取规则" prop="virgetrole">
+							<el-input placeholder="提取规则" v-model="configSonForm.virgetrule"></el-input>
+						</el-form-item>
+						<el-form-item label="异常值" prop="exceptionvalue">
+							<el-input placeholder="异常值" v-model="configSonForm.exceptionvalue"></el-input>
+						</el-form-item>
+						<el-form-item label="异常符号" prop="exceptionsign">
+							<el-input placeholder="异常符号" v-model="configSonForm.exceptionsign"></el-input>
+						</el-form-item>
+						<el-form-item label="必含符号" prop="includesign">
+							<el-input placeholder="必含符号" v-model="configSonForm.includesign"></el-input>
+						</el-form-item>
+						<el-form-item label="最长匹配长度" prop="maxLength">
+							<el-input placeholder="最长匹配长度" v-model="configSonForm.maxLength"></el-input>
+						</el-form-item>
+						<el-form-item label="最短匹配长度" prop="minLength">
+							<el-input placeholder="最短匹配长度" v-model="configSonForm.minLength"></el-input>
+						</el-form-item>
+					</el-form>
+				</div>
+				<span slot="footer">
+				<el-button type="primary" @click="() => {submitSonForm('identitySonEditForm')}">确定</el-button>
+				<el-button @click="() => {modifyDialogSonShow = false}">取消</el-button>
+			</span>
+			</el-dialog>
+		</div>
+    </div>
 			</el-tab-pane>
 		</el-tabs>
 		<div class="child-table-search" v-if="prevenTab == 'userManage'">
 			<el-input size="mini" class="search-input" id="userSearch" placeholder="输入您想要搜索的内容">
 				<el-button slot="append" icon="el-icon-search"></el-button>
 			</el-input>
-			<el-button size="mini" class="el-icon-circle-plus-outline" @click="usermanageDialogShow = true">新增用户</el-button>
+			<el-button size="mini" class="el-icon-circle-plus-outline" @click="handleAddRowData('userManage')">新增用户</el-button>
         </div>
         <div class="child-table-search" v-if="prevenTab == 'roleManage'">
 			<el-input size="mini" class="search-input" placeholder="输入您想要搜索的内容">
 				<el-button slot="append" icon="el-icon-search"></el-button>
 			</el-input>
-			<el-button size="mini" class="el-icon-circle-plus-outline" @click="usermanageDialogShow = true">新增角色</el-button>
+			<el-button size="mini" class="el-icon-circle-plus-outline" @click="handleAddRowData('roleManage')">新增角色</el-button>
 		</div>
         <el-dialog :visible="usermanageDialogShow" width="650px;height:700px;" :title="addUserDialogTitle" :before-close="() => {usermanageDialogShow = false}">
 			<div class="usermanage-dialog-wrapper">
@@ -114,11 +399,11 @@
 					<el-form-item label="UKEY信息：" prop="ukey">
 						<el-input size="mini" placeholder="请输入UKEY信息" v-model="usermanageDialogForm.ukey"></el-input>
 					</el-form-item>
-					<el-form-item label="有效期：" prop="timeLess">
+					<el-form-item label="有效期：" prop="endTime">
 						<el-date-picker type="datetime" size="mini" placeholder="请选择有效期" v-model="usermanageDialogForm.endTime"></el-date-picker>
 					</el-form-item>
-					<el-form-item label="所属角色：" prop="roleId">
-						<el-select size="mini" v-model="roleSelect" placeholder="请选择角色">
+					<el-form-item label="所属角色：">
+						<el-select size="mini" v-model="usermanageDialogForm.roleId" prop="roleId" placeholder="请选择角色">
 							<el-option v-for="item in rolemanageTableData" :key="item.roleId" :label="item.roleName" :value="item.roleId"> </el-option>
 						</el-select>
 					</el-form-item>
@@ -130,7 +415,32 @@
 				<el-button @click="() => {usermanageDialogShow = false}">取消</el-button>
 			</span>
 		</el-dialog>
+
+		<el-dialog :visible="rolemanageDialogShow" width="650px;height:700px;" :title="addRoleDialogTitle" :before-close="() => {rolemanageDialogShow = false}">
+			<div class="usermanage-dialog-wrapper">
+				<el-form class="usermanage-content" ref="roleManageForm" :rules="rules" :model="rolemanageDialogForm" label-width="100px">
+					<el-form-item label="角色名："  prop="roleName">
+						<el-input size="mini" placeholder="角色名称" v-model="rolemanageDialogForm.roleName"></el-input>
+					</el-form-item>
+					<el-form-item label="角色描述：" prop="roleDesc">
+						<el-input size="mini"  placeholder="角色描述" v-model="rolemanageDialogForm.roleDesc"></el-input>
+					</el-form-item>
+					<el-form-item label="权限列表：" prop="properties">
+						<div class="zTreeDemoBackground left">
+							<ul id="treeDemo" class="ztree"></ul>
+						</div>
+					</el-form-item>
+				</el-form>
+			</div>
+			<span slot="footer">
+				<el-button type="primary" @click="submitForm('roleManageForm')">确定</el-button>
+				<el-button @click="">重置</el-button>
+				<el-button @click="">取消</el-button>
+			</span>
+		</el-dialog>
 	</div>
-    <script src="<%=basePath%>views/systemModel/systemModel.js"></script>
+	<script src="<%=basePath%>js/zTree/jquery.ztree.core.js"></script>
+	<script src="<%=basePath%>js/zTree/jquery.ztree.excheck.js"></script>
+	<script src="<%=basePath%>views/systemModel/systemModel.js"></script>
 </body>
 </html>

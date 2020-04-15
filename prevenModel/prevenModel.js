@@ -36,12 +36,20 @@ let prevenModel = {
     $hideMessageBoxBtn: null,
     $showMessageBoxBtn: null,
     $map: null,
+    mapPointData: {},
     mapMarkerObj: {
         redCollection: null,
         purpleCollection: null,
         greenCollection: null,
         myMapInfo: null
     },
+    // 当前展示的点的类型
+    mapPointSelectObj: {
+        red: true,
+        purple: true,
+        green: true
+    },
+    mapPointArr: [],
     init() {
         this.$messageBoxWrapper = $('.J-messageBoxWrapper')
         this.$hideMessageBoxBtn = $('.J-hideMessageBox')
@@ -49,8 +57,8 @@ let prevenModel = {
         this.$map = new BMap.Map('mapWrapper', {
             enableMapClick: false
         })
-        this.bind()
         this.initMap()
+        this.bind()
     },
     bind() {
         let me = this
@@ -59,6 +67,56 @@ let prevenModel = {
         })
         me.$showMessageBoxBtn.on('click', function() {
             me.toggMessageBox(false)
+        })
+        // 地图点筛选事件绑定
+        $('.J-map-item-red').on('click', function() {
+            if(me.mapPointSelectObj.red) {
+                me.mapPointSelectObj.red = false
+                $(this).addClass('not-select')
+                // 清除展示
+                me.mapMarkerObj.redCollection && me.clearMapMarker(me.mapMarkerObj.redCollection)
+            } else {
+                me.mapPointSelectObj.red = true
+                $(this).removeClass('not-select')
+                // 有则重新展示
+                me.mapPointData['1'] && me.addMapCollection( me.mapPointData['1'], 1)
+            }
+        })
+        $('.J-map-item-purple').on('click', function() {
+            if(me.mapPointSelectObj.purple) {
+                me.mapPointSelectObj.purple = false
+                $(this).addClass('not-select')
+                // 清除展示
+                me.mapMarkerObj.purpleCollection && me.clearMapMarker(me.mapMarkerObj.purpleCollection)
+            } else {
+                me.mapPointSelectObj.purple = true
+                $(this).removeClass('not-select')
+                console.log(me.mapMarkerObj.purpleCollection)
+                // 有则重新展示
+                me.mapPointData['2'] && me.addMapCollection( me.mapPointData['2'], 2)
+            }
+        })
+        $('.J-map-item-green').on('click', function() {
+            if(me.mapPointSelectObj.green) {
+                me.mapPointSelectObj.green = false
+                $(this).addClass('not-select')
+                // 清除展示
+                me.mapMarkerObj.greenCollection && me.clearMapMarker(me.mapMarkerObj.greenCollection)
+            } else {
+                me.mapPointSelectObj.green = true
+                $(this).removeClass('not-select')
+                // 有则重新展示
+                me.mapPointData['3'] && me.addMapCollection( me.mapPointData['3'], 3)
+            }
+        })
+        // 返回按钮
+        $('.J-back-map-item').on('click', function() {
+            $(this).addClass('hide')
+            $('.J-map-item-wrapper').removeClass('hide')
+            me.getMapAllPoint()
+            $('.J-map-item-red').removeClass('not-select')
+            $('.J-map-item-purple').removeClass('not-select')
+            $('.J-map-item-green').removeClass('not-select')
         })
     },
     // 切换左侧列表展示或隐藏状态
@@ -82,188 +140,106 @@ let prevenModel = {
         // 	console.log(point.point)
         // 	me.addMapPoint(point.point.lng, point.point.lat, 'day1')
         // })
-        me.appMapCollection([
-            {
-                x: 116,
-                y: 39,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            },
-            {
-                x: 117,
-                y: 40,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            },
-            {
-                x: 117,
-                y: 39,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            },
-            {
-                x: 116,
-                y: 40,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            }
-        ], '#e60012', 1)
-        me.appMapCollection([
-            {
-                x: 106,
-                y: 39,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            },
-            {
-                x: 107,
-                y: 40,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            },
-            {
-                x: 107,
-                y: 39,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            },
-            {
-                x: 106,
-                y: 40,
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            }
-        ], '#d660e7', 2)
     },
-    // 添加地图点
-    addMapPoint(x, y, type) {
-        const me = this
-        if(!type) {
-            return
-        }
-        let point = new BMap.Point(x, y)
-        let icon = null
-        let iconSize = new BMap.Size(30, 39)
-        let offset = new BMap.Size(0, -18)
-        // 对type进行类型判断
-        switch(type) {
-            case 'day1':
-            icon = new BMap.Icon('./imgs/day-1.png', iconSize)
-                break
-            case 'day2':
-            icon = new BMap.Icon('./imgs/day-2.png', iconSize)
-                break
-            case 'day3':
-            icon = new BMap.Icon('./imgs/day-3.png', iconSize)
-                break
-            case 'day4':
-            icon = new BMap.Icon('./imgs/day-4.png', iconSize)
-                break
-            case 'night1':
-            icon = new BMap.Icon('./imgs/night-1.png', iconSize)
-                break
-            case 'night2':
-            icon = new BMap.Icon('./imgs/night-2.png', iconSize)
-                break
-            case 'night3':
-            icon = new BMap.Icon('./imgs/night-3.png', iconSize)
-                break
-            case 'night4':
-            icon = new BMap.Icon('./imgs/night-4.png', iconSize)
-                break
-            case 'cover1':
-            icon = new BMap.Icon('./imgs/cover-1.png', iconSize)
-                break
-            default:
-                return
-        }
-        let marker = new BMap.Marker(point, {
-            icon,
-            offset
-        })
-        me.$map.addOverlay(marker)
-        // @todo
-        let className = Math.random() > 0.5 ? 'red-info' : 'green-info'
-        // 为添加的点加上信息窗
-        marker.addEventListener('click', function() {
-            me.showMapInfo(point, className, {
-                url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-                name: '张三',
-                phone: '13546468855',
-                address: '北京市紫禁城A01',
-                time: '2020-4-4 12:12:50',
-                action: '进入紫禁城被打了 o~o~'
-            })
-        })
-    },
+    // // 添加地图点
+    // addMapPoint(x, y, type) {
+    //     const me = this
+    //     if(!type) {
+    //         return
+    //     }
+    //     let point = new BMap.Point(x, y)
+    //     let icon = null
+    //     let iconSize = new BMap.Size(30, 39)
+    //     let offset = new BMap.Size(0, -18)
+    //     // 对type进行类型判断
+    //     switch(type) {
+    //         case 'day1':
+    //         icon = new BMap.Icon('./imgs/day-1.png', iconSize)
+    //             break
+    //         case 'day2':
+    //         icon = new BMap.Icon('./imgs/day-2.png', iconSize)
+    //             break
+    //         case 'day3':
+    //         icon = new BMap.Icon('./imgs/day-3.png', iconSize)
+    //             break
+    //         case 'day4':
+    //         icon = new BMap.Icon('./imgs/day-4.png', iconSize)
+    //             break
+    //         case 'night1':
+    //         icon = new BMap.Icon('./imgs/night-1.png', iconSize)
+    //             break
+    //         case 'night2':
+    //         icon = new BMap.Icon('./imgs/night-2.png', iconSize)
+    //             break
+    //         case 'night3':
+    //         icon = new BMap.Icon('./imgs/night-3.png', iconSize)
+    //             break
+    //         case 'night4':
+    //         icon = new BMap.Icon('./imgs/night-4.png', iconSize)
+    //             break
+    //         case 'cover1':
+    //         icon = new BMap.Icon('./imgs/cover-1.png', iconSize)
+    //             break
+    //         default:
+    //             return
+    //     }
+    //     let marker = new BMap.Marker(point, {
+    //         icon,
+    //         offset
+    //     })
+    //     me.$map.addOverlay(marker)
+    //     // @todo
+    //     let className = Math.random() > 0.5 ? 'red-info' : 'green-info'
+    //     // 为添加的点加上信息窗
+    //     marker.addEventListener('click', function() {
+    //         me.showMapInfo(point, className, {
+    //             url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
+    //             peopleName: '张三',
+    //             account: '13546468855',
+    //             zdrResponsible: '北京市紫禁城A01',
+    //             warnTime: '2020-4-4 12:12:50',
+    //             reason: '进入紫禁城被打了 o~o~'
+    //         })
+    //     })
+    // },
     // 添加地图海量点
-    appMapCollection(list, color, type) {
+    addMapCollection(list, type) {
         if(!list) {
             return
         }
         const me = this
-        let pointArr = list.map(point => {
+        let pointArr = list.filter(ele => {return ele.x && ele.y}).map(point => {
             return new BMap.Point(point.x, point.y)
         })
         let collectionOption = {
             size: 4,
             shape: 3, // 圆形
-            color,
+            color: '#e60012',
         }
-        let marker = new BMap.PointCollection(pointArr, collectionOption)
         let className = ''
         // 用type对className进行判断赋值
         switch(type) {
             case 1:
                 className = 'red-info'
+                collectionOption.color = '#e60012'
                 break
             case 2:
                 className = 'purple-info'
+                collectionOption.color = '#d660e7'
                 break
             case 3:
                 className = 'green-info'
+                collectionOption.color = '#20dbdb'
                 break
             default:
                 break
         }
+        let marker = new BMap.PointCollection(pointArr, collectionOption)
         marker.addEventListener('click', function(point) {
             const currentPoint = point.point
             let [currentPointObj] = list.filter(pointObj => {
-                return pointObj.x === currentPoint.lng && pointObj.y === currentPoint.lat
+                return pointObj.x == currentPoint.lng && pointObj.y == currentPoint.lat
             })
-            console.log(currentPointObj)
             if(currentPointObj) {
                 me.showMapInfo(new BMap.Point(currentPointObj.x, currentPointObj.y), className, currentPointObj)
             }
@@ -287,27 +263,29 @@ let prevenModel = {
     // 展示地图info框
     showMapInfo(point, className, data) {
         const me = this
+        console.log(data)
         let myInfoMarker = new MyMapInfo(point, className, ($dom, pixel) => {
             let _html = `<div class="map-info-image">
                     <img src="${data.url}">
                 </div>
                 <ul class="map-info-list">
                     <li class="map-info-card">
-                        姓名：${data.name}
+                        姓名：${data.peopleName}
                     </li>
                     <li class="map-info-card">
-                        手机号：${data.phone}
+                        手机号：${data.account}
                     </li>
                     <li class="map-info-card">
-                        责任派出所：${data.address}
+                        责任人：${data.zdrResponsible}
                     </li>
                     <li class="map-info-card">
-                        预警时间：${data.time}
+                        预警时间：${formatTime(data.warnTime, 'yy-MM-dd hh:mm:ss')}
                     </li>
                     <li class="map-info-card">
-                        预警动作：${data.action}
+                        预警动作：${data.reason}
                     </li>
-                </ul>`
+                </ul>
+                <span class="map-info-trajectory-btn" onclick="prevenModel.currentTrajectory('${data.account}', '${className}')">查看轨迹</span>`
             $dom.innerHTML = _html
             // 对地图信息窗进行重新计算位置
             $dom.style.left = pixel.x - 86 + 'px'
@@ -316,21 +294,102 @@ let prevenModel = {
         me.mapMarkerObj.myMapInfo = myInfoMarker
         me.$map.addOverlay(myInfoMarker)
     },
-    // 清除地图点
-    clearMapMarker() {
+    currentTrajectory(account, className) {
         const me = this
-        console.log(me.mapMarkerObj)
+        console.log('aaaaaaa', account, className)
+        this.getCurrentPointTrajectory({
+            account,
+            type: className == 'red-info' ? 1 : className == 'purple-info' ? 2 : 3
+        })
+    },
+    // 清除地图点
+    clearMapMarker(marker) {
+        const me = this
+        if(marker) {
+            me.$map.removeOverlay(marker)
+            return
+        }
         for(let prop in me.mapMarkerObj) {
             if(me.mapMarkerObj[prop]) {
                 me.$map.removeOverlay(me.mapMarkerObj[prop])
                 me.mapMarkerObj[prop] = null
             }
         }
+    },
+    // 获取所有地图点
+    getMapAllPoint() {
+        const me = this
+        me.clearMapMarker()
+        $.ajax({
+            url: '/jetk/zdr/getAllPositions',
+            success(res) {
+                if(res.status === 'success') {
+                    let pointData = me.mapPointData = res.data
+                    let total = []
+                    if(pointData['1']) {
+                        me.addMapCollection(pointData['1'], 1)
+                        total = total.concat(pointData['1'])
+                    }
+                    if(pointData['2']) {
+                        me.addMapCollection(pointData['2'], 2)
+                        total = total.concat(pointData['2'])
+                    }
+                    if(pointData['3']) {
+                        me.addMapCollection(pointData['3'], 3)
+                        total = total.concat(pointData['3'])
+                    }
+                    // 地图展示当前所有点
+                    total.length &&  me.$map.setViewport(total.filter(e => e.x && e.y).map(point => {
+                        return new BMap.Point(point.x, point.y)
+                    }))
+                }
+            },
+            error(err) {
+                Message.error('获取首页地图所有点数据出错了')
+                console.log(err)
+            }
+        })
+    },
+    // 获取当前点轨迹
+    getCurrentPointTrajectory(data) {
+        const me = this
+        // 清除地图上marker
+        me.clearMapMarker()
+        $('.J-map-item-wrapper').addClass('hide')
+        $('.J-back-map-item').removeClass('hide')
+        $.ajax({
+            url: '/jetk/zdr/getFocusPeopleRecord',
+            data: {
+                account: data.account
+            },
+            success(res) {
+                console.log(res)
+                if(res.status === 'success') {
+                    if(data.type == 1) {
+                        me.addMapCollection(res.data, 1)
+                    }
+                    if(data.type == 2) {
+                        me.addMapCollection(res.data, 2)
+                    }
+                    if(data.type == 3) {
+                        me.addMapCollection(res.data, 3)
+                    }
+                }
+            },
+            error(err) {
+                Message.error('获取点轨迹信息失败')
+                console.log(err)
+            }
+        })
     }
 }
 let prevenModelWarnAreaMap = {
+    mapMarker: null,
+    $map: null,
+    $drawManager: null,
     init() {
-        let $map = this.$map = new BMap.Map('selectMapArea', {
+		const me = this
+        let $map = me.$map = new BMap.Map('selectMapArea', {
             enableMapClick: false
         })
         $map.centerAndZoom(new BMap.Point(116.404, 39.915), 12)
@@ -343,7 +402,7 @@ let prevenModelWarnAreaMap = {
             fillOpacity: 0.6,
             strokeStyle: 'solid',
         }
-        this.$drawManager = new BMapLib.DrawingManager($map, {
+        me.$drawManager = new BMapLib.DrawingManager($map, {
             isOpen: false, //是否开启绘制模式
             enableDrawingTool: true, //是否显示工具栏
             drawingToolOptions: {
@@ -357,50 +416,40 @@ let prevenModelWarnAreaMap = {
             circleOptions: styleOptions, //圆的样式
             rectangleOptions: styleOptions //矩形的样式
         })
-        this.$drawManager.addEventListener('circlecomplete', this.drawComplete)
-        this.$drawManager.addEventListener('rectanglecomplete', this.drawComplete)
-        this.$drawManager.addEventListener('overlaycomplete', this.drawComplete)
+        me.$drawManager.addEventListener('circlecomplete', (...agr) => { me.circleComplete(...agr) })
+        me.$drawManager.addEventListener('rectanglecomplete', (...agr) => { me.rectangleComplete(...agr) })
     },
-    circleComplete(e) {
-        console.log('circlesuccess', e)
+    circleComplete(e, overlay) {
+		const me = this
+		let center = overlay.getCenter()
+		let radius = overlay.getRadius().toFixed(6)
+		let rectangle = overlay.getBounds() // 获取矩形（方便获取矩形四个角坐标值）
+		let pointne = rectangle.getNorthEast() // 矩形东北点
+		let pointsw = rectangle.getSouthWest() // 矩形西南点
+		// 清除上次绘制覆盖物
+		me.$map.removeOverlay(me.mapMarker)
+		// 重新赋值本次覆盖物以便于下次清除
+		me.mapMarker = overlay
+		console.log('overlay', overlay, overlay.getCenter(), overlay.getRadius(), overlay.getBounds(), overlay.getBounds().getSouthWest(), overlay.getBounds().getNorthEast())
     },
-    rectangleComplete(e) {
+    rectangleComplete(e, overlay) {
+		const me = this
+		let pointArr = overlay.getPath()
+		console.log('点数组', pointArr)
+		// 清除上次绘制覆盖物
+		me.$map.removeOverlay(me.mapMarker)
+		// 重新赋值本次覆盖物以便于下次清除
+		me.mapMarker = overlay
         console.log('rectanglesuccess', e)
-    },
-    drawComplete(e) {
-        console.log('success', e)
-    },
+    }
 }
 new Vue({
     el: '#prevenModel',
     data: {
         prevenTab: 'prevenIndex',
-        indexTableData: [{
-                url: 'http://pic2.zhimg.com/50/v2-fb824dbb6578831f7b5d92accdae753a_hd.jpg',
-                zdrUserName: '张三',
-                account: '13890873456',
-                zdrEmployer: 'abcd派出所',
-                time: '2020-03-16 18:30:00',
-                message: '进入北京市被拘留'
-            },
-            {
-                url: 'http://pic2.zhimg.com/50/v2-fb824dbb6578831f7b5d92accdae753a_hd.jpg',
-                zdrUserName: '张三',
-                account: '13890873456',
-                zdrEmployer: 'abcd派出所',
-                time: '2020-03-16 18:30:00',
-                message: '进入北京市被拘留'
-            },
-            {
-                url: 'http://pic2.zhimg.com/50/v2-fb824dbb6578831f7b5d92accdae753a_hd.jpg',
-                zdrUserName: '张三',
-                account: '13890873456',
-                zdrEmployer: 'abcd派出所',
-                time: '2020-03-16 18:30:00',
-                message: '进入北京市被拘留'
-            }
-        ],
+        indexTableData: [],
         indexTablePage: 1,
+        indexTableTotal: 0,
         indexSearchInput: '',
         indexSearch: '',
         zdrTableData: [{
@@ -414,7 +463,8 @@ new Vue({
             zdrResponsible: '责任人',
             zdrMonitorStatus: '检测中',
         }],
-        zdeTablePage: 1,
+        zdrTablePage: 1,
+        zdrTableTotal: 0,
         zdrSearchInput: '',
         zdrSearch: '',
         zdrDialogShow: false,
@@ -424,9 +474,11 @@ new Vue({
         },
         zdrLargeImportShow: false,
         zdrLargeImpDialogForm: {
-            caseId: ''
+            caseId: '',
+            file: ''
         },
-        warnTableData: [{
+        warnTableData: [
+            {
                 name: '预警名称',
                 action: '预警动作',
                 audio: '启动',
@@ -444,6 +496,7 @@ new Vue({
             },
         ],
         warnTablePage: 1,
+        warnTableTotal: 0,
         warnSearchInput: '',
         warnSearch: '',
         warnDialogForm: {},
@@ -451,8 +504,14 @@ new Vue({
         warnDialogTitle: '新增预警策略',
         areaSelectShow: false
     },
+    created() {
+        window.Message = this.$message
+    },
     mounted() {
         prevenModel.init()
+        // 获取地图所有点
+        prevenModel.getMapAllPoint()
+        this.getIndexTable(1)
     },
     methods: {
         // 删除行事件
@@ -485,13 +544,19 @@ new Vue({
             me.indexTablePage = page
             let search = me.indexSearch || ''
             $.ajax({
-                url: '',
+                url: '/jetk/zdr/getAllWarnInfo',
                 data: {
                     page,
+                    limit: 10,
                     search,
                 },
                 success(res) {
-                    console.log(res)
+                    if(res.status === 'success') {
+                        me.indexTableData = res.data
+                        me.indexTableTotal = res.total
+                    } else {
+                        me.$message.error('获取首页重点人列表数据失败')
+                    }
                 },
                 error(err) {
                     me.$message.error('获取首页重点人列表数据出错了')
@@ -506,31 +571,22 @@ new Vue({
         },
         // 首页导出
         indexExport() {
-            const me = this
-            $.ajax({
-                url: '',
-                data: {
-                    search: me.indexSearch
-                },
-                success(res) {
-                    console.log(res)
-                },
-                error(err) {
-                    me.$message.error('首页列表导出失败了')
-                    console.log(err)
-                }
-            })
+            let indexSearch = this.indexSearch
+            window.open('http://localhost:8083/jetk/zdr/exportAreaWarnInfo' + (indexSearch ? '?search=' + indexSearch : ''))
         },
         // 上传头像
         handleUploadFile(res, file) {
             console.log('11111', res, file)
+            if(res.status == 'fail') {
+                this.$message.error(res.message)
+            }
             this.zdrDialogForm.zdrHeadPic = URL.createObjectURL(file.raw)
         },
         // 获取重点人列表数据
         getZdrTable(page) {
             const me = this
             page = page || 1
-            me.zdeTablePage = page
+            me.zdrTablePage = page
             let search = me.zdrSearch
             $.ajax({
                 url: '/jetk/zdr/getFocusPeople',
@@ -540,8 +596,11 @@ new Vue({
                     search,
                 },
                 success(res) {
-                    if (res.data) {
+                    if (res.status === 'success') {
                         me.zdrTableData = res.data
+                        me.zdrTableTotal = res.total
+                    } else {
+                        me.$message.error('获取重点人列表数据失败')
                     }
                 },
                 error(err) {
@@ -567,12 +626,20 @@ new Vue({
             const me = this
             // @todo
             console.log('提交的参数', me.zdrDialogForm)
+            if (!me.zdrDialogForm.caseId) {
+                me.$alert('请选择案件')
+                return
+            }
             if (!me.zdrDialogForm.zdrUserName) {
                 me.$alert('请输入姓名')
                 return
             }
             if (!me.zdrDialogForm.account) {
                 me.$alert('请输入手机号')
+                return
+            }
+            if (!/^1[3-9]\d{9}$/.test(me.zdrDialogForm.account)) {
+                me.$alert('请输入正确的手机号')
                 return
             }
             if (!me.zdrDialogForm.zdrControlLevel) {
@@ -591,17 +658,31 @@ new Vue({
                 me.$alert('请输入责任人')
                 return
             }
+            let ajaxUrl = ''
+            let sendData = {
+                caseId: me.zdrDialogForm.caseId,
+                zdrUserName: me.zdrDialogForm.zdrUserName,
+                account: me.zdrDialogForm.account,
+                zdrControlLevel: me.zdrDialogForm.zdrControlLevel,
+                zdrIdentification: me.zdrDialogForm.zdrIdentification,
+                zdrEmployer: me.zdrDialogForm.zdrEmployer,
+                zdrResponsible: me.zdrDialogForm.zdrResponsible,
+            }
+            if(me.zdrDialogForm.id) {
+                ajaxUrl = '/jetk/zdr/updateFocusPeople'
+                sendData.id = me.zdrDialogForm.id
+            } else {
+                ajaxUrl = '/jetk/zdr/addFocusPeople'
+            }
             $.ajax({
-                url: '/jetk/zdr/addFocusPeople',
+                url: ajaxUrl,
                 type: 'post',
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                data: me.zdrDialogForm,
+                data: sendData,
                 success(res) {
-                    console.log(res)
                     me.zdrDialogShow = false
-                    me.$message.success('提交成功')
+                    me.$message.info(res.message || '提交成功')
+                    // 重新加载重点人列表
+                    me.getZdrTable(1)
                 },
                 error(err) {
                     me.$message.error('提交重点人信息失败')
@@ -613,13 +694,15 @@ new Vue({
         deleZdrTableData(zdrId) {
             const me = this
             $.ajax({
-                url: '',
+                url: '/jetk/zdr/deleteFocusPeople',
                 data: {
                     id: zdrId
                 },
                 success(res) {
                     console.log(res)
-                    me.$message.success('删除成功')
+                    me.$message.info(res.message || '删除成功')
+                    // 更新下列表
+                    me.getZdrTable(1)
                 },
                 error(err) {
                     me.$message.error('删除重点人信息失败')
@@ -627,47 +710,41 @@ new Vue({
                 }
             })
         },
-        // 下载重点人批量模版
-        zdrDownloadTmp() {
+        // 展示上传重点人批量弹窗
+        showZdrUploadTmp() {
             const me = this
-            $.ajax({
-                url: '',
-                data: {
-                    caseId: me.zdrLargeImpDialogForm.caseId,
-                },
-                success(res) {
-                    console.log(res)
-                },
-                error(err) {
-                    me.$message.error('获取模版下载连接失败')
-                    console.log(err)
-                }
-            })
-        },
-        // 上传重点人批量文件
-        zdrUploadTmpFile(res, file) {
-            console.log('上传成功', res, file)
-            this.zdrLargeImpDialogForm.file = {
-                name: 'name',
-                url: 'url'
-            }
+            // 清空form
+            me.zdrLargeImpDialogForm = {}
+            me.zdrLargeImportShow = true
         },
         // 上传重点人批量
         zdrUploadTmp() {
             const me = this
+            let files = $('.J-zdrFile')[0].files[0]
             if (!me.zdrLargeImpDialogForm.caseId) {
                 return me.$alert('请选择案件')
             }
             if (!me.zdrLargeImpDialogForm.file) {
-                return me.$alert('请上传文件')
+                return me.$alert('请上传表格文件')
             }
-            me.zdrLargeImportShow = false
+            if (!/\.xls[x]{0,1}$/.test(me.zdrLargeImpFile)) {
+                return me.$alert('请上传excel表格文件')
+            }
+            let fd = new FormData()
+            fd.append('file', files)
+            fd.append('caseId', me.zdrLargeImpDialogForm.caseId)
             $.ajax({
-                url: '',
-                data: me.zdrLargeImpDialogForm,
+                url: '/jetk/zdr/batchImport',
+                type: "POST",
+                dataType: "json",
+                contentType: false,
+                async: true,
+                cache: false,
+                processData: false,
+                data: fd,
                 success(res) {
-                    console.log(res)
-                    me.$message.info('批量导入成功')
+                    me.zdrLargeImportShow = false
+                    me.$message.info(res.message || '导入成功')
                 },
                 error(err) {
                     me.$message.error('批量导入失败')
@@ -681,15 +758,17 @@ new Vue({
             page = page || 1
             let search = me.warnSearch || ''
             $.ajax({
-                url: '',
+                url: '/jetk/areaWarn/getWarnRule',
                 data: {
                     page,
                     search,
                 },
                 success(res) {
-                    console.log(res)
+                    // @todo
+                    console.table(res.data)
                     if (res.data) {
                         me.warnTableData = res.data
+                        me.warnTableTotal = res.total
                     }
                 },
                 error(err) {
@@ -706,34 +785,49 @@ new Vue({
         // 新增/修改预警管理弹窗展示
         showWarnDialog(data) {
             const me = this
-            me.warnDialogTitle = data ? '修改预警策略' : '新增预警策略'
             me.warnDialogForm = Object.assign({}, data || {})
+            // 有传入data则表示编辑
+            if(data) {
+                me.warnDialogTitle = '修改预警策略'
+                me.warnDialogForm.voiceTrigger = data.voiceTrigger == 1
+            } else {
+                me.warnDialogTitle = '新增预警策略'
+            }
             me.warnDialogShow = true
         },
         // 新增/修改预警管理列表
         addWarnTableData() {
             const me = this
+            let { ruleName, action, areaValue, voiceTrigger } = me.warnDialogForm
             // @todo
-            console.log('提交的参数', me.warnDialogForm)
-            if (!me.warnDialogForm.name) {
+            console.log('提交的参数', { ruleName, action, areaValue, voiceTrigger })
+            if (!ruleName) {
                 me.$alert('请输入预警名称')
                 return
             }
-            if (!me.warnDialogForm.action) {
+            if (!action) {
                 me.$alert('请选择预警动作')
                 return
             }
-            if (!me.warnDialogForm.area) {
+            if (!areaValue) {
                 me.$alert('请选择预警区域')
+                me.warnDialogForm.areaValue = "1,36.311424_114.513736,39.073999_113.446693,39.602606_115.047257,39.858307_117.512495,39.886659_119.168252,39.231573_118.395565,39.245881_116.997371,39.20295_116.371863,38.440152_117.622879,37.581338_116.243082"
                 return
             }
+            let ajaxUrl = me.warnDialogTitle === '修改预警策略' ? '/jetk/areaWarn/updateWarnRule' : '/jetk/areaWarn/addWarnRule'
             $.ajax({
-                url: '',
-                data: me.warnDialogForm,
+                url: ajaxUrl,
+                type: 'post',
+                data: {
+                    ruleName,
+                    action,
+                    value: areaValue,
+                    voiceTrigger: voiceTrigger ? 1 : 2
+                },
                 success(res) {
-                    console.log(res)
                     me.warnDialogShow = false
-                    me.$message.success('提交成功')
+                    me.$message.info(res.message || '提交成功')
+                    me.getWarnTable(1)
                 },
                 error(err) {
                     me.$message.error('修改预警管理信息失败')
@@ -745,11 +839,18 @@ new Vue({
         deleWarnTableData(warnId) {
             const me = this
             $.ajax({
-                url: '',
-                data: {},
+                url: '/jetk/areaWarn/deleteWarnRule',
+                data: {
+                    id: warnId,
+                },
                 success(res) {
                     console.log(res)
-                    me.$message.success('删除成功')
+                    if(res.status == 'success') {
+                        me.$message.info(res.message || '删除成功')
+                        me.getWarnTable(1)
+                    } else {
+                        me.$message.error(res.message || '删除失败')
+                    }
                 },
                 error(err) {
                     me.$message.error('删除预警管理信息失败')
@@ -776,15 +877,28 @@ new Vue({
                 case 'prevenWarn':
                     me.getWarnTable(1)
                     break
+                case 'prevenIndex':
+                    // 获取地图所有点
+                    prevenModel.getMapAllPoint()
+                    break
                 default:
                     break
             }
         },
-        // 批量上传弹窗关闭时清除form数据
-        zdrLargeImportShow() {
-            if (!this.zdrLargeImportShow) {
-                this.zdrLargeImpDialogForm = {}
+        // // 批量上传弹窗关闭时清除form数据
+        // zdrLargeImportShow() {
+        //     if (!this.zdrLargeImportShow) {
+        //         this.zdrLargeImpDialogForm = {}
+        //     }
+        // }
+    },
+    computed: {
+        // 重点人批量导入上传文件
+        zdrLargeImpFile() {
+            if(this.zdrLargeImpDialogForm.file) {
+                return $('.J-zdrFile')[0].files[0].name
             }
+            return ''
         }
     }
 })

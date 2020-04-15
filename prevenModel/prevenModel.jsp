@@ -22,20 +22,21 @@
 			<el-tab-pane label="防控首页" name="prevenIndex">
 				<div class="child-wrapper child-map">
 					<div class="map-wrapper" id="mapWrapper"></div>
-					<ul class="map-item-wrapper">
-						<li class="map-item red">
+					<ul class="map-item-wrapper J-map-item-wrapper">
+						<li class="map-item red J-map-item-red">
 							<i class="icon"></i>
 							<span class="name">一级管控</span>
 						</li>
-						<li class="map-item pink">
+						<li class="map-item purple J-map-item-purple">
 							<i class="icon"></i>
 							<span class="name">二级管控</span>
 						</li>
-						<li class="map-item skyBlue">
+						<li class="map-item green J-map-item-green">
 							<i class="icon"></i>
 							<span class="name">三级管控</span>
 						</li>
 					</ul>
+					<span class="back-map-item hide J-back-map-item">返回</span>
 					<div class="message-wrapper J-messageBoxWrapper">
 						<div class="message-box">
 							<h5 class="tit">
@@ -52,14 +53,15 @@
 								<li v-for="(ele, inx) in indexTableData" :key="inx" class="message-card">
 									<img class="left-img" :src="ele.url">
 									<div class="right-des">
-										<p>姓名：<span>{{ele.zdrUserName}}</span></p>
+										<p>姓名：<span>{{ele.peopleName}}</span></p>
 										<p>手机号：<span>{{ele.account}}</span></p>
-										<p>责任派出所：<span>{{ele.zdrEmployer}}</span></p>
-										<p>预警时间：<span>{{ele.time}}</span></p>
-										<p>预警信息：<span>{{ele.message}}</span></p>
+										<p>责任人：<span>{{ele.zdrResponsible}}</span></p>
+										<p>预警时间：<span>{{formatTime(ele.warnTime, 'yy-MM-dd hh:mm:ss')}}</span></p>
+										<p>预警信息：<span>{{ele.reason}}</span></p>
 									</div>
 								</li>
-								<el-pagination small :total="100" :page-size="10" :current-page="indexTablePage"
+								<p v-if="!indexTableData.length" class="message-list-no-data">暂无数据</p>
+								<el-pagination small :total="indexTableTotal" :page-size="10" :current-page="indexTablePage"
 									@current-change="getIndexTable" layout="prev, pager, next"></el-pagination>
 							</ul>
 						</div>
@@ -88,12 +90,12 @@
 						<el-table-column label="责任人" prop="zdrResponsible" show-overflow-tooltip></el-table-column>
 						<el-table-column label="监控状态" prop="zdrMonitorStatus">
 							<template v-slot="scope">
-								<b class="zdr-green">{{scope.row.zdrMonitorStatus}}</b>
+								<b class="zdr-green" :title="scope.row.zdrMonitorStatus == '2' ? formatTime(scope.row.zdrResetTime, 'yy-MM-dd hh:mm:ss') : ''">{{scope.row.zdrMonitorStatus == '1' ? '正在监控' : '等待删除'}}</b>
 							</template>
 						</el-table-column>
 						<el-table-column label="操作" prop="operate" width="100">
 							<template v-slot="scope">
-								<div class="zdr-operate-btn">
+								<div class="zdr-operate-btn" v-if="scope.row.zdrMonitorStatus == '1'">
 									<i class="el-icon-edit-outline" @click="() => {
 											showZdrDialog(scope.row)
 										}"></i>
@@ -102,19 +104,22 @@
 							</template>
 						</el-table-column>
 					</el-table>
-					<el-pagination background :total="50" page-size="10" :current-page="zdeTablePage"
-						@current-change="getZdrTable" layout="prev, pager, next, jumper"></el-pagination>
+					<el-pagination background :total="zdrTableTotal" page-size="10" :current-page="zdrTablePage"
+						@current-change="getZdrTable" layout="total, prev, pager, next, jumper"></el-pagination>
 				</div>
 			</el-tab-pane>
 			<el-tab-pane label="预警管理" name="prevenWarn">
 				<div class="child-wrapper">
 					<el-table :data="warnTableData" stripe>
-						<el-table-column label="预警名称" prop="name" show-overflow-tooltip></el-table-column>
-						<el-table-column label="预警动作" prop="action" show-overflow-tooltip></el-table-column>
-						<el-table-column label="预警音效" prop="audio">
+						<el-table-column label="预警名称" prop="ruleName" show-overflow-tooltip></el-table-column>
+						<el-table-column label="预警动作" prop="action" show-overflow-tooltip>
 							<template v-slot="scope">
-								<b
-									:style="'color:' + (scope.row.audio == '禁止' ? '#eb3323' : '#2c20f5')">{{scope.row.audio}}</b>
+								<span>{{scope.row.action == '1' ? '进入' : '离开'}}</span>
+							</template>
+						</el-table-column>
+						<el-table-column label="预警音效" prop="voiceTrigger">
+							<template v-slot="scope">
+								<b :style="'color:' + (scope.row.voiceTrigger == '2' ? '#eb3323' : '#2c20f5')">{{scope.row.voiceTrigger == '1' ? '开启' : '关闭'}}</b>
 							</template>
 						</el-table-column>
 						<el-table-column label="预警区域" prop="area">
@@ -122,8 +127,8 @@
 								<a class="warn-area" @click="handleShowWarnDialogAreaSelect">查看区域</a>
 							</template>
 						</el-table-column>
-						<el-table-column label="提交时间" prop="time" show-overflow-tooltip></el-table-column>
-						<el-table-column label="提交人" prop="person" show-overflow-tooltip></el-table-column>
+						<!-- <el-table-column label="提交时间" prop="time" show-overflow-tooltip></el-table-column> -->
+						<el-table-column label="提交人" prop="userName" show-overflow-tooltip></el-table-column>
 						<el-table-column label="操作" prop="operate" width="100">
 							<template v-slot="scope">
 								<div class="zdr-operate-btn">
@@ -133,20 +138,21 @@
 							</template>
 						</el-table-column>
 					</el-table>
-					<el-pagination background :total="50" page-size="10" :current-page="warnTablePage"
-						@current-change="getWarnTable" layout="prev, pager, next, jumper"></el-pagination>
+					<el-pagination background :total="warnTableTotal" page-size="10" :current-page="warnTablePage"
+						@current-change="getWarnTable" layout="total, prev, pager, next, jumper"></el-pagination>
 				</div>
 			</el-tab-pane>
 		</el-tabs>
+		<!-- 重点人管理搜索 -->
 		<div class="child-table-search" v-if="prevenTab == 'prevenZdr'">
 			<el-input size="mini" class="search-input" clearable v-model="zdrSearchInput" placeholder="输入您想要搜索的内容">
 				<el-button slot="append" @click="searchZdrTable" icon="el-icon-search"></el-button>
 			</el-input>
 			<el-button size="mini" class="el-icon-circle-plus-outline" @click="() => { showZdrDialog() }">新增重点人
 			</el-button>
-			<el-button size="mini" class="el-icon-receiving" @click="() => { zdrLargeImportShow = true }">批量导入
-			</el-button>
+			<el-button size="mini" class="el-icon-receiving" @click="showZdrUploadTmp">批量导入</el-button>
 		</div>
+		<!-- 预警管理搜索 -->
 		<div class="child-table-search" v-if="prevenTab == 'prevenWarn'">
 			<el-input size="mini" class="search-input" clearable v-model="warnSearchInput" placeholder="输入您想要搜索的内容">
 				<el-button slot="append" @click="searchWarnTable" icon="el-icon-search"></el-button>
@@ -154,6 +160,7 @@
 			<el-button size="mini" class="el-icon-circle-plus-outline" @click="() => {showWarnDialog()}">新增预警策略
 			</el-button>
 		</div>
+		<!-- 重点人dialog -->
 		<el-dialog :visible="zdrDialogShow" width="650px" :title="zdrDialogTitle"
 			:before-close="() => {zdrDialogShow = false}">
 			<div class="zdr-dialog-wrapper">
@@ -164,18 +171,25 @@
 					<span class="zdr-hd-des">(添加头像)</span>
 				</el-upload>
 				<el-form class="zdr-content" :model="zdrDialogForm" label-width="100px">
+					<el-form-item label="案件：" :rules="{required: true}">
+						<el-select size="mini" placeholder="请选择案件" v-model="zdrDialogForm.caseId">
+							<el-option label="案件1" :value="1"></el-option>
+							<el-option label="案件2" :value="2"></el-option>
+							<el-option label="案件3" :value="3"></el-option>
+						</el-select>
+					</el-form-item>
 					<el-form-item label="姓名：" :rules="{required: true}">
 						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrUserName"></el-input>
 					</el-form-item>
 					<el-form-item label="手机号码：" :rules="{required: true}">
-						<el-input size="mini" placeholder="请输入手机号" maxlength="11" v-model="zdrDialogForm.account">
+						<el-input size="mini" placeholder="请输入手机号" :disabled="!!zdrDialogForm.id" maxlength="11" v-model="zdrDialogForm.account">
 						</el-input>
 					</el-form-item>
 					<el-form-item label="管控级别：" :rules="{required: true}">
 						<el-select v-model="zdrDialogForm.zdrControlLevel" size="mini">
-							<el-option label="一级管控" value="1"></el-option>
-							<el-option label="二级管控" value="2"></el-option>
-							<el-option label="三级管控" value="3"></el-option>
+							<el-option label="一级管控" :value="1"></el-option>
+							<el-option label="二级管控" :value="2"></el-option>
+							<el-option label="三级管控" :value="3"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="身份证号：" :rules="{required: true}">
@@ -194,6 +208,7 @@
 				<el-button @click="() => {zdrDialogShow = false}">取消</el-button>
 			</span>
 		</el-dialog>
+		<!-- 重点人批量dialog -->
 		<el-dialog :visible="zdrLargeImportShow" width="400px" title="批量导入"
 			:before-close="() => {zdrLargeImportShow = false}">
 			<el-form>
@@ -206,11 +221,12 @@
 			</el-form>
 			<transition name="el-zoom-in-top">
 				<div v-show="zdrLargeImpDialogForm.caseId" class="zdr-largeimp-updown">
-					<el-button size="mini" @click="zdrDownloadTmp">下载模版</el-button>
-					<el-upload class="zdr-largeimp-upload" action="https://jsonplaceholder.typicode.com/posts/"
-						:limit="1" :on-success="zdrUploadTmpFile">
-						<el-button size="mini" type="primary">点击上传</el-button>
-					</el-upload>
+					<el-button size="mini" @click="() => { window.open('/jetk/zdr/downloadModel') }">下载模版</el-button>
+					<div class="zdr-largeimp-upload">
+						<input type="file" v-model="zdrLargeImpDialogForm.file" class="J-zdrFile">
+						<button>上传表格</button>
+						<span class="zdr-file-name" :title="zdrLargeImpFile" v-if="zdrLargeImpFile">{{zdrLargeImpFile}}</span>
+					</div>
 				</div>
 			</transition>
 			<span slot="footer">
@@ -218,26 +234,26 @@
 				<el-button @click="() => {zdrLargeImportShow = false}">取消</el-button>
 			</span>
 		</el-dialog>
+		<!-- 预警管理dialog -->
 		<el-dialog :visible="warnDialogShow" width="650px" :title="warnDialogTitle"
 			:before-close="() => {warnDialogShow = false}">
 			<el-form class="warn-content" ref="warnForm" :model="warnDialogForm" label-width="100px">
 				<el-form-item label="策略名称：" :rule="{required: true}">
-					<el-input size="mini" v-model="warnDialogForm.name"></el-input>
+					<el-input size="mini" placeholder="请输入策略名称" v-model="warnDialogForm.ruleName"></el-input>
 				</el-form-item>
 				<el-form-item label="预警动作：" :rule="{required: true}">
 					<el-select v-model="warnDialogForm.action" size="mini" placeholder="请选择动作">
-						<el-option label="动作1" value="1"></el-option>
-						<el-option label="动作2" value="2"></el-option>
-						<el-option label="动作3" value="3"></el-option>
+						<el-option label="进入" :value="1"></el-option>
+						<el-option label="离开" :value="2"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="预警区域：" :rule="{required: true}">
-					<el-input size="mini" class="vtc-bl" v-model="warnDialogForm.area" placeholder="地图数据" disabled>
+					<el-input size="mini" class="vtc-bl" v-model="warnDialogForm.areaValue" placeholder="地图数据" disabled>
 						<el-button slot="append" @click="handleShowWarnDialogAreaSelect">选取范围</el-button>
 					</el-input>
 				</el-form-item>
 				<el-form-item label="预警音效：" :rule="{required: true}">
-					<el-switch v-model="warnDialogForm.switch" active-text="开" inactive-text="关"></el-switch>
+					<el-switch v-model="warnDialogForm.voiceTrigger" active-text="开" inactive-text="关"></el-switch>
 				</el-form-item>
 			</el-form>
 			<span slot="footer">

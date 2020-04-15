@@ -42,6 +42,9 @@ body {
 .el-dialog__footer .el-button {
     padding: 10px 20px;
 }
+.el-pagination {
+    text-align: center;
+}
 .common-header {
     position: relative;
     box-sizing: border-box;
