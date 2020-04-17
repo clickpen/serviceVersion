@@ -1,4 +1,4 @@
-<%@ page import="java.net.URLDecoder" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: xupanpan
   Date: 2020/3/16
@@ -13,7 +13,7 @@
     <link href="../css/element-ui-2.12.0.css" rel="stylesheet"/>
     <style>
         .app_div .select-width{
-            padding: 15px;
+            width: 150px;
         }
         .app_div .container{
             width: auto;
@@ -24,53 +24,66 @@
         .app_div .row_center{
             text-align: center;
         }
-        .app_div .button_width{
-            width: 215px;
+        .app_div .row_height{
+            height: 45px;
+            background-color: #c1c5c6;
+        }
+        .app_div .col_width{
+            width: 260px;
+            padding-right: 10px;
+        }
+        .app_div .p_style{
+           height: 50%;
+           font-weight: 800;
+        }
+        .app_div td,th {
+            font-size: 14px;
+            color: #606266;
         }
     </style>
 </head>
 <body>
+<jsp:include page="../commonHeader/commonHeader.jsp" flush="true"></jsp:include>
 <div id="app" class="app_div">
-    <el-row align="middle" type="flex">
+    <el-row class="row_height" align="middle" type="flex">
         <input type= "hidden" id = "taskId" value ="${param.id}"/>
         <div hidden id = "taskVirtual">
             ${param.virtual}
         </div>
-        <p style="height: 5%;">>>关联关系</p>
+        <el-col :md="16"><p class="p_style" >>>关联关系图谱展示</p></el-col>
+        <el-col class="col_width">
+            <label>展示类型：</label>
+            <el-select class="select-width" @change="updateNode()" v-model="typeValue" multiple placeholder="请选择类型">
+                <el-option
+                        v-for="item in optionOne"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+        </el-col>
+        <el-col class="col_width">
+            <label>关联层级：</label>
+            <el-select class="select-width" @change="updateNode()" v-model="numValue" placeholder="请选择关联次数">
+                <el-option
+                        v-for="item in optionTwo"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+        </el-col>
+        <el-col :md="1">
+                <el-button class="button_width" type="primary" id="saveImg" @click="saveImg(event)">保存</el-button>
+        </el-col>
     </el-row>
     <el-row :gutter="10">
-        <el-col :md="4">
-            <el-row class="row_center">
-                <el-select class="select-width" @change="updateNode()" v-model="typeValue" multiple placeholder="请选择类型">
-                    <el-option
-                            v-for="item in optionOne"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
-            </el-row>
-            <el-row class="row_center">
-                <el-select class="select-width" @change="updateNode()" v-model="numValue" placeholder="请选择关联次数">
-                    <el-option
-                            v-for="item in optionTwo"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
-            </el-row>
-            <el-row class="row_center">
-                <%--<el-button type="primary" id="star" @click="circleTree()">星形图</el-button>--%>
-                <el-button class="button_width" type="primary" id="saveImg" @click="saveImg(event)">保存</el-button>
-            </el-row>
-        </el-col>
-        <el-col :md="20">
-            <div id="relation_body" style="height: 450px;background-color: #565654"></div>
+        <el-col :md="204">
+            <div id="relation_body" style="height: 450px;background-color: rgb(255, 255, 255)"></div>
         </el-col>
     </el-row>
-    <el-row align="middle" type="flex">
-        <p style="height: 5%;">>>关联明细</p>
+    <el-row class="row_height" align="middle" type="flex">
+        <p class="p_style">>>关联明细</p>
     </el-row>
     <el-row :gutter="10">
         <el-col :md="24">
@@ -127,14 +140,6 @@
                         width="180">
                 </el-table-column>
             </el-table>
-            <%--<el-pagination
-                    :total="total"
-                    :page-size="pageSize"
-                    :current-page.sync="page"
-                    layout="total, prev, pager, next, jumper"
-                    @current-change="getTableData"
-                    class="pagination_class"
-            ></el-pagination>--%>
         </el-col>
     </el-row>
 </div>
@@ -360,7 +365,7 @@ var Main = {
                                         str="("+arraynode[i].mobileArea+")";
                                     }
                                     $("#pic").attr("src","/jetk/picture/sim.png");
-                                    nodes+="\""+arraynode[i].account+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].account+str+"\",rectStyle:{fill:\"url(\'/jetk/picture/sim.png\')\",stroke:\"#00D3FF\",width:42,height:42,path:\"/jetk/picture/sim.png\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                                    nodes+="\""+arraynode[i].account+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].account+str+"\",rectStyle:{fill:\"url(\'/jetk/picture/sim.png\')\",stroke:\"#c1c5c6\",width:42,height:42,path:\"/jetk/picture/sim.png\"},textStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\"}},";;
                                 }else{
                                     if(arraynode[i].name=="IMEI"){
                                         var strimei="";
@@ -368,9 +373,9 @@ var Main = {
                                         }else{
                                             strimei="("+arraynode[i].facturer+")";
                                         }
-                                        nodes += "\"" + arraynode[i].virtualIdentity + arraynode[i].virtualType + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualIdentity + strimei + "\",rectStyle:{fill:\"url(/jetk/picture/" + arraynode[i].picturePath + ")\",stroke:\"#00D3FF\",width:42,height:42,path:\"/jetk/picture/" + arraynode[i].picturePath + "\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                                        nodes += "\"" + arraynode[i].virtualIdentity + arraynode[i].virtualType + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualIdentity + strimei + "\",rectStyle:{fill:\"url(/jetk/picture/" + arraynode[i].picturePath + ")\",stroke:\"#c1c5c6\",width:42,height:42,path:\"/jetk/picture/" + arraynode[i].picturePath + "\"},textStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\"}},";;
                                     } else {
-                                        nodes += "\"" + arraynode[i].virtualIdentity + arraynode[i].virtualType + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualIdentity + "\",rectStyle:{fill:\"url(/jetk/picture/" + arraynode[i].picturePath + ")\",stroke:\"#00D3FF\",width:42,height:42,path:\"/jetk/picture/" + arraynode[i].picturePath + "\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                                        nodes += "\"" + arraynode[i].virtualIdentity + arraynode[i].virtualType + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualIdentity + "\",rectStyle:{fill:\"url(/jetk/picture/" + arraynode[i].picturePath + ")\",stroke:\"#c1c5c6\",width:42,height:42,path:\"/jetk/picture/" + arraynode[i].picturePath + "\"},textStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\"}},";;
                                     }
                                 }
                             }
@@ -388,14 +393,12 @@ var Main = {
                                     strtime = new Date(arrayedge[j].updateTime).format("yyyy-mm-dd HH:MM:ss")
                                     // strtime = timeFormat(strtime);
                                 }
-                                edges += "{source:\"" + arrayedge[j].form + "\",target:\"" + arrayedge[j].to + "\",arrowStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\",\"stroke-width\":1},label:\"" + strcount + "\",labeldown:\"" + strtime + "\"},"
+                                edges += "{source:\"" + arrayedge[j].form + "\",target:\"" + arrayedge[j].to + "\",arrowStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\",\"stroke-width\":1},label:\"" + strcount + "\",labeldown:\"" + strtime + "\"},"
                             }
                             nodes = nodes.substring(0, nodes.length - 1);
                             edges = edges.substring(0, edges.length - 1);
                             nodes += "}";
                             edges += "]";
-                            // 			console.log("nodes:"+nodes);
-                            // 			console.log("edges:"+edges);
                             var hh = "{nodes:" + nodes + ",edges:" + edges + "}";
                             hhjson = hh;
                             var sss = eval("(" + hh + ")");
@@ -446,6 +449,10 @@ var Main = {
                             obj.label = "大于"+i+"层"
                             arr.push(obj);
                         }
+                        var objdefault ={};
+                        objdefault.value = 0;
+                        objdefault.label = "默认";
+                        arr.push(objdefault);
                         me.optionTwo = arr;
                     },
                     error: function(err) {

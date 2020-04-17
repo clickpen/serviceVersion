@@ -1,24 +1,42 @@
 (() => {
     const pathMatch = location.search.match(/[?|&]path=([^&]+)/)
     const path = pathMatch ? pathMatch[1] : ''
-    const changeNavActive = index => {
-        $('.J-nav-card').eq(index).addClass('active')
+    const changeNavActive = type => {
+        $('.J-nav-card[name="' + type + '"]').addClass('active')
     }
-    if(/index\//.test(path)) {
-        changeNavActive(0)
+    if(!path) {
+        const _link = $('.J-nav-card').eq(0).find('a').attr('href')
+        if(_link) {
+            window.location.href = _link
+        }
     }
-    if(/judgingTool\//.test(path)) {
-        changeNavActive(1)
+    if (/index\//.test(path)) {
+        changeNavActive('index')
     }
-    if(/prevenModel\//.test(path)) {
-        changeNavActive(2)
+    if (/judgingTool\//.test(path)) {
+        changeNavActive('judgingTool')
     }
-    if(/case\//.test(path)) {
-        changeNavActive(3)
+    if (/prevenModel\//.test(path)) {
+        changeNavActive('prevenModel')
     }
-    if(/systemManage\//.test(path)) {
-        changeNavActive(4)
+    if (/case\//.test(path)) {
+        changeNavActive('case')
     }
+    if (/systemModel\//.test(path)) {
+        changeNavActive('systemModel')
+    }
+    $('.J-quit-login').on('click', function() {
+        $.ajax({
+            url: 'logout',
+            type: 'post',
+            success() {
+                location.href = 'login'
+            },
+            error() {
+                console.log('退出登录失败了')
+            }
+        })
+    })
 })()
 /**
  * 格式化时间
@@ -68,4 +86,19 @@ function formatTime(time, type) {
     } else {
         return _date
     }
+}
+/**
+ * 调用语音系统
+ * @param text String 需要读的内容
+ */
+function myReadText(text) {
+    if(!speechSynthesis) {
+        return console.log('当前浏览器不支持语音读取内容！')
+    }
+    let synth = speechSynthesis
+    let options = new SpeechSynthesisUtterance()
+    options.lang = 'zh-CN'
+    options.rate = 1
+    options.text = text
+    synth.speak(options)
 }

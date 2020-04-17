@@ -30,6 +30,10 @@
         .judge-wrapper .row_center{
             text-align: center;
         }
+        .judge-wrapper td,th {
+            font-size: 14px;
+            color: #606266;
+        }
     </style>
 </head>
 <body>
@@ -332,12 +336,10 @@
             handleDetail:function (index,row) {
             	/* console.log(row); */
             	if(row.operationType==2) {
-            		console.log(row);
-            		//window.location.href = 'index?path=judgingTool/trajectoryAnalysis&param='+row.account;
             		window.open('index?path=judgingTool/trajectoryAnalysis&account='+row.account+"&id="+row.id);  
             	}  else if (row.operationType==10) {
             	    var obj = JSON.parse(row.virtual);
-            		window.location.href = 'index?path=identityModel/identity&virtual='+encodeURI(row.virtual)+"&id="+row.id;
+            		window.open('index?path=identityModel/identity&virtual='+encodeURI(row.virtual)+"&id="+row.id);
             	}
             },
             /*任务查询*/
@@ -350,12 +352,20 @@
             },
             /*多号码轨迹按钮*/
             moreTelCompare(){
-                var list = this.multipleSelection;
+            	let me = this;
+            	var list = this.multipleSelection;
                 if(list.length>5){
                     alert("号码数量不可以超过5");
                 }else{
-                    /*跳转到轨迹分析*/
+                   var taskIds = ''; 
+                   for (var index in list) {
+                   		taskIds += list[index].id +",";
+                   }
+                   if (taskIds) {
+                		window.open('index?path=judgingTool/multiple_trajectories&id='+taskIds);  
+                   }
                 }
+               
             },
             /*多号码轨迹按钮显示控制*/
             handleSelectionChange(val) {
@@ -386,7 +396,7 @@
                 var point = location.lastIndexOf(".");
                 var type = location.substr(point).toUpperCase();
                 if (!(type == '.XLSX' || type == '.XLS')) {
-                   Alert('只能上传XLSX或XLS类型的文件', 'warning');
+                   alert('只能上传XLSX或XLS类型的文件');
                     return false;
                 }
                 var fd = new FormData();
@@ -465,7 +475,9 @@
               }
             },
             formatterTime(row,column){
-              return row.startTime+"-"+row.endTime;
+                var start = new Date(row.startTime).format("yyyy-MM-dd hh:mm:ss");
+                var end = new Date(row.endTime).format("yyyy-MM-dd hh:mm:ss");
+              return start+"-"+end;
             },
             formatterTimes(row,colum){
               return (Date.parse(row.resultTime)-Date.parse(row.sendTime))/1000;
@@ -474,11 +486,37 @@
                 let me = this
                 var data = {};
                 if(this.radio==1){
+                    if(null==me.form.caseNum||''==me.form.caseNum){
+                        alert('案件不能为空');
+                        return
+                    }
+                    if(null==me.form.searchCondition||''==me.form.searchCondition){
+                        alert('搜索条件不能为空');
+                        return
+                    }
+                    if(null==me.form.searchType||''==me.form.searchType){
+                        alert('搜索类型不能为空');
+                        return
+                    }
+                    if(null==me.form.startTime||''==me.form.startTime){
+                        alert('开始时间不能为空');
+                        return
+                    }
+                    if(null==me.form.endTime||''==me.form.endTime){
+                        alert('结束时间不能为空');
+                        return
+                    }
+                    if(me.radioTime==1){
+                        if(null==me.form.bwTime||''==me.form.bwTime){
+                            alert('定时间隔不能为空');
+                            return
+                        }
+                    }
                     data.caseNum = me.form.caseNum
                     data.searchCondition= me.form.searchCondition
                     data.searchType= me.form.searchType
                     data.startTime= me.form.startTime.format("yyyy-MM-dd HH:mm:ss")
-                    data.endTime= me.form.startTime.format("yyyy-MM-dd HH:mm:ss")
+                    data.endTime= me.form.endTime.format("yyyy-MM-dd HH:mm:ss")
                     data.caseDesc= me.form.caseDesc
                     data.timingSend= me.radioTime
                     data.bwTime= me.form.bwTime
@@ -569,6 +607,10 @@
                             obj.label = res.result[i].caseName
                             arr.push(obj)
                         }
+                        var objDefault = {};
+                        objDefault.value = ""
+                        objDefault.label = "未选择"
+                        arr.push(objDefault)
                     },
                     error: function (err) {
                         console.log('error',err);

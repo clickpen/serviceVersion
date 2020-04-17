@@ -34,14 +34,18 @@
 		</div>
 		<div class="case">
 				<el-table :data="tableData"  @selection-change="handleSelectionChange" stripe v-loading="loading">
-				<el-table-column type="selection"  :selectable = "selectAble"></el-table-column>
-				<el-table-column label="案件ID"  prop="id"></el-table-column>
+				<el-table-column type="selection"  width="55"  :selectable = "selectAble"></el-table-column>
+				<!--<el-table-column label="案件ID"  prop="id"></el-table-column> -->
 				<el-table-column label="案件编号" prop="caseNum" show-overflow-tooltip></el-table-column>
 				<el-table-column label="案件名称" prop="caseName" show-overflow-tooltip></el-table-column>
 				<el-table-column label="案件类型" prop="caseTypeDesc"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件状态" prop="statusStr"  show-overflow-tooltip></el-table-column>
+				<el-table-column label="提交人" prop="userName"  show-overflow-tooltip></el-table-column>
 				<el-table-column label="案件描述" prop="caseDesc"  show-overflow-tooltip></el-table-column>
 				<el-table-column label="新建案件时间" prop="operationTime" show-overflow-tooltip></el-table-column>
 				<el-table-column label="案件失效时间" prop="invalidTime"   show-overflow-tooltip></el-table-column>
+				<el-table-column label="审核人" prop="auditUser"   show-overflow-tooltip></el-table-column>
+				<el-table-column label="案件审批意见" prop="auditSuggest"   show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作">
 			    <template slot-scope="scope"><el-button v-if="scope.row.status == 1"  @click="handleAudit(scope.$index, scope.row)">审批</el-button></template>
 			    </el-table-column>
@@ -89,7 +93,6 @@
 			    <el-form-item label="审批意见" prop="suggest" :label-width="formLabelWidth">
 			      <el-input type="textarea" v-model="auditForm.suggest"></el-input>
 			    </el-form-item>
-			   
 			  </el-form>
 			  <div slot="footer" class="dialog-footer">
 			    <el-button @click="closeAuditForm('ruleAuditForm')">取 消</el-button>

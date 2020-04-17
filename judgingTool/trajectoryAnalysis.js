@@ -1,3 +1,22 @@
+Date.prototype.format = function(fmt) {
+	var o = {
+		"M+": this.getMonth() + 1, //月份
+		"d+": this.getDate(), //日
+		"h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+		"H+": this.getHours(), //小时
+		"m+": this.getMinutes(), //分
+		"s+": this.getSeconds(), //秒
+		"q+": Math.floor((this.getMonth() + 3) / 3), //季度
+		"S": this.getMilliseconds() //毫秒
+	};
+	if (/(y+)/.test(fmt))
+		fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+	for (var k in o)
+		if (new RegExp("(" + k + ")").test(fmt))
+			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+	return fmt;
+}
+
 function MyMapInfo(point, className, callback) {
     this._point = point
     this._className = typeof className === 'string' ? className : ''
@@ -60,13 +79,14 @@ const trajectoryObj = {
 	night3data:[],
 	night4data:[],
 	cover1data:[],
-    init() {
+	trajectoryPoints:[],
+    init:function() {
         this.array = [];
         this.$map = new BMap.Map('mapContent', { enableMapClick: false })
 //        this.initCloud()
         this.initMap();
     },
-    initMapEventListener(coll,data) {//初始化监听
+    initMapEventListener:function(coll,data) {//初始化监听
     	const me = this;
     	coll.addEventListener('click', function (e) {
     		if (data) {
@@ -76,7 +96,7 @@ const trajectoryObj = {
 	 					var point = new BMap.Point(e.point.lng,e.point.lat);
 	 					me.$map.centerAndZoom(point, me.$map.getZoom());
 	 					me.$map.removeOverlay(me.myInfoMarker);
-	 					let className = Math.random() > 0.5 ? 'red-info' : 'green-info';
+	 					let className = item.num >= 30 ? 'red-info' : 'green-info';
 	 					me.showMapInfo(point, className,item);
 	 				}
 	 			}
@@ -126,84 +146,12 @@ const trajectoryObj = {
 		me.$map.addOverlay(this.night4PointCollection);
 		me.$map.addOverlay(this.cover1PointCollection);
     },
-//    addMapObj(tt){
-//		var str = '';
-//		if  (tt.type ==1) {
-//			var hour =  tt.num/60;
-//			if (hour>=4) {
-//				str = 'day1';
-//			} else if (hour>=1 && hour< 4) {
-//				str = 'day2';
-//			} else if (hour < 1 && tt.num>=  30) {
-//				str = 'day3';
-//			} else if( tt.num < 30) {
-//				str = 'day4';
-//			}
-//		} else 	if (tt.type ==2) {
-//			var hour = tt.num/60;
-//			if (hour>=4) {
-//				str = 'night1';
-//			} else if (hour>=1 && hour< 4) {
-//				str = 'night2';
-//			} else if (hour < 1 && tt.num>=  30) {
-//				str = 'night3';
-//			} else if( tt.num < 30) {
-//				str = 'night4';
-//			}
-//		} else 	if (tt.type ==3) {
-//			str = 'cover1';
-//		}
-//		trajectoryObj.addMapPoint(tt.x, tt.y, str,tt.num);
-//    }
-    // 添加地图点
-//    addMapPoint(x, y, type,num) {
-//        const me = this
-//        if(!type) {
-//            return
-//        }
-//        let point = new BMap.Point(x, y)
-//        let icon = null
-//        let iconSize = new BMap.Size(30, 39)
-//        let offset = new BMap.Size(0, -18)
-//        // 对type进行类型判断
-//        switch(type) {
-//            case 'day1':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-1.png', iconSize)
-//                break
-//            case 'day2':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-2.png', iconSize)
-//                break
-//            case 'day3':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-3.png', iconSize)
-//                break
-//            case 'day4':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/day-4.png', iconSize)
-//                break
-//            case 'night1':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-1.png', iconSize)
-//                break
-//            case 'night2':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-2.png', iconSize)
-//                break
-//            case 'night3':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-3.png', iconSize)
-//                break
-//            case 'night4':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/night-4.png', iconSize)
-//                break
-//            case 'cover1':
-//            icon = new BMap.Icon('/jetk/views/judgingTool/imgs/cover-1.png', iconSize)
-//                break
-//            default:
-//                return
-//        }
-//    },
     // 展示地图info框
     showMapInfo(point, className, data) {
         const me = this
         let myInfoMarker = new MyMapInfo(point, className, ($dom, pixel) => {
             let _html = `<div class="map-info-image">
-            		<img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg'">
+            		<img src="/jetk/appIcon/http.png">
                 </div>
                 <ul class="map-info-list">
                     <li class="map-info-card">
@@ -221,9 +169,12 @@ const trajectoryObj = {
                     <li class="map-info-card">
 	                    x：${data.x} --  y：${data.y}
 	                </li>
-	                <li class="map-info-card">
-		               地址：${data.address}
-		            </li>
+	                <el-popover placement="top-start" title="协议" width="200" trigger="hover"
+                        v-bind:content="${data.address}">
+                        <li  slot="reference" class="map-info-card" title ="${data.address}">
+			               地址：${data.address}
+			            </li>
+                    </el-popover>
                 </ul>`
             $dom.innerHTML = _html
             // 对地图信息窗进行重新计算位置
@@ -237,8 +188,14 @@ const trajectoryObj = {
 new Vue({
     el: '#trajectoryAnalysis',
     data: {
+    	trackKeyApp:[],
+    	trackVirtual:[],//虚拟身份分析
+    	webSite:[], //网站分析。
+    	trackProtocol:[],//协议分析。
+    	dialogSearch:false,
         netimageShow: true,
         total: 0,
+        labelname:'',
         pageSize: 10,
         loading: false,
         page: 1,
@@ -258,9 +215,61 @@ new Vue({
 		status:0, //0 回放结束 ,1回放进行中, 2 暂停状态。
 		timescan:96,
 		startTime:1,
+		accountAddress:'',
 		endTime:1,
 		time_interval:0,
 		icount:0,//运行到底n个
+		inputWidth: '468px',
+		formLabelWidth: '120px',
+		trackDayStopover:'',
+		trackNightStopover:'',
+		form: {
+			accessTime: '',
+			imei: '',
+			imsi: '',
+			priIp: '',
+			pubIp: '',
+			pubPort:'',
+			dstIp:'',
+			dstPort:'',
+			serviceName:'',
+			labelName:'',
+			url:'',
+			lac:'',
+			ci:'',
+			address:'',
+		},
+		pickerOptions: {
+	      shortcuts: [{
+	          text: '最近一周',
+	          onClick(picker) {
+	            const end = new Date();
+	            const start = new Date();
+	            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+	            picker.$emit('pick', [start, end]);
+	          }
+	        }, {
+	          text: '最近一个月',
+	          onClick(picker) {
+	            const end = new Date();
+	            const start = new Date();
+	            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+	            picker.$emit('pick', [start, end]);
+	          }
+	        }, {
+	          text: '最近三个月',
+	          onClick(picker) {
+	            const end = new Date();
+	            const start = new Date();
+	            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+	            picker.$emit('pick', [start, end]);
+	          }
+	        }]
+	      },
+	    
+		rules: {
+			
+		},
     },
     mounted() {
         trajectoryObj.init();
@@ -270,6 +279,63 @@ new Vue({
         this.loadDada();
     },
     methods: {
+    	// 点击列表展示地图点
+    	handleShowPoint(data) {
+    		let me = this;
+    		//判断是否已经结束 回放了。
+    		if(me.status != 0) {
+    			me.$message.closeAll();
+    			me.$message({
+  		          message: '请等待轨迹回放完成',
+  		          type: 'warning'
+  		        });
+    			return;
+    		}
+    		if(!data.x || !data.y) {
+    			return
+    		} else {
+				for (var index in me.trajectory) {
+	         		var item = me.trajectory[index];
+	 				if (item.x == data.x && item.y == data.y) {
+	 					var point = new BMap.Point(data.x,data.y);
+	 					trajectoryObj.$map.centerAndZoom(point, trajectoryObj.$map.getZoom());
+	 					trajectoryObj.$map.removeOverlay(trajectoryObj.myInfoMarker);
+	 					let className =item.num> 30 ? 'red-info' : 'green-info';
+	 					trajectoryObj.showMapInfo(point, className,item);
+	 					break;
+	 				}
+	 			}
+    		}
+    	},
+    	submitForm(formName) {
+    	  this.getTableDada();
+        },
+        resetForm(formName) {
+			this.$refs[formName].resetFields();
+			this.form = {
+				accessTime: '',
+				imei: '',
+				imsi: '',
+				priIp: '',
+				pubIp: '',
+				pubPort:'',
+				dstIp:'',
+				dstPort:'',
+				serviceName:'',
+				labelName:'',
+				url:'',
+				lac:'',
+				ci:'',
+				address:''
+			}
+		},
+    	handleClose: function(done) {
+			this.$confirm('确认关闭？')
+				.then(() => {
+					done();
+				})
+				.catch(() => {});
+		},
     	handleForward:function() {//快进
     		let me = this;
     		if (me.current <= me.fastforwardMax) {
@@ -278,10 +344,7 @@ new Vue({
     			me.current = me.current* me.fastforward;
     		} 
     	},
-	/*    handleForwardMax:function() {//最大快进
-	    	let me = this;
-	    	me.current = me.fastforwardMax;
-		},*/
+
     	handleRewind:function() {//慢进
     		let me = this;
     		if (me.current>= me.fastforwardMax) {
@@ -290,12 +353,27 @@ new Vue({
     			me.current = me.current* me.fastrewind;
     		} 
 		},
-	/*	handleRewindMin:function() {//最大慢进。
-			let me = this;
-			me.current = me.fastrewindMin;
-		},*/
-    	handleplayback:function() {//处理轨迹回放。
+
+    	handleplayback:function(ck) {//处理轨迹回放。
     		let me = this;
+    		if (ck) { 
+	    		if(me.status == 1) {
+	    			me.status = 2;
+	    			me.$message.closeAll();
+	    			me.$message({
+	  		          message: '暂停',
+	  		          type: 'success',
+	  		          duration:0
+	  		        });
+	    		} else if (me.status ==  2) {
+	    			me.$message.closeAll();
+	    			me.$message({
+    		          message: '取消暂停',
+    		          type: 'success'
+	    		    });
+	    			me.status = 1;
+	    		}
+    		}
     		var count = 0;
     		trajectoryObj.$map.removeOverlay(trajectoryObj.myInfoMarker);
     		if (me.index == 0) {
@@ -365,6 +443,11 @@ new Vue({
     			if (me.index>me.timescan) {
     				me.index = 0;
     				me.status = 0; 
+    				me.$message({
+    	  		          message: '轨迹回放完成',
+    	  		          type: 'success'
+    	  		    });
+    				me.$message.closeAll();
     			}
     		} else if (me.trajectory.length == 1 ) {
     			for (var i = 0;i< me.trajectory.length; i++) {
@@ -428,24 +511,50 @@ new Vue({
             let me = this;
             me.loading = true;
             page = page || 1;
+      	  	var startTime= '';
+      	  	var endTime= '';
+      	  	console.log(me.labelName);
+      	  	if (me.form.accessTime) {
+      	  		startTime= (me.form.accessTime[0]).format("yyyy-MM-dd HH:mm:ss");
+      	  		endTime= (me.form.accessTime[1]).format("yyyy-MM-dd HH:mm:ss");
+      	  	} 	  	
             $.ajax({
                 url: '/jetk/queryTask/syresult/list',
                 type: "post",
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
                 data: {
+                	
                     page: page,
                     limit: me.pageSize,
                     taskId: me.taskId,
+                    account:me.account,
+                    imei:me.form.imei,
+ 	               	imsi:me.form.imsi,
+ 	               	priIp:me.form.priIp,
+ 	               	pubIp:me.form.pubIp,
+ 	               	pubPort:me.form.pubPort,
+ 	               	dstIp:me.form.dstIp,
+ 	               	dstPort:me.form.dstPort,
+ 	               	serviceName:me.form.serviceName,
+ 	               	labelName:me.labelName,
+ 	               	url:me.form.url,
+ 	               	lac:me.form.lac,
+ 	               	ci:me.form.ci,
+ 	               	address:me.form.address,
+ 	               	startTime:startTime,
+ 	               	endTime:endTime
                 },
                 success: function(res) {
                     me.trajectoryTableData = res.data;
                     me.total = res.count;
                     me.loading = false;
+                    me.dialogSearch = false;
                 },
                 error: function(err) {
                     console.log('出错了', err);
                     me.loading = false;
+                    me.dialogSearch = false;
                 }
             });
         },
@@ -467,31 +576,22 @@ new Vue({
                 		//号码归属地。
                     	var address = result.accountBelong;
                     	if (address) {
-                    		$("#accountAddress").text(address);
+                    		me.accountAddress=address;
                     	}
                     	//虚拟身份。
                     	var  trackVirtual  = result.trackVirtual;
                     	if (trackVirtual) {
-                    		for (var i = 0;i<trackVirtual.length;i++) {
-                    			var str = "<p class='content'><span class='label'>"+trackVirtual[i].virtualName+"：</span><span>"+trackVirtual[i].virtualIdentity+"</span></p>";
-                    			$("#virtualList").append(str);
-                    		}
+                    		me.trackVirtual = trackVirtual;
                     	}
                     	//网站分析。
                      	var  trackWebName  = result.trackWebName;
                      	if (trackWebName) {
-                     		for (var i = 0;i<trackWebName.length;i++) {
-                     			var  str = "<p class='content'><span class='des'>"+trackWebName[i].website+"</span><span class='type'>"+trackWebName[i].webName+"</span><span class='number'>"+trackWebName[i].num+"条</span></p>";
-                    			$("#trackWebNameList").append(str);
-                    		}
+                     		me.webSite = trackWebName;
                      	}
                     	//访问协议分析
                      	var trackProtocol = result.trackProtocol;
                      	if (trackProtocol) {
-                     		for (var i = 0;i<trackProtocol.length;i++) {
-                     			var str = "<p class='content'><span class='des'>"+trackProtocol[i].dstPort+"</span><span class='type'>"+trackProtocol[i].dstName+"</span><span class='number'>"+trackProtocol[i].num+"条</span></p>";
-                     			$("#trackProtocolList").append(str);
-                    		}
+                     		me.trackProtocol= trackProtocol;
                      	}
                     	//关键词分析(注：文字云)
                     	var keyWord = [];
@@ -508,58 +608,49 @@ new Vue({
                     	//使用APP分析
                     	var trackKeyApp = result.trackKeyApp;
                     	if (trackKeyApp) {
-                    		for (var i = 0;i<trackKeyApp.length;i++) {
-            					var str =   "<li class='app-card'>'"+
-            						"<img src='https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg'>"+
-                                	"<p class='app-tit'>"+trackKeyApp[i].serviceName+"</p>"+
-                                	"<p class='app-num'>"+trackKeyApp[i].num+"条</p>"+
-                                "</li>";
-            					$('#trackApp').html(str);	
-                    		}
+                    		me.trackKeyApp=trackKeyApp;
                     	}
                     	//白天落脚点。
                     	var trackDayStopover = result.trackDayStopover;
                     	if (trackDayStopover) {
-                    		$("#dayLac").text(trackDayStopover.lac);
-                    		$("#dayCi").text(trackDayStopover.ci);
-                    		$("#dayAddress").text(trackDayStopover.address);
+                    		me.trackDayStopover = trackDayStopover;
                     	}
                     	//夜间落脚点。
                     	var trackNightStopover = result.trackNightStopover;
                     	if (trackNightStopover) {
-                    		$("#nightLac").text(trackNightStopover.lac);
-                    		$("#nightCi").text(trackNightStopover.ci);
-                    		$("#nightAddress").text(trackNightStopover.address);
+                    		me.trackNightStopover = trackNightStopover;
                     	}
                     	//时空分布。
                     	var mapTrackSapceTime = [];
                     	var trackSpaceTime = result.trackSpaceTime;
                     	if (trackSpaceTime) {
-                    		for (var i = 0;i<trackSpaceTime.length;i++) {
-                    			var index = {};
-                    			index.timeScan = trackSpaceTime[i].timeScan;
-                    			var tlist = trackSpaceTime[i].list;
-                    			if (tlist.length >=1) {
-                    				index.position1 = tlist[0].lac +"," +tlist[0].ci ;
-                    			}
-                    			if (tlist.length >=2) {
-                    				index.position2 =tlist[1].lac +"," +tlist[0].ci ;
-                    			}
-								if (tlist.length >=3) {
-									index.position3 =tlist[2].lac +"," +tlist[2].ci ;
-                    			}
-								mapTrackSapceTime.push(index);
-                    		}
+                    		me.mapAnalysisTable = trackSpaceTime;
                     	}
-                    	me.mapAnalysisTable = mapTrackSapceTime;
+                    	//标签
+                    	var trackLabel = result.trackLabel;
+                    	if (trackLabel) {
+                    		for (var i= 0; i< trackLabel.length;i++) {
+                    			var str = "<li class='journal-search-card J-journal-search-card' data-labelname=" + trackLabel[i].labelName + ">" + trackLabel[i].labelName + "(" + trackLabel[i].num +  ")</li>"
+	        					$('#trackLabel').append(str);
+                    		}
+                    		$('.J-journal-search-card').on('click', function() {
+                    			console.log($(this).css("active"));
+                    			if ($(this).hasClass('active'))  {
+                    				me.labelName = '';
+                    				$(this).removeClass('active');	
+                    			} else {
+	                    			$(this).addClass('active').siblings().removeClass('active');
+	                    			me.labelName = $(this).data().labelname;
+                    			} 
+                    			me.getTableDada();
+                    		})
+                    	}
                     	//轨迹。
                     	var trackTrajectory = result.trackTrajectory;
                     	if (trackTrajectory) {
-                    	// = trackTrajectory;
                     		for (var i= 0; i< trackTrajectory.length;i++) {
                     			var tt = trackTrajectory[i];
                     			if (tt.x && tt.y) {
-   
                     				var type = tt.type;
 	                    			let point = new BMap.Point(tt.x, tt.y);
 	                    			if (type == 1) {                    					
@@ -606,6 +697,7 @@ new Vue({
                     					trajectoryObj.cover1data.push(tt);
 	                    			}
 	                    			me.trajectory.push(tt);
+	                    			trajectoryObj.trajectoryPoints.push(trajectoryObj);
                     			}
                     		}
                     		trajectoryObj.day1PointCollection.setPoints(trajectoryObj.day1point);
@@ -616,7 +708,7 @@ new Vue({
                     		trajectoryObj.night2PointCollection.setPoints(trajectoryObj.night2point);
                     		trajectoryObj.night3PointCollection.setPoints(trajectoryObj.night3point);
                     		trajectoryObj.night4PointCollection.setPoints(trajectoryObj.night4point);
-                    		trajectoryObj.cover1PointCollection.setPoints(trajectoryObj.cover1point);                    		
+                    		trajectoryObj.cover1PointCollection.setPoints(trajectoryObj.cover1point);    
                     	}
                 	}
                 },

@@ -1,3 +1,15 @@
+.webkit-scroll-custom::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+}
+.webkit-scroll-custom::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, .4);
+    border-radius: 2px;
+}
+.webkit-scroll-custom::-webkit-scrollbar-track {
+    background-color: transparent;
+}
 .content-wrapper .el-table td, .el-table th {
 	padding: 5px 0;
 }
@@ -26,14 +38,14 @@
 	padding: 5px 10px 10px;
 	box-shadow: 0px 6px 20px 0px rgba(193, 207, 217, 0.2);
 }
-.content-wrapper .left-content .user-message .title {
+/* .content-wrapper .left-content .user-message .title {
 	font-size: 12px;
 	color: #646d82;
 }
 .content-wrapper .left-content .user-message .title b {
 	font-size: 16px;
 	color: #2281ff;
-}
+} */
 .content-wrapper .left-content .user-message .user-card {
 	margin-top: 35px;
 	text-align: center;
@@ -42,6 +54,7 @@
 	width: 80px;
 	height: 80px;
 	border-radius: 50%;
+	border: none;
 	overflow: hidden;
 	margin-bottom: 10px;
 }
@@ -149,6 +162,13 @@
 .content-wrapper .right-content .top-tips .card .action {
 	color: #646d82;
 }
+.content-wrapper .right-content .top-tips .no-data-holder {
+	width: 100%;
+	text-align: center;
+	color: #ccc;
+	font-size: 12px;
+	line-height: 30px;
+}
 .content-wrapper .right-content .mid-card {
 	position: relative;
 	margin-top: 10px;
@@ -219,29 +239,32 @@
 	height: 100%;
 	background-color: #fff;
 	border-radius: 4px;
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
 	box-sizing: border-box;
 	padding: 5px 10px 10px;
 	box-shadow: 0px 6px 20px 0px rgba(193, 207, 217, 0.2);
 }
-.content-wrapper .right-content .bottom-card .case-stat-chart,
-.content-wrapper .right-content .bottom-card .fun-stat-chart {
+.content-wrapper .right-content .bottom-card .case-stat-chart{
 	width: 100%;
 	height: 265px;
 }
 .content-wrapper .right-content .bottom-card .source-stat {
 	margin: 0;
 }
-.content-wrapper .right-content .bottom-card .source-stat .source-stat-wrapper {
+.content-wrapper .right-content .bottom-card .source-stat .source-stat-wrapper,
+.content-wrapper .right-content .bottom-card .fun-stat .fun-stat-wrapper {
 	width: 100%;
 	padding-top: 10px;
 }
-.content-wrapper .right-content .bottom-card .source-stat .source-stat-wrapper p {
+.content-wrapper .right-content .bottom-card .source-stat .source-stat-wrapper p,
+.content-wrapper .right-content .bottom-card .fun-stat .fun-stat-wrapper p {
 	position: relative;
 	margin-top: 15px;
 	font-size: 12px;
 }
-.content-wrapper .right-content .bottom-card .source-stat .source-stat-wrapper p .num {
+.content-wrapper .right-content .bottom-card .source-stat .source-stat-wrapper p .num,
+.content-wrapper .right-content .bottom-card .fun-stat .fun-stat-wrapper p .num {
 	position: absolute;
 	top: 0;
 	right: 20px;

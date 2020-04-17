@@ -40,7 +40,7 @@
 					<div class="message-wrapper J-messageBoxWrapper">
 						<div class="message-box">
 							<h5 class="tit">
-								重点人列表
+								预警列表
 								<span class="message-box-btn J-hideMessageBox">&lt;&lt;</span>
 							</h5>
 							<div class="message-search">
@@ -154,7 +154,7 @@
 		</div>
 		<!-- 预警管理搜索 -->
 		<div class="child-table-search" v-if="prevenTab == 'prevenWarn'">
-			<el-input size="mini" class="search-input" clearable v-model="warnSearchInput" placeholder="输入您想要搜索的内容">
+			<el-input size="mini" class="search-input" clearable v-model="warnSearchInput" placeholder="输入您想要搜索的预警名称">
 				<el-button slot="append" @click="searchWarnTable" icon="el-icon-search"></el-button>
 			</el-input>
 			<el-button size="mini" class="el-icon-circle-plus-outline" @click="() => {showWarnDialog()}">新增预警策略
@@ -177,27 +177,27 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="姓名：" :rules="{required: true}">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrUserName"></el-input>
+						<el-input size="mini" placeholder="请输入姓名" maxlength="20" v-model="zdrDialogForm.zdrUserName"></el-input>
 					</el-form-item>
 					<el-form-item label="手机号码：" :rules="{required: true}">
 						<el-input size="mini" placeholder="请输入手机号" :disabled="!!zdrDialogForm.id" maxlength="11" v-model="zdrDialogForm.account">
 						</el-input>
 					</el-form-item>
 					<el-form-item label="管控级别：" :rules="{required: true}">
-						<el-select v-model="zdrDialogForm.zdrControlLevel" size="mini">
+						<el-select v-model="zdrDialogForm.zdrControlLevel" placeholder="请选择级别" size="mini">
 							<el-option label="一级管控" :value="1"></el-option>
 							<el-option label="二级管控" :value="2"></el-option>
 							<el-option label="三级管控" :value="3"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="身份证号：" :rules="{required: true}">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrIdentification"></el-input>
+						<el-input size="mini" placeholder="请输入身份证号" maxlength="18" v-model="zdrDialogForm.zdrIdentification"></el-input>
 					</el-form-item>
 					<el-form-item label="责任单位：" :rules="{required: true}">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrEmployer"></el-input>
+						<el-input size="mini" placeholder="请输入责任单位名称" maxlength="20" v-model="zdrDialogForm.zdrEmployer"></el-input>
 					</el-form-item>
 					<el-form-item label="责任人：" :rules="{required: true}">
-						<el-input size="mini" placeholder="请输入姓名" v-model="zdrDialogForm.zdrResponsible"></el-input>
+						<el-input size="mini" placeholder="请输入责任人名称" maxlength="20" v-model="zdrDialogForm.zdrResponsible"></el-input>
 					</el-form-item>
 				</el-form>
 			</div>

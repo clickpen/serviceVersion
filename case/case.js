@@ -119,6 +119,10 @@ new Vue({
 		submitForm: function(formName) {
 			let me = this
 			this.$refs[formName].validate((valid) => {
+				console.log(me.form.invalidTime);
+				console.log(typeof  me.form.invalidTime);
+				console.log(me.form.invalidTime.format("yyyy-MM-dd HH:mm:ss"));
+				
 				if (valid) {
 					$.ajax({
 						url: '/jetk/case/addCase',

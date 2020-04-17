@@ -9,7 +9,15 @@ new Vue({
         usermanageTableData: [],
         usermanageDialogShow: false,
         usermanageDialogForm: {},
-        showUserId: false,
+        showUserId: false,//是否展示用户id
+
+        //用户组
+        addUserGroupDialogTitle:'新增用户组',
+        userGroupManageTotal: 0, //结果总数
+        usergroupmanageTableData: [],
+        usergroupmanageDialogShow: false,
+        usergroupmanageDialogForm: {},
+
         //角色相关数据
         addRoleDialogTitle: '新增角色',
         roleManageTotal: 0,
@@ -224,6 +232,10 @@ new Vue({
             	me.usermanageDialogShow = true;
             	me.addUserDialogTitle = "新增用户";
             	me.usermanageDialogForm = {};
+        	}else if(type === "userGroupManage"){
+        		me.usergroupmanageDialogShow = true;
+        		me.addUserGroupDialogTitle = "新增用户组";
+        		me.usergroupmanageDialogForm = {};
         	}else if(type === "roleManage"){
         		me.rolemanageDialogShow = true;
         		me.addRoleDialogTitle = "新增角色";
@@ -250,12 +262,13 @@ new Vue({
                 type: 'warn',
             }).then(() => {
                 if(type === "userManage"){
-                    let me = this;
-                    me.loading = true;
+                	let me = this;
+                	me.loading = true;
                     $.ajax({
                         url: '/jetk/user/delUser',
                         type: "post",
                         dataType: "json",
+                        async : false,
                         contentType: "application/x-www-form-urlencoded; charset=utf-8",
                         data: {
                             userId: data.userId,
@@ -277,13 +290,42 @@ new Vue({
                             console.log('出错了', err);
                         }
                     });
+                }else if(type === "userGroupManage"){
+                	let me = this;
+                	me.loading = true;
+                	$.ajax({
+                        url: '/jetk/user/deleteUserGroup',
+                        type: "post",
+                        dataType: "json",
+                        async : false,
+                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                        data: {
+                            id: data.id,
+                        },
+                        success: function(res) {
+                            me.loading = false;
+                            let status = res.status;
+                            let data = res.data;
+                            let message = res.message;
+                            if(status === "success"){
+                                me.$message.info(data);
+                            }else{
+                                me.$message.error(message);
+                            }
+                        },
+                        error: function(err) {
+                            me.loading = false;
+                            console.log('出错了', err);
+                        }
+                    });
                 }else if(type === "roleManage"){
                 	let me = this;
-                    me.loading = true;
+                	me.loading = true;
                     $.ajax({
                         url: '/jetk/user/delRole',
                         type: "post",
                         dataType: "json",
+                        async : false,
                         contentType: "application/x-www-form-urlencoded; charset=utf-8",
                         data: {
                             roleId: data.roleId,
@@ -319,6 +361,15 @@ new Vue({
         		me.usermanageDialogShow = true;
         		me.addUserDialogTitle = "编辑用户";
         		me.usermanageDialogForm = data;
+        	}else if(type === "userGroupManage"){
+        		me.usergroupmanageDialogShow = true;
+        		me.addUserGroupDialogTitle = "编辑用户组";
+        		me.usergroupmanageDialogForm = data;
+        		let ids = data.userIds;
+        		if(ids){
+        			me.usergroupmanageDialogForm.userIds = ids.split(",").map(e => Number(e));
+        		}
+        		//用户组信息回显
         	}else if(type === "roleManage"){
         		me.rolemanageDialogShow = true;
         		me.addRoleDialogTitle = "编辑角色";
@@ -371,6 +422,28 @@ new Vue({
                     success: function(res) {
                         me.usermanageTableData = res.data;
                         me.userManageTotal = res.total;
+                        me.loading = false;
+                    },
+                    error: function(err) {
+                        console.log('出错了', err);
+                        me.loading = false;
+                    }
+                });
+            }else if(tab == "userGroupManage"){
+                let search = $("#userGroupSearch").val();
+                $.ajax({
+                    url: '/jetk/user/userGroups',
+                    type: "get",
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                    data: {
+                        page: page,
+                        limit: me.pageSize,
+                        search: search,
+                    },
+                    success: function(res) {
+                        me.usergroupmanageTableData = res.data;
+                        me.userGroupManageTotal = res.total;
                         me.loading = false;
                     },
                     error: function(err) {
@@ -482,6 +555,7 @@ new Vue({
                             url: url,
                             type: "post",
                             dataType: "json",
+                            async : false,
                             data: {
                                 userId: userId,//用户ID
                                 userName: me.usermanageDialogForm.userName,//用户
@@ -496,6 +570,11 @@ new Vue({
                                 effectiveTime: effectiveTime,//生效时间
                                 roleId: me.usermanageDialogForm.roleId,//角色id
                                 picturePath: me.usermanageDialogForm.picturePath,//图片名
+                                tasknum: me.usermanageDialogForm.tasknum,
+                                taskMonthNum: me.usermanageDialogForm.taskMonthNum,
+                                taskYearNum: me.usermanageDialogForm.taskYearNum,
+                                taskExeNum: me.usermanageDialogForm.taskExeNum,
+                                focuspeopleNum: me.usermanageDialogForm.focuspeopleNum,
                             },
                             success: function(res) {
                                 me.loading = false;
@@ -518,9 +597,64 @@ new Vue({
                         me.usermanageDialogShow = false;
                     } else {
                         console.log('error submit!!');
-                return false;
-            }
-            });
+                        return false;
+                    }
+                 });
+            }else if(formName === "userGroupManageForm"){
+                let groupid = me.usergroupmanageDialogForm.id;
+                let userIds = me.usergroupmanageDialogForm.userIds;
+                let userIdStr = "";
+                let url = "";
+                if(groupid){
+                    url = "/jetk/user/updateUserGroup";
+                }else{
+                    url = "/jetk/user/addUserGroup";
+                }
+                if(userIds){
+                    for(var item in userIds){
+                        userIdStr += userIds[item] + ",";
+                    }
+                    if(userIdStr){
+                        userIdStr = userIdStr.substring(0,userIdStr.length-1);
+                    }
+                }
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        $.ajax({
+                            url: url,
+                            type: "post",
+                            dataType: "json",
+                            async : false,
+                            data: {
+                                id: groupid,//用户组ID
+                                userGroupName: me.usergroupmanageDialogForm.userGroupName,//用户
+                                userGroupCity: me.usergroupmanageDialogForm.userGroupCity,//用户
+                                userIds: userIdStr,//用户列表
+                            },
+                            success: function(res) {
+                                me.loading = false;
+                                let status = res.status;
+                                let data = res.data;
+                                let message = res.message;
+                                if(status === "success"){
+                                    me.$message.info(data);
+                                }else{
+                                    me.$message.error(message);
+                                }
+                                me.usergroupmanageDialogShow = false;
+                            },
+                            error: function(err) {
+                                me.loading = false;
+                                let message = err.message;
+                                me.$message.error(message);
+                            }
+                        });
+                        me.usergroupmanageDialogShow = false;
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                 });
             }else if(formName === "roleManageForm"){
             	//用户管理提交
                 let roleId = me.rolemanageDialogForm.roleId;
@@ -542,6 +676,7 @@ new Vue({
                         $.ajax({
                             url: url,
                             type: "post",
+                            async : false,
                             data:{
                             	roleId: roleId,
                             	roleName: me.rolemanageDialogForm.roleName,
@@ -581,6 +716,7 @@ new Vue({
                             url: "/jetk/sysconfig/updateSysParam",
                             type: "post",
                             dataType: "json",
+                            async : false,
                             data: me.sysmanageDialogForm,//配置
                             success: function(res) {
                                 me.loading = false;
@@ -606,7 +742,7 @@ new Vue({
                 return false;
             }
             });
-            }else if(formName === "roleManageForm"){
+            }else if(formName === "sysConfigManage"){
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         $.ajax({
@@ -642,7 +778,7 @@ new Vue({
             }
             });
             }
-            this.getTableData(formName, this.page);
+            this.getTableData(this.prevenTab, this.page);
         },
 
         handleSelect:function(e) {
@@ -863,24 +999,27 @@ new Vue({
             this.$refs[formName].resetFields();
         },
         timeFormat: function(date){
-        	let fmt = "YYYY-mm-dd HH:MM:SS";
-        	let ret;
-            const opt = {
-                "Y+": date.getFullYear().toString(),        // 年
-                "m+": (date.getMonth() + 1).toString(),     // 月
-                "d+": date.getDate().toString(),            // 日
-                "H+": date.getHours().toString(),           // 时
-                "M+": date.getMinutes().toString(),         // 分
-                "S+": date.getSeconds().toString()          // 秒
-                // 有其他格式化字符需求可以继续添加，必须转化成字符串
-            };
-            for (let k in opt) {
-                ret = new RegExp("(" + k + ")").exec(fmt);
-                if (ret) {
-                    fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        	if(date){
+        		let fmt = "YYYY-mm-dd HH:MM:SS";
+            	let ret;
+                const opt = {
+                    "Y+": date.getFullYear().toString(),        // 年
+                    "m+": (date.getMonth() + 1).toString(),     // 月
+                    "d+": date.getDate().toString(),            // 日
+                    "H+": date.getHours().toString(),           // 时
+                    "M+": date.getMinutes().toString(),         // 分
+                    "S+": date.getSeconds().toString()          // 秒
+                    // 有其他格式化字符需求可以继续添加，必须转化成字符串
                 };
-            };
-            return fmt;
+                for (let k in opt) {
+                    ret = new RegExp("(" + k + ")").exec(fmt);
+                    if (ret) {
+                        fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+                    };
+                };
+                return fmt;
+        	}
+        	return "";
         }
     },
     watch: {

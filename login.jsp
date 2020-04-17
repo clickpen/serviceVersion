@@ -20,41 +20,66 @@
             position: relative;
             width: 100%;
             height: 100vh;
+            background: url('../images/login-bg.jpg') center / cover no-repeat;
         }
         .login-wrapper .title {
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -100%);
-            font-size: 40px;
+            transform: translate(10px, -160px);
+            font-size: 30px;
+        }
+        .login-wrapper .title .icon {
+            display: inline-block;
+            vertical-align: text-bottom;
+            width: 38px;
+            height: 38px;
+            background: url('../images/logo.png') center / contain no-repeat;
         }
         .login-wrapper .login-form {
             position: absolute;
-            width: 200px;
+            width: 260px;
             text-align: center;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, 10px);
+            transform: translate(10px, -60px);
+        }
+        .login-wrapper .login-form i {
+            position: absolute;
+            left: 0px;
+            width: 30px;
+            height: 30px;
+        }
+        .login-wrapper .login-form .user-icon {
+            top: 8px;
+            background: url('../images/user-icon.png') center / contain no-repeat;
+        }
+        .login-wrapper .login-form .pass-icon {
+            top: 83px;
+            background: url('../images/pass-icon.png') center / contain no-repeat;
         }
         .login-wrapper .login-form .user-input {
             box-sizing: border-box;
+            background-color: transparent;
             width: 100%;
-            height: 30px;
-            margin-bottom: 10px;
-            padding-left: 10px;
-            border-radius: 4px;
+            height: 46px;
+            margin-bottom: 30px;
+            padding-left: 36px;
             outline: none;
-            border: 1px solid #ccc;
+            border: none;
+            border-bottom: 1px solid #ccc;
         }
         .login-wrapper .login-form .submit-btn {
-            width: 60px;
-            height: 30px;
-            background-color: #409EFF;
+            width: 90%;
+            height: 40px;
+            background-color: #006eff;
             text-align: center;
-            font-size: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 4px;
             color: #fff;
             outline: none;
-            border-radius: 4px;
+            border-radius: 20px;
             border: none;
             cursor: pointer;
         }
@@ -62,12 +87,17 @@
 </head>
 <body>
     <div class="login-wrapper">
-        <h1 class="title">移动数据应用</h1>
+        <h1 class="title">
+            <i class="icon"></i>
+            移动数据应用平台
+        </h1>
         <div class="input-wrapper">
             <form class="login-form" action="login" method="post">
+                <i class="user-icon"></i>
+                <i class="pass-icon"></i>
                 <input class="user-input" type="text" name="userName" placeholder="请输入账号">
                 <input class="user-input" type="password" name="userPass" placeholder="请输入密码">
-                <input class="submit-btn" type="submit" value="登录"></button>
+                <button class="submit-btn" type="submit">登录</button>
             </form>
         </div>
     </div>

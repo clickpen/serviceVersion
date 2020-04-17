@@ -135,72 +135,7 @@ let prevenModel = {
         me.$map.centerAndZoom(new BMap.Point(116.404, 39.915), 6)
         //开启鼠标滚轮缩放
         me.$map.enableScrollWheelZoom(true)
-        // me.$map.addEventListener('click', function(point) {
-        // 	console.log(point.point)
-        // 	me.addMapPoint(point.point.lng, point.point.lat, 'day1')
-        // })
     },
-    // // 添加地图点
-    // addMapPoint(x, y, type) {
-    //     const me = this
-    //     if(!type) {
-    //         return
-    //     }
-    //     let point = new BMap.Point(x, y)
-    //     let icon = null
-    //     let iconSize = new BMap.Size(30, 39)
-    //     let offset = new BMap.Size(0, -18)
-    //     // 对type进行类型判断
-    //     switch(type) {
-    //         case 'day1':
-    //         icon = new BMap.Icon('./imgs/day-1.png', iconSize)
-    //             break
-    //         case 'day2':
-    //         icon = new BMap.Icon('./imgs/day-2.png', iconSize)
-    //             break
-    //         case 'day3':
-    //         icon = new BMap.Icon('./imgs/day-3.png', iconSize)
-    //             break
-    //         case 'day4':
-    //         icon = new BMap.Icon('./imgs/day-4.png', iconSize)
-    //             break
-    //         case 'night1':
-    //         icon = new BMap.Icon('./imgs/night-1.png', iconSize)
-    //             break
-    //         case 'night2':
-    //         icon = new BMap.Icon('./imgs/night-2.png', iconSize)
-    //             break
-    //         case 'night3':
-    //         icon = new BMap.Icon('./imgs/night-3.png', iconSize)
-    //             break
-    //         case 'night4':
-    //         icon = new BMap.Icon('./imgs/night-4.png', iconSize)
-    //             break
-    //         case 'cover1':
-    //         icon = new BMap.Icon('./imgs/cover-1.png', iconSize)
-    //             break
-    //         default:
-    //             return
-    //     }
-    //     let marker = new BMap.Marker(point, {
-    //         icon,
-    //         offset
-    //     })
-    //     me.$map.addOverlay(marker)
-    //     // @todo
-    //     let className = Math.random() > 0.5 ? 'red-info' : 'green-info'
-    //     // 为添加的点加上信息窗
-    //     marker.addEventListener('click', function() {
-    //         me.showMapInfo(point, className, {
-    //             url: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1306607258,967818222&fm=111&gp=0.jpg',
-    //             peopleName: '张三',
-    //             account: '13546468855',
-    //             zdrResponsible: '北京市紫禁城A01',
-    //             warnTime: '2020-4-4 12:12:50',
-    //             reason: '进入紫禁城被打了 o~o~'
-    //         })
-    //     })
-    // },
     // 添加地图海量点
     addMapCollection(list, type) {
         if(!list) {
@@ -340,9 +275,8 @@ let prevenModel = {
                     }))
                 }
             },
-            error(err) {
+            error() {
                 Message.error('获取首页地图所有点数据出错了')
-                console.log(err)
             }
         })
     },
@@ -371,9 +305,8 @@ let prevenModel = {
                     }
                 }
             },
-            error(err) {
+            error() {
                 Message.error('获取点轨迹信息失败')
-                console.log(err)
             }
         })
     }
@@ -442,7 +375,6 @@ let prevenModelWarnAreaMap = {
     rectangleComplete(e, overlay) {
 		const me = this
 		let pointArr = overlay.getPath()
-        console.log('点数组', pointArr)
 		// 清除上次绘制覆盖物
 		me.$map.removeOverlay(me.mapMarker)
 		// 重新赋值本次覆盖物以便于下次清除
@@ -548,8 +480,6 @@ new Vue({
                 url: '/jetk/judged/getCases',
                 type: 'post',
                 success(res) {
-                    console.log('caseListmessage', res)
-                    // me.caseOptions
                     if(res.result && res.result.length) {
                         me.caseOptions = res.result.map(ele => {
                             return {
@@ -559,9 +489,8 @@ new Vue({
                         })
                     }
                 },
-                error(err) {
+                error() {
                     me.$message.error('获取案件列表信息失败！')
-                    console.log(err)
                 }
             })
         },
@@ -574,8 +503,6 @@ new Vue({
                     type: 'warn',
                 })
                 .then(() => {
-                    // @todo
-                    console.log('delete success', data, type)
                     switch (type) {
                         case 'zdr':
                             me.deleZdrTableData(data.id)
@@ -609,9 +536,8 @@ new Vue({
                         me.$message.error('获取首页重点人列表数据失败')
                     }
                 },
-                error(err) {
+                error() {
                     me.$message.error('获取首页重点人列表数据出错了')
-                    console.log(err)
                 }
             })
         },
@@ -627,6 +553,7 @@ new Vue({
         },
         // 上传头像
         handleUploadFile(res, file) {
+            // @todo
             console.log('11111', res, file)
             if(res.status == 'fail') {
                 this.$message.error(res.message)
@@ -654,9 +581,8 @@ new Vue({
                         me.$message.error('获取重点人列表数据失败')
                     }
                 },
-                error(err) {
+                error() {
                     me.$message.error('获取重点人列表数据出错了')
-                    console.log(err)
                 }
             })
         },
@@ -675,8 +601,6 @@ new Vue({
         // 新增/修改重点人列表
         addZdrTableData() {
             const me = this
-            // @todo
-            console.log('提交的参数', me.zdrDialogForm)
             if (!me.zdrDialogForm.caseId) {
                 me.$alert('请选择案件')
                 return
@@ -699,6 +623,10 @@ new Vue({
             }
             if (!me.zdrDialogForm.zdrIdentification) {
                 me.$alert('请输入身份证号')
+                return
+            }
+            if (!/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(me.zdrDialogForm.zdrIdentification)) {
+                me.$alert('请输入正确的身份证号')
                 return
             }
             if (!me.zdrDialogForm.zdrEmployer) {
@@ -735,9 +663,8 @@ new Vue({
                     // 重新加载重点人列表
                     me.getZdrTable(1)
                 },
-                error(err) {
+                error() {
                     me.$message.error('提交重点人信息失败')
-                    console.log(err)
                 }
             })
         },
@@ -750,14 +677,12 @@ new Vue({
                     id: zdrId
                 },
                 success(res) {
-                    console.log(res)
                     me.$message.info(res.message || '删除成功')
                     // 更新下列表
                     me.getZdrTable(1)
                 },
-                error(err) {
+                error() {
                     me.$message.error('删除重点人信息失败')
-                    console.log(err)
                 }
             })
         },
@@ -797,9 +722,8 @@ new Vue({
                     me.zdrLargeImportShow = false
                     me.$message.info(res.message || '导入成功')
                 },
-                error(err) {
+                error() {
                     me.$message.error('批量导入失败')
-                    console.log(err)
                 }
             })
         },
@@ -815,16 +739,13 @@ new Vue({
                     search,
                 },
                 success(res) {
-                    // @todo
-                    console.table(res.data)
                     if (res.data) {
                         me.warnTableData = res.data
                         me.warnTableTotal = res.total
                     }
                 },
-                error(err) {
+                error() {
                     me.$message.error('获取预警管理列表出错了')
-                    console.log(err)
                 }
             })
         },
@@ -849,9 +770,7 @@ new Vue({
         // 新增/修改预警管理列表
         addWarnTableData() {
             const me = this
-            let { ruleName, action, areaValue, voiceTrigger } = me.warnDialogForm
-            // @todo
-            console.log('提交的参数', { ruleName, action, areaValue, voiceTrigger })
+            let { id, ruleName, action, areaValue, voiceTrigger } = me.warnDialogForm
             if (!ruleName) {
                 me.$alert('请输入预警名称')
                 return
@@ -870,6 +789,7 @@ new Vue({
                 url: ajaxUrl,
                 type: 'post',
                 data: {
+                    id,
                     ruleName,
                     action,
                     value: areaValue,
@@ -880,9 +800,8 @@ new Vue({
                     me.$message.info(res.message || '提交成功')
                     me.getWarnTable(1)
                 },
-                error(err) {
+                error() {
                     me.$message.error('修改预警管理信息失败')
-                    console.log(err)
                 }
             })
         },
@@ -895,7 +814,6 @@ new Vue({
                     id: warnId,
                 },
                 success(res) {
-                    console.log(res)
                     if(res.status == 'success') {
                         me.$message.info(res.message || '删除成功')
                         me.getWarnTable(1)
@@ -903,9 +821,8 @@ new Vue({
                         me.$message.error(res.message || '删除失败')
                     }
                 },
-                error(err) {
+                error() {
                     me.$message.error('删除预警管理信息失败')
-                    console.log(err)
                 }
             })
         },
