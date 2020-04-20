@@ -110,9 +110,10 @@
                     <el-table-column
                             fixed="right"
                             label="操作"
-                            width="100">
+                            width="200">
                         <template slot-scope="scope">
-                            <el-button  @click="handleDetail(scope.$index, scope.row)" icon="el-icon-s-claim"></el-button>
+                            <el-button size="mini" :disabled="showByTask(scope.row)" @click="showSubTask(scope.$index, scope.row)">子任务</el-button>
+                            <el-button size="mini" @click="handleDetail(scope.$index, scope.row)" icon="el-icon-s-claim"></el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -256,6 +257,42 @@
                     <el-button type="primary" @click="importBatch();">直接导入</el-button>
                 </span>
             </el-dialog>
+            <el-dialog
+                    title="子任务"
+                    :visible.sync="dialogSubTaskVisible"
+                    width="30%"
+                    :before-close="handleClose"
+            >
+                <el-table
+                        <%--:data="subTableData"--%>
+                        :data="tableData"
+                        stripe
+                        v-loading="loading"
+                        class="table_class"
+                >
+                    <el-table-column
+                            label="账号"
+                            prop="account"
+                            width="100"
+                            show-overflow-tooltip
+                    ></el-table-column>
+                    <el-table-column
+                            label="开始时间"
+                            :formatter="subTaskFormatter"
+                            show-overflow-tooltip
+                    ></el-table-column>
+                    <el-table-column
+                            label="结束时间"
+                            :formatter="subTaskFormatter"
+                            show-overflow-tooltip
+                    ></el-table-column>
+                    <el-table-column
+                            label="任务状态"
+                            prop="status"
+                            show-overflow-tooltip
+                    ></el-table-column>
+                </el-table>
+            </el-dialog>
         </el-container>
     </div>
 </body>
@@ -282,6 +319,7 @@
     var App = {
         data(){
             return{
+                dialogSubTaskVisible:false,
                 batchCaseValue:'',
                 batchRadio:'1',
                 multipleSelection:[],
@@ -299,6 +337,7 @@
                 dialogFormVisible: false,
                 dialogBatchUploadVisible: false,
                 tableData: [],
+                subTableData:[],
                 virForm: {
                     caseNum: '',
                     searchCondition: '',
@@ -326,6 +365,17 @@
             }
         },
         methods: {
+            showByTask:function(row){
+              if(row.operationType == 2){
+                  return false;
+              }  else{
+                  return true;
+              }
+            },
+            showSubTask(index,row){
+                this.dialogSubTaskVisible = true
+                /*alert(row.id);*/
+            },
         	selectAble:function(row) {
         		if (row.operationType == 2) {
         			return true;
@@ -479,6 +529,14 @@
                 var end = new Date(row.endTime).format("yyyy-MM-dd hh:mm:ss");
               return start+"-"+end;
             },
+            subTaskFormatter:function(row,column){
+                if(column.label=="开始时间"){
+                    var date = new Date(row.startTime).format("yyyy-MM-dd hh:mm:ss");
+                    return date
+                }else{
+                    return new Date(row.endTime).format("yyyy-MM-dd hh:mm:ss");
+                }
+            },
             formatterTimes(row,colum){
               return (Date.parse(row.resultTime)-Date.parse(row.sendTime))/1000;
             },
@@ -562,7 +620,6 @@
                 }else{//2代表虚拟身份
                     return true;
                 }
-
             },
             resetForm: function() {
                 var formName = 'ruleForm';
@@ -580,7 +637,7 @@
                     type: 'post',
                     data: {
                         page,
-                        limit: 10,
+                        limit: 12,
                         caseId:me.caseValue,
                         search:me.inputOne
                     },

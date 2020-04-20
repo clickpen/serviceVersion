@@ -29,6 +29,9 @@ new Vue({
 		total: 0,
 		pageSize: 12,
 		page: 1,
+		formCheck:{
+			delivery:false
+		},
 		form: {
 			caseNum: '',
 			caseName: '',
@@ -80,8 +83,9 @@ new Vue({
 		this.getTableDada();
 	},
 	methods: {
-		formatter:function(row) {
-			
+		handleAuditBnt:function() {
+			let me = this;
+			me.getTableDada();
 		},
 		selectAble:function(row) {
 			if (row.status == 2  || row.status == 3 || row.status == 4) {
@@ -104,6 +108,7 @@ new Vue({
 					page: page,
 					limit: me.pageSize,
 					search: search,
+					audit:me.formCheck.delivery,
 				},
 				success: function(res) {
 					me.tableData = res.data;

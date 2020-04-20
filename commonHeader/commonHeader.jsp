@@ -18,64 +18,70 @@
         <h1>移动数据应用</h1>
     </div>
     <ul class="header-nav-wrapper">
-        <c:forEach var="li" items="${sessionScope.permissions}">
-            <c:if test="${li.moduleId == 2000001}">
-                <li class="nav-card J-nav-card" name="index">
-                    <a href="index?path=index/index">
-                        <i class="index-icon"></i>首页
-                    </a>
-                </li>
-            </c:if>
-            <c:if test="${li.moduleId == 3000001}">
-                <li class="nav-card J-nav-card" name="judgingTool">
-                    <a href="index?path=judgingTool/judgingToolMain">
-                        <i class="judg-icon"></i>研判工具
-                    </a>
-                </li>
-            </c:if>
-            <c:if test="${li.moduleId == 4000001}">
-                <li class="nav-card J-nav-card" name="prevenModel">
-                    <a href="index?path=prevenModel/prevenModel">
-                        <i class="preven-icon"></i>防控模型
-                    </a>
-                </li>
-            </c:if>
-            <c:if test="${li.moduleId == 5000001}">
-                <li class="nav-card J-nav-card" name="case">
-                    <a href="index?path=case/case">
-                        <i class="case-icon"></i>案件管理
-                    </a>
-                </li>
-            </c:if>
-            <c:if test="${li.moduleId == 6000001}">
-                <li class="nav-card J-nav-card" name="systemModel">
-                    <a href="index?path=systemModel/systemModel">
-                        <i class="el-icon-setting"></i>系统管理
-                    </a>
-                </li>
-            </c:if>
-        </c:forEach>
+    	<c:set var="flag_preven" value="true" />
+    	<c:set var="flag_case" value="true" />
+    	<c:set var="flag_system" value="true" />
+    	<c:forEach var="li" items="${sessionScope.permissions}" >
+	  		<c:if test="${li.moduleId == '2000001'}">
+	  			<li class="nav-card J-nav-card" name="index">
+            		<a href="index?path=index/index">
+                		<i class="index-icon"></i>首页
+            		</a>
+        		</li>
+	  		</c:if>
+	  		<c:if test="${li.moduleId == '3000001'}">
+	  			<li class="nav-card J-nav-card" name="judgingTool">
+           			<a href="index?path=judgingTool/judgingToolMain">
+                		<i class="judg-icon"></i>研判工具
+            		</a>
+        		</li>
+	  		</c:if>
+	  		<c:if test="${(li.moduleId == '4000001' || li.moduleId == '4000002') && flag_preven == true}">
+	  			<c:set var="flag_preven" value="false" />
+	  			<li class="nav-card J-nav-card" name="prevenModel">
+            		<a href="index?path=prevenModel/prevenModel">
+                		<i class="preven-icon"></i>防控模型
+            		</a>
+        		</li>
+	  		</c:if>
+	  		<c:if test="${(li.moduleId == '5000001'|| li.moduleId == '5000002') && flag_case == true}">
+	  			<c:set var="flag_case" value="false" />
+	  			<li class="nav-card J-nav-card" name="case">
+            		<a href="index?path=case/case">
+                		<i class="case-icon"></i>案件管理
+            		</a>
+        		</li>
+	  		</c:if>
+	  		<c:if test="${(li.moduleId == '6000001' || li.moduleId == '6000002' || li.moduleId == '6000003' || li.moduleId == '6000004' || li.moduleId == '6000005') && flag_system == true }">
+	  			<c:set var="flag_system" value="false" />
+	  			<li class="nav-card J-nav-card" name="systemModel">
+            		<a href="index?path=systemModel/systemModel">
+                		<i class="el-icon-setting"></i>系统管理
+            		</a>
+        		</li>
+	  		</c:if>
+	  	</c:forEach>
         <!-- <li class="nav-card J-nav-card">
             <a href="index?path=index/index">
                 <i class="index-icon"></i>首页
             </a>
         </li>
-        <li class="nav-card J-nav-card" name="judgingTool">
+        <li class="nav-card J-nav-card"  name="judgingTool">
             <a href="index?path=judgingTool/judgingToolMain">
                 <i class="judg-icon"></i>研判工具
             </a>
         </li>
-        <li class="nav-card J-nav-card" name="prevenModel">
+        <li class="nav-card J-nav-card"  name="prevenModel">
             <a href="index?path=prevenModel/prevenModel">
                 <i class="preven-icon"></i>防控模型
             </a>
         </li>
-        <li class="nav-card J-nav-card" name="case">
+        <li class="nav-card J-nav-card"  name="case">
             <a href="index?path=case/case">
                 <i class="case-icon"></i>案件管理
             </a>
         </li>
-        <li class="nav-card J-nav-card" name="systemModel">
+        <li class="nav-card J-nav-card"  name="systemModel>
             <a href="index?path=systemModel/systemModel">
                 <i class="el-icon-setting"></i>系统管理
             </a>
@@ -102,8 +108,8 @@
 <script src="<%=request.getContextPath()%>/js/element-ui-2.12.0.js"></script>
 <!-- <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=cfEylnTgGMTSQy6BiWxP0hrVsVRkS8vM"></script> -->
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/map/bootstrapformap.js"></script>
-<script type="text/javascript"
-    src="<%=request.getContextPath()%>/js/map/pointcollection/offlinemap/map_load.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/map/pointcollection/offlinemap/map_load.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/map/mapv.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/map/Heatmap_min.js"></script>
+<script src="<%=request.getContextPath()%>/js/utils.js"></script>
 <script src="<%=request.getContextPath()%>/views/commonHeader/commonHeader.js"></script>

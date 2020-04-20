@@ -524,8 +524,8 @@
 					
 					<el-form-item label="用户：">
 						<el-select size="mini" multiple v-model="usergroupmanageDialogForm.userIds"  placeholder="请选择用户">
-							<el-option v-for="item in rolemanageTableData" :key="item.roleId" :label="item.roleName"
-								:value="item.roleId"> </el-option>
+							<el-option v-for="item in usermanageTableData" :key="item.userId" :label="item.userName"
+								:value="item.userId"></el-option>
 						</el-select>
 					</el-form-item>
 				</el-form>

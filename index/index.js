@@ -151,11 +151,7 @@ new Vue({
         headerHolderSrc: headerHolderSrc,
         judgePercent: 0,
         focusPeoplePercent: 0,
-        warnTipsList: [
-            { warnTime: '2019-01-10 23:48:32', userName: '张益达', reason: '离开北京市预警' },
-            { warnTime: '2019-01-10 23:48:32', userName: '张益达', reason: '离开北京市预警' },
-            { warnTime: '2019-01-10 23:48:32', userName: '张益达', reason: '离开北京市预警' },
-        ],
+        warnTipsList: [],
         zdrInformation: [],
         historyDateType: 1,
         nearlyTableColumn: [
@@ -165,19 +161,29 @@ new Vue({
             { label: '案件失效时间', prop: 'invalidTime' },
         ],
         nearlyTableData: [],
+        nearlyTableLoading: true,
         processColorList: ['#ffb73a', '#eb4549', '#25d1d7', '#f152eb', '#fe69b3', '#3aee8a'],
         funStatDataList: [],
-        sourceStatDataList: []
+        sourceStatDataList: [],
+        fullScreenLoading: null,
     },
     mounted() {
+        this.fullScreenLoading = this.$loading({
+            lock: true,
+            text: 'loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+        })
         index.init()
+        this.getHistoryCaseData()
         this.getNearlyCaseData()
         this.getUserInfoData()
         this.getZdrMessage()
         this.getSystemInformation()
     },
     methods: {
-        // 获取近期案件、案件类型数据
+        // 全局loading
+        // 获取近案件、案件类型数据
         getNearlyCaseData() {
             const me = this
             $.ajax({
@@ -187,8 +193,36 @@ new Vue({
                     if(res.cases) {
                         me.nearlyTableData = res.cases
                     }
+                    me.nearlyTableLoading = false
                     if(res.caseType) {
                         index.updateCaseTypeChart(res.caseType)
+                    }
+                },
+                error() {
+                    console.log('获取失败')
+                }
+            })
+        },
+        // 获取历史案件数据
+        getHistoryCaseData() {
+            const me = this
+            const fullscreenloading = me.$loading({
+                lock: true,
+                text: 'loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            $.ajax({
+                url: '/jetk/home/histroyUse?monthOrYear=' + (me.historyDateType == 1 ? 'month' : 'year'),
+                type: 'post',
+                success(res) {
+                    fullscreenloading.close()
+                    // 历史数据更新
+                    if(res.caseTcs && res.taskTcs) {
+                        index.updateHistoryChart({
+                            caseTcs: res.caseTcs,
+                            taskTcs: res.taskTcs
+                        })
                     }
                 },
                 error() {
@@ -203,11 +237,9 @@ new Vue({
                 url: '/jetk/home/userInfo',
                 type: 'post',
                 success(res) {
+                    me.fullScreenLoading.close()
                     if(res.user) {
                         me.userInfo = { ...res.user }
-                        for(let prop in me.userInfo) {
-                            console.log(prop + ': ' + me.userInfo[prop])
-                        }
                         // 有用户信息时开始socket监听
                         res.user.userName && index.webSocket(res.user.userName, socketData => {
                             let _SocData = JSON.parse(socketData.data)
@@ -216,16 +248,16 @@ new Vue({
                                 return
                             }
                             let needSpeakText = ''
-                            me.warnTipsList = JSON.parse(socketData.data)
                             _SocData.forEach(ele => {
                                 me.warnTipsList.unshift({
                                     userName: ele.userName,
                                     warnTime: formatTime(ele.warnTime, 'yy-MM-dd hh:mm:ss'),
                                     reason: ele.reason,
+                                    new: true
                                 })
                                 // 读取顺序为 时间 -> 人名 -> 原因
                                 if(ele.voiceTrigger == 1) {
-                                    // 调取commonHeader.js中定义的 时间格式化 方法
+                                    // 调取utils.js中定义的 时间格式化 方法
                                     needSpeakText += formatTime(ele.warnTime, 'yy-MM-dd hh:mm:ss') + '，'
                                     needSpeakText += ele.userName + '，'
                                     needSpeakText += ele.reason + '。'
@@ -236,7 +268,7 @@ new Vue({
                                 me.warnTipsList.splice(3)
                             }
                             if(needSpeakText) {
-                                // 调取commonHeader.js中定义的 文字阅读 方法
+                                // 调取utils.js中定义的 文字阅读 方法
                                 myReadText(needSpeakText)
                             }
                         })
@@ -254,6 +286,7 @@ new Vue({
                 url: '/jetk/home/maintenance',
                 type: 'post',
                 success(res) {
+                    me.fullScreenLoading.close()
                     if(res.result) {
                         me.zdrInformation = res.result
                     }
@@ -269,17 +302,7 @@ new Vue({
             $.ajax({
                 url: '/jetk/home/taskInfo',
                 type: 'post',
-                data: {
-                    search: me.historyDateType
-                },
                 success(res) {
-                    // 历史数据更新
-                    if(res.caseTcs && res.taskTcs) {
-                        index.updateHistoryChart({
-                            caseTcs: res.caseTcs,
-                            taskTcs: res.taskTcs
-                        })
-                    }
                     // 研判数据百分比
                     if(res.judgeUsing && res.judgeAll) {
                         me.judgePercent = (res.judgeUsing / res.judgeAll).toFixed(2) * 100
@@ -320,5 +343,9 @@ new Vue({
                 }
             })
         },
+        // 取消预警信息跳动
+        handleCancelHeartBeat(inx) {
+            this.warnTipsList[inx].new = false
+        }
     }
 })

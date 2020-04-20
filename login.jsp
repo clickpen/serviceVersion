@@ -36,6 +36,15 @@
             height: 38px;
             background: url('../images/logo.png') center / contain no-repeat;
         }
+        .login-wrapper .title .welcome-tips {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 2px;
+            font-weight: 100;
+        }
         .login-wrapper .login-form {
             position: absolute;
             width: 260px;
@@ -90,6 +99,7 @@
         <h1 class="title">
             <i class="icon"></i>
             移动数据应用平台
+            <span class="welcome-tips">Wekcome欢迎登陆</span>
         </h1>
         <div class="input-wrapper">
             <form class="login-form" action="login" method="post">
@@ -97,6 +107,7 @@
                 <i class="pass-icon"></i>
                 <input class="user-input" type="text" name="userName" placeholder="请输入账号">
                 <input class="user-input" type="password" name="userPass" placeholder="请输入密码">
+                <span style ="color: red;margin-top: 0px;display: block; margin-bottom: 20px;"> ${msg}</span>
                 <button class="submit-btn" type="submit">登录</button>
             </form>
         </div>

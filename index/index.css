@@ -1,3 +1,20 @@
+@keyframes heartBeat {
+	0% {
+		color: #733;
+	}
+	15% {
+		color: #b33;
+	}
+	30% {
+		color: #f00;
+	}
+	70% {
+		color: #b33;
+	}
+	100% {
+		color: #733;
+	}
+}
 .webkit-scroll-custom::-webkit-scrollbar {
     width: 4px;
     height: 4px;
@@ -147,6 +164,12 @@
 	vertical-align: top;
 	font-size: 12px;
 	margin: 0 calc((100% - (320px * 3)) / 6);
+}
+.content-wrapper .right-content .top-tips .card.heart-beat {
+	cursor: pointer;
+}
+.content-wrapper .right-content .top-tips .card.heart-beat span {
+	animation: heartBeat 1s infinite;
 }
 .content-wrapper .right-content .top-tips .card .tit {
 	color: #f00;

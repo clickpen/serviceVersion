@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" import="java.io.*"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-	request.getSession().removeAttribute("page");
+	request.getSession().removeAttribute("page");	
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,25 +17,51 @@
 <body>
 	<jsp:include page="../commonHeader/commonHeader.jsp" flush="false"></jsp:include>
 	<div class="content-wrapper" id="case">
-		<div class="title">
-			<div class="newCase">
-				<el-row><el-button icon="el-icon-check" @click="handleAllAudit()" style="width: 100%;">批量审批</el-button></el-row>
-			</div>
+		<div class="title">	
+			<c:forEach  var="li" items="${sessionScope.permissions}" >
+       			<c:if test="${li.moduleId == 5000002}">
+       				<div class="newCase">
+						<el-row><el-button icon="el-icon-check" @click="handleAllAudit()" style="width: 100%;">批量审批</el-button></el-row>
+					</div>
+       			</c:if>
+       		</c:forEach>
+       		
+       		
+       		
 			<div class="newCase">
 				<el-row>
 					<el-button icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true"
 						style="width: 100%;">新建案件</el-button>
 				</el-row>
-			</div>
+			</div>		
 			<div class="search">
 				<el-input placeholder="请输入您搜索的内容" id="search_content" v-model="search" class="input-with-select">
 					<el-button slot="append" @click="() => {getTableDada()}" icon="el-icon-search"></el-button>
 				</el-input>
 			</div>
+			
+			<c:forEach  var="li" items="${sessionScope.permissions}" >
+       			<c:if test="${li.moduleId == 5000002}">
+       				<div class="newCase">
+						<el-form ref="formCheck" :model="formCheck" label-width="80px">
+						  <el-form-item label="审批案件">
+				    		<el-switch v-model="formCheck.delivery" @change="handleAuditBnt()"></el-switch>
+				  		  </el-form-item>
+						</el-form>
+					</div>
+       			</c:if>
+       		</c:forEach>
 		</div>
 		<div class="case">
 				<el-table :data="tableData"  @selection-change="handleSelectionChange" stripe v-loading="loading">
-				<el-table-column type="selection"  width="55"  :selectable = "selectAble"></el-table-column>
+				
+				<c:forEach  var="li" items="${sessionScope.permissions}" >
+       				<c:if test="${li.moduleId == 5000002}">
+       					<el-table-column type="selection"  width="55"  :selectable = "selectAble"></el-table-column>
+       				</c:if>
+       			</c:forEach>
+				
+				
 				<!--<el-table-column label="案件ID"  prop="id"></el-table-column> -->
 				<el-table-column label="案件编号" prop="caseNum" show-overflow-tooltip></el-table-column>
 				<el-table-column label="案件名称" prop="caseName" show-overflow-tooltip></el-table-column>
@@ -46,9 +73,16 @@
 				<el-table-column label="案件失效时间" prop="invalidTime"   show-overflow-tooltip></el-table-column>
 				<el-table-column label="审核人" prop="auditUser"   show-overflow-tooltip></el-table-column>
 				<el-table-column label="案件审批意见" prop="auditSuggest"   show-overflow-tooltip></el-table-column>
-				<el-table-column label="操作">
-			    <template slot-scope="scope"><el-button v-if="scope.row.status == 1"  @click="handleAudit(scope.$index, scope.row)">审批</el-button></template>
-			    </el-table-column>
+				
+				<c:forEach  var="li" items="${sessionScope.permissions}" >
+       				<c:if test="${li.moduleId == 5000002}">
+       					<el-table-column label="操作">
+			    			<template slot-scope="scope"><el-button v-if="scope.row.status == 1"  @click="handleAudit(scope.$index, scope.row)">审批</el-button></template>
+			   			</el-table-column>
+       				</c:if>
+       			</c:forEach>
+				
+				
 			</el-table>
 			<el-pagination :total="total" :page-size="pageSize" :current-page.sync="page"
 				layout="total, prev, pager, next, jumper" @current-change="getTableDada"></el-pagination>

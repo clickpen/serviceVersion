@@ -49,18 +49,18 @@
 		</div>
 		<div class="right-content">
 			<div class="top-tips">
-				<p class="card" v-for="(ele, inx) in warnTipsList" :key="inx">
+				<p :class="{'card': true, 'heart-beat': ele.new}" v-for="(ele, inx) in warnTipsList" @click="() => { handleCancelHeartBeat(inx) }" :key="inx">
 					<span class="tit">预警：</span>
 					<span class="time">{{ele.warnTime}}</span>
 					<span class="name">{{ele.userName}}</span>
 					<span class="action">{{ele.reason}}</span>
 				</p>
-				<p v-if="!warnTipsList.length" class="no-data-holder">暂无数据</p>
+				<p v-if="!warnTipsList.length" class="no-data-holder">暂无新的预警信息</p>
 			</div>
 			<div class="mid-card">
 				<div class="history-stat">
 					<b class="tit">历史使用情况</b>
-					<el-select size="mini" class="hisroty-dateselect" @change="getSystemInformation" v-model="historyDateType">
+					<el-select size="mini" class="hisroty-dateselect" @change="getHistoryCaseData" v-model="historyDateType">
 						<el-option
 							label="按月查看"
 							:value="1"
@@ -77,6 +77,7 @@
 					<a href="index?path=case/case" class="more-nearly">查看更多&gt;&gt;</a>
 					<el-table
 						:data="nearlyTableData"
+						v-loading="nearlyTableLoading"
 					>
 						<el-table-column
 							v-for="(ele, inx) in nearlyTableColumn"

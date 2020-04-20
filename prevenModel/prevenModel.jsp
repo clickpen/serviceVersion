@@ -96,10 +96,10 @@
 						<el-table-column label="操作" prop="operate" width="100">
 							<template v-slot="scope">
 								<div class="zdr-operate-btn" v-if="scope.row.zdrMonitorStatus == '1'">
-									<i class="el-icon-edit-outline" @click="() => {
+									<i class="el-icon-edit-outline" title="编辑" @click="() => {
 											showZdrDialog(scope.row)
 										}"></i>
-									<i class="el-icon-delete" @click="handleDeleteRowData(scope.row, 'zdr')"></i>
+									<i class="el-icon-delete" title="删除" @click="handleDeleteRowData(scope.row, 'zdr')"></i>
 								</div>
 							</template>
 						</el-table-column>
@@ -132,8 +132,8 @@
 						<el-table-column label="操作" prop="operate" width="100">
 							<template v-slot="scope">
 								<div class="zdr-operate-btn">
-									<i class="el-icon-edit-outline" @click="() => {showWarnDialog(scope.row)}"></i>
-									<i class="el-icon-delete" @click="handleDeleteRowData(scope.row, 'warn')"></i>
+									<i class="el-icon-edit-outline" title="编辑" @click="() => {showWarnDialog(scope.row)}"></i>
+									<i class="el-icon-delete" title="删除" @click="handleDeleteRowData(scope.row, 'warn')"></i>
 								</div>
 							</template>
 						</el-table-column>

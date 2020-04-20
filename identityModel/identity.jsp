@@ -25,35 +25,44 @@
             text-align: center;
         }
         .app_div .row_height{
-            height: 45px;
-            background-color: #c1c5c6;
+            height: 35px;
+            background-color: #eaedef;
         }
         .app_div .col_width{
             width: 260px;
             padding-right: 10px;
         }
         .app_div .p_style{
-           height: 50%;
            font-weight: 800;
+           color: #606266;
+           font-size: 15px;
+           padding-left: 10px;
         }
         .app_div td,th {
             font-size: 14px;
             color: #606266;
         }
+        .app_div{
+            padding: 15px;
+            padding-bottom: 0px;
+        }
+        .app_div .label_style{
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
 <jsp:include page="../commonHeader/commonHeader.jsp" flush="true"></jsp:include>
-<div id="app" class="app_div">
+<div id="app" class="app_div" v-cloak>
     <el-row class="row_height" align="middle" type="flex">
         <input type= "hidden" id = "taskId" value ="${param.id}"/>
         <div hidden id = "taskVirtual">
             ${param.virtual}
         </div>
-        <el-col :md="16"><p class="p_style" >>>关联关系图谱展示</p></el-col>
+        <el-col :md="16"><p class="p_style" >关联关系图谱展示</p></el-col>
         <el-col class="col_width">
-            <label>展示类型：</label>
-            <el-select class="select-width" @change="updateNode()" v-model="typeValue" multiple placeholder="请选择类型">
+            <label class="label_style">展示类型：</label>
+            <el-select size="mini" class="select-width" @change="updateNode()" v-model="typeValue" multiple placeholder="请选择类型">
                 <el-option
                         v-for="item in optionOne"
                         :key="item.value"
@@ -63,8 +72,8 @@
             </el-select>
         </el-col>
         <el-col class="col_width">
-            <label>关联层级：</label>
-            <el-select class="select-width" @change="updateNode()" v-model="numValue" placeholder="请选择关联次数">
+            <label class="label_style">关联层级：</label>
+            <el-select size="mini" class="select-width" @change="updateNode()" v-model="numValue" placeholder="请选择关联次数">
                 <el-option
                         v-for="item in optionTwo"
                         :key="item.value"
@@ -74,7 +83,7 @@
             </el-select>
         </el-col>
         <el-col :md="1">
-                <el-button class="button_width" type="primary" id="saveImg" @click="saveImg(event)">保存</el-button>
+                <el-button size="mini" class="button_width" type="primary" id="saveImg" @click="saveImg(event)">保存</el-button>
         </el-col>
     </el-row>
     <el-row :gutter="10">
@@ -83,7 +92,7 @@
         </el-col>
     </el-row>
     <el-row class="row_height" align="middle" type="flex">
-        <p class="p_style">>>关联明细</p>
+        <p class="p_style">关联明细</p>
     </el-row>
     <el-row :gutter="10">
         <el-col :md="24">
@@ -227,12 +236,22 @@ var Main = {
                 }
                 var maxlevel=this.numValue;
                 if(maxlevel==null||maxlevel==""){
-                    return;
+                    maxlevel = 0;
                 }
-                if(strparam==null||strparam==""){
-                    return;
-                }
-                AjaxUtil.ajaxRequest("Virtual_correlationAnalysis.do?content="+account_+"&type="+accOrvir+"&set_Id="+set_Id+"&strparam="+strparam+"&maxlevel="+maxlevel, "json", function (data) {
+                console.log(strparam)
+                // var strparamArray = strparam.splice(",");
+                // AjaxUtil.ajaxRequest("Virtual_correlationAnalysis.do?content="+account_+"&type="+accOrvir+"&set_Id="+setId+"&strparam="+strparam+"&maxlevel="+maxlevel, "json", function (data) {
+                $.ajax({
+                    url: '/jetk/identity/mapRelation',
+                    type: 'post',
+                    data: {
+                        content:account,
+                        type:accOrvir,
+                        setId:setId,
+                        maxlevel:maxlevel,
+                        strparam:strparam.join(",")
+                    },
+                    success: function(data) {
                     nodes = "{";
                     edges = "[";
                     golabData = data;
@@ -242,54 +261,51 @@ var Main = {
                         console.log("节点或者边的数量为零");
                         return;
                     }
-                    for(var i = 0; i<arraynode.length; i++){
-                        if(arraynode[i].virtualtype==""||arraynode[i].virtualtype==null){
-                            var str="";
-                            if(arraynode[i].mobileArea==null||arraynode[i].mobileArea==""){
-                            }else{
-                                str="("+arraynode[i].mobileArea+")";
-                            }
-                            $("#pic").attr("src","/jetk/picture/sim.png");
-                            nodes+="\""+arraynode[i].account+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].account+str+"\",rectStyle:{fill:\"url(\'/jetk/picture/sim.png\')\",stroke:\"#00D3FF\",width:42,height:42,path:\"/jetk/picture/sim.png\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
-                        }else{
-                            if(arraynode[i].name=="IMEI"){
-                                var strimei="";
-                                if(arraynode[i].facturer==null||arraynode[i].facturer==""){
-
+                        for(var i = 0; i<arraynode.length; i++){
+                            if(arraynode[i].virtualType==""||arraynode[i].virtualType==null){
+                                var str="";
+                                if(arraynode[i].mobileArea==null||arraynode[i].mobileArea==""){
                                 }else{
-                                    strimei="("+arraynode[i].facturer+")";
+                                    str="("+arraynode[i].mobileArea+")";
                                 }
-                                nodes+="\""+arraynode[i].virtualIdentity+arraynode[i].virtualtype+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].virtualIdentity+strimei+"\",rectStyle:{fill:\"url(picture/"+arraynode[i].picturePath+")\",stroke:\"##00D3FF\",width:42,height:42,path:\"picture/"+arraynode[i].picturePath+"\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                                $("#pic").attr("src","/jetk/picture/sim.png");
+                                nodes+="\""+arraynode[i].account+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].account+str+"\",rectStyle:{fill:\"url(\'/jetk/picture/sim.png\')\",stroke:\"#c1c5c6\",width:42,height:42,path:\"/jetk/picture/sim.png\"},textStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\"}},";;
                             }else{
-                                nodes+="\""+arraynode[i].virtualIdentity+arraynode[i].virtualtype+"\":{label:\"\\n\\n\\n"+arraynode[i].name+":"+arraynode[i].virtualIdentity+"\",rectStyle:{fill:\"url(picture/"+arraynode[i].picturePath+")\",stroke:\"##00D3FF\",width:42,height:42,path:\"picture/"+arraynode[i].picturePath+"\"},textStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\"}},";;
+                                if(arraynode[i].name=="IMEI"){
+                                    var strimei="";
+                                    if(arraynode[i].facturer==null||arraynode[i].facturer==""){
+                                    }else{
+                                        strimei="("+arraynode[i].facturer+")";
+                                    }
+                                    nodes += "\"" + arraynode[i].virtualIdentity + arraynode[i].virtualType + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualIdentity + strimei + "\",rectStyle:{fill:\"url(/jetk/picture/" + arraynode[i].picturePath + ")\",stroke:\"#c1c5c6\",width:42,height:42,path:\"/jetk/picture/" + arraynode[i].picturePath + "\"},textStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\"}},";;
+                                } else {
+                                    nodes += "\"" + arraynode[i].virtualIdentity + arraynode[i].virtualType + "\":{label:\"\\n\\n\\n" + arraynode[i].name + ":" + arraynode[i].virtualIdentity + "\",rectStyle:{fill:\"url(/jetk/picture/" + arraynode[i].picturePath + ")\",stroke:\"#c1c5c6\",width:42,height:42,path:\"/jetk/picture/" + arraynode[i].picturePath + "\"},textStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\"}},";;
+                                }
                             }
                         }
-                    }
-                    for(var j = 0; j<arrayedge.length;j++){
-                        var strcount="";
-                        var strtime="";
-                        if(arrayedge[j].total==null||arrayedge[j].total<1){
-                        }else{
-                            strcount=arrayedge[j].total+"次";
-                        }
-                        if(arrayedge[j].updateTime==null||arrayedge[j].updateTime==""){
+                        for (var j = 0; j < arrayedge.length; j++) {
+                            var strcount = "";
+                            var strtime = "";
+                            if (arrayedge[j].total == null || arrayedge[j].total < 1) {
+                                strcount = "";
+                            } else {
+                                strcount = arrayedge[j].total + "次";
+                            }
+                            if (arrayedge[j].updateTime == null || arrayedge[j].updateTime == "") {
 
-                        }else{
-                            strtime=arrayedge[j].updateTime;
-                            strtime=timeFormat(strtime);
+                            } else {
+                                strtime = new Date(arrayedge[j].updateTime).format("yyyy-mm-dd HH:MM:ss")
+                                // strtime = timeFormat(strtime);
+                            }
+                            edges += "{source:\"" + arrayedge[j].form + "\",target:\"" + arrayedge[j].to + "\",arrowStyle:{fill:\"#c1c5c6\",stroke:\"#c1c5c6\",\"stroke-width\":1},label:\"" + strcount + "\",labeldown:\"" + strtime + "\"},"
                         }
-                        edges+="{source:\""+arrayedge[j].form+"\",target:\""+arrayedge[j].to+"\",arrowStyle:{fill:\"#00D3FF\",stroke:\"#00D3FF\",\"stroke-width\":1,\"font-size\":\"8px\"},label:\""+strcount+"\",labeldown:\""+strtime+"\"},"
-                    }
-                    nodes=nodes.substring(0,nodes.length-1);
-                    if(arrayedge.length<=0){
-
-                    }else{
-                        edges=edges.substring(0,edges.length-1);
-                    }
-                    nodes+="}";
-                    edges+="]";
-                    var hh="{nodes:"+nodes+",edges:"+edges+"}";
-                    var sss=eval("("+hh+")");
+                        nodes = nodes.substring(0, nodes.length - 1);
+                        edges = edges.substring(0, edges.length - 1);
+                        nodes += "}";
+                        edges += "]";
+                        var hh = "{nodes:" + nodes + ",edges:" + edges + "}";
+                        hhjson = hh;
+                        var sss = eval("(" + hh + ")");
                     graph = new RGraph("relation_body",{
                     });
                     graph.loadData(sss);
@@ -302,10 +318,10 @@ var Main = {
                             graph.highlight(graph.getNode(account_+startType));
                         }
                     } catch (e) {
-                        $("#l-wrapper2").hide();
+                        console.log(e)
                     }
-                $("#l-wrapper2").hide();
-                });
+                }
+            });
             },
             //下载关联图片
             saveImg(event){

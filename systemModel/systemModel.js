@@ -280,7 +280,7 @@ new Vue({
                             let data = res.data;
                             let message = res.message;
                             if(status === "success"){
-                                me.$message.info(data);
+                                me.$message.success(data);
                             }else{
                                 me.$message.error(message);
                             }
@@ -308,7 +308,7 @@ new Vue({
                             let data = res.data;
                             let message = res.message;
                             if(status === "success"){
-                                me.$message.info(data);
+                                me.$message.success(data);
                             }else{
                                 me.$message.error(message);
                             }
@@ -336,7 +336,7 @@ new Vue({
                             let data = res.data;
                             let message = res.message;
                             if(status === "success"){
-                                me.$message.info(data);
+                                me.$message.success(data);
                             }else{
                                 me.$message.error(message);
                             }
@@ -582,7 +582,7 @@ new Vue({
                                 let data = res.data;
                                 let message = res.message;
                                 if(status === "success"){
-                                    me.$message.info(data);
+                                    me.$message.success(data);
                                 }else{
                                     me.$message.error(message);
                                 }
@@ -637,7 +637,7 @@ new Vue({
                                 let data = res.data;
                                 let message = res.message;
                                 if(status === "success"){
-                                    me.$message.info(data);
+                                    me.$message.success(data);
                                 }else{
                                     me.$message.error(message);
                                 }
@@ -690,7 +690,7 @@ new Vue({
                                 let data = res.data;
                                 let message = res.message;
                                 if(status === "success"){
-                                    me.$message.info(data);
+                                    me.$message.success(data);
                                 }else{
                                     me.$message.error(message);
                                 }
@@ -724,7 +724,7 @@ new Vue({
                                 let data = res.data;
                                 let message = res.message;
                                 if(status === "success"){
-                                    me.$message.info(data);
+                                    me.$message.success(data);
                                 }else{
                                     me.$message.error(message);
                                 }
