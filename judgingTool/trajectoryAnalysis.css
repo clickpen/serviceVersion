@@ -477,6 +477,25 @@
     width: 100%;
     height: calc(100% - 32px);
 }
+.trajectory-analysis .netimage-analysis .netimage-content .key-analysis-card .key-cloud span {
+    cursor: default;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .key-analysis-card .key-cloud .keyCloud-tips {
+    display: none;
+    position: absolute;
+    top: 1000%;
+    left: 50%;
+    z-index: 99;
+    padding: 5px 8px;
+    background-color: rgba(0, 0, 0, .4);
+    color: #fff;
+    font-size: 12px;
+    transition: all .4s ease;
+}
+.trajectory-analysis .netimage-analysis .netimage-content .key-analysis-card .key-cloud .keyCloud-tips p {
+    white-space: nowrap;
+    cursor: pointer;
+}
 .trajectory-analysis .netimage-analysis .netimage-content .app-analysis-card {
     position: absolute;
     bottom: 0;

@@ -51,12 +51,12 @@ function formatTime(time, type) {
  * 调用语音系统
  * @param text String 需要读的内容
  */
-function myReadText(text) {
+function myReadText(text, options) {
     if(!speechSynthesis) {
         return console.log('当前浏览器不支持语音读取内容！')
     }
     let synth = speechSynthesis
-    let options = new SpeechSynthesisUtterance()
+    let _options = new SpeechSynthesisUtterance('No warning should arise')
     // 配置项参数说明：
     // text – 要合成的文字内容，字符串。
     // lang – 使用的语言，字符串， 例如："zh-cn"
@@ -69,8 +69,9 @@ function myReadText(text) {
     // onpause – 语音合成暂停时候的回调。
     // onresume – 语音合成重新开始时候的回调。
     // onend – 语音合成结束时候的回调。
-    options.lang = 'zh-CN'
-    options.rate = 1
-    options.text = text
-    synth.speak(options)
+    _options.lang = 'zh-CN'
+    _options.rate = 1
+    _options.text = text
+    Object.assign(_options, options || {})
+    synth.speak(_options)
 }

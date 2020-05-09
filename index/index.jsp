@@ -60,7 +60,7 @@
 			<div class="mid-card">
 				<div class="history-stat">
 					<b class="tit">历史使用情况</b>
-					<el-select size="mini" class="hisroty-dateselect" @change="getHistoryCaseData" v-model="historyDateType">
+					<el-select size="mini" class="history-date-select" @change="getHistoryCaseData" v-model="historyDateType">
 						<el-option
 							label="按月查看"
 							:value="1"

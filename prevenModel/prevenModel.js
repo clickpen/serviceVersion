@@ -252,8 +252,51 @@ let prevenModel = {
         const me = this
         me.clearMapMarker()
         $.ajax({
-            url: '/jetk/zdr/getAllPositions',
+            // @todo 修改url为可访问接口
+            url: '/jetk/zdr/getAllWarnInfo',
             success(res) {
+                res = {
+                    status: 'success',
+                    data: {
+                        3: [{
+                            zdrUserName: '哒哒哒哒',
+                            account: '13313300212',
+                            address: '北京翠湖地区',
+                            x: 119.199862,
+                            y: 37.088294,
+                            zdrControlLevel: 3,
+                            zdrEmployer: '你萨法哈哈',
+                            zdrResponsible: '奥尔良'
+                        }]
+                    }
+                }
+                // res.data['1'].forEach((e, i) => {
+                //     e.x = (114 + i).toFixed(2)
+                //     e.y = (35 + i).toFixed(2)
+                // })
+                // res.data['1'].push({
+                //     accessTime: "2020-04-13 11:36:00",
+                //     account: "10000",
+                //     address: "山东省济南市",
+                //     ci: "5233",
+                //     dataType: null,
+                //     dx: null,
+                //     endTime: null,
+                //     lac: "12234",
+                //     startTime: null,
+                //     url: null,
+                //     userName: null,
+                //     x: "1000",
+                //     y: "1000",
+                //     zdrControlLevel: 1,
+                //     zdrEmployer: "是的你叫撒",
+                //     zdrHeadPic: null,
+                //     zdrIdentification: "232325199606240000",
+                //     zdrMonitorStatus: null,
+                //     zdrResetTime: null,
+                //     zdrResponsible: "撒打",
+                //     zdrUserName: "nisds"
+                // })
                 if(res.status === 'success') {
                     let pointData = me.mapPointData = res.data
                     let total = []
@@ -269,10 +312,20 @@ let prevenModel = {
                         me.addMapCollection(pointData['3'], 3)
                         total = total.concat(pointData['3'])
                     }
-                    // 地图展示当前所有点
-                    total.length &&  me.$map.setViewport(total.filter(e => e.x && e.y).map(point => {
-                        return new BMap.Point(point.x, point.y)
-                    }))
+                    setTimeout(() => {
+                        // 地图展示当前所有点
+                        total.length &&  me.$map.setViewport(total.filter(e => e.x && e.y).map(point => {
+                            return new BMap.Point(point.x, point.y)
+                        }))
+                    }, 100)
+                    me.mapPointSelectObj = {
+                        red: true,
+                        purple: true,
+                        green: true
+                    }
+                    $('.J-map-item-red').removeClass('not-select')
+                    $('.J-map-item-purple').removeClass('not-select')
+                    $('.J-map-item-green').removeClass('not-select')
                 }
             },
             error() {

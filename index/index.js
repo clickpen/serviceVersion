@@ -329,11 +329,11 @@ new Vue({
                     }
                     // 资源累计情况
                     if(res.tvs) {
-                        // @todo 按总数为1000来计算百分比
+                        let total = Math.max(...res.tvs.map(ele => ele.count)) * 1.2
                         me.sourceStatDataList = res.tvs.map(ele => {
                             return {
                                 ...ele,
-                                percent: ele.count >= 1000 ? 100 : ele.count / 10 // 此处按总数为1000来计算
+                                percent: ele.count * 100 / (total || 1)
                             }
                         })
                     }
