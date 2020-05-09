@@ -604,38 +604,13 @@ new Vue({
 							const $dom = $('.J-keyCloud-tips').html(_htmlStr).show()
 							let maxTop = keyTotalHeight - Math.ceil($dom[0].offsetHeight)
 							let maxLeft = keyTotalWidth - Math.ceil($dom[0].offsetWidth)
-							$('.J-keyCloud-tips').css({
+							$dom.css({
 								top: data.top > maxTop ? maxTop : data.top,
 								left: data.left > maxLeft ? maxLeft : data.left
 							})
 						}
 						var keyWord = [];
 						var trackKeyWord = result.trackKeyWord;
-						trackKeyWord.push({
-							keyWord: '北京',
-							num: 30
-						}, {
-							keyWord: '天津',
-							num: 22
-						}, {
-							keyWord: '上海',
-							num: 16
-						}, {
-							keyWord: '重庆',
-							num: 18
-						}, {
-							keyWord: '武汉',
-							num: 21
-						}, {
-							keyWord: '成都',
-							num: 15
-						}, {
-							keyWord: '内蒙古',
-							num: 17
-						}, {
-							keyWord: '黑龙江',
-							num: 16
-						})
 						if (trackKeyWord) {
 							for (var i = 0; i < trackKeyWord.length; i++) {
 								var objKeyWord = {};
